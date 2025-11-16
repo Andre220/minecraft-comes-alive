@@ -60,6 +60,7 @@ public abstract class MixinPlayerRenderer extends LivingEntityRenderer<AbstractC
             mca$skinLayer = new SkinLayer<>(this, mca$createModel(VillagerEntityModelMCA.bodyData(new CubeDeformation(0.0F))));
             addLayer(mca$skinLayer);
             addLayer(new FaceLayer<>(this, mca$createModel(VillagerEntityModelMCA.bodyData(new CubeDeformation(0.01F))), "normal"));
+            addLayer(new ExpressionLayer<>(this, mca$createModel(VillagerEntityModelMCA.bodyData(new CubeDeformation(0.02F)))));
 
             mca$clothingLayer = new ClothingLayer<>(this, mca$createModel(VillagerEntityModelMCA.bodyData(new CubeDeformation(0.0625F))), "normal");
             addLayer(mca$clothingLayer);

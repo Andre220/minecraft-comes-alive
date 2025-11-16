@@ -4,6 +4,8 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.conczin.mca.Config;
+import net.conczin.mca.client.model.animation.FreshVillagerAnimations;
+import net.conczin.mca.client.model.animation.VillagerAnimationState;
 import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.entity.ai.relationship.VillagerDimensions;
@@ -64,6 +66,7 @@ public class VillagerEntityBaseModelMCA<T extends LivingEntity & VillagerLike<T>
 
     @Override
     public void setupAnim(T villager, float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch) {
+        // Adjust animation parameters for babies
         if (villager.getAgeState() == AgeState.BABY && !villager.isPassenger()) {
             limbDistance = (float) Math.sin(villager.tickCount / 12F);
             limbAngle = (float) Math.cos(villager.tickCount / 9F) * 3;
@@ -78,23 +81,39 @@ public class VillagerEntityBaseModelMCA<T extends LivingEntity & VillagerLike<T>
         //and add our own
         limbAngle /= (0.2f + villager.getRawVerticalScaleFactor());
 
+        // Call parent setup for base positioning
         super.setupAnim(villager, limbAngle, limbDistance, animationProgress, headYaw, headPitch);
 
+        // Apply Fresh Animations
+        VillagerAnimationState<T> animState = new VillagerAnimationState<>(
+            villager, limbAngle, limbDistance, animationProgress, headYaw, headPitch
+        );
+        
+        FreshVillagerAnimations.applyAnimations(
+            animState, 
+            head, hat, 
+            body, 
+            rightArm, leftArm, 
+            rightLeg, leftLeg
+        );
+
+        // Override with panic animation if panicking (preserves original MCA behavior)
         if (villager.getVillagerBrain().isPanicking()) {
-            float toRadians = (float) Math.PI / 180;
-
-            float armRaise = (((float) Math.sin(animationProgress / 5) * 30 - 180)
-                              + ((float) Math.sin(animationProgress / 3) * 3))
-                             * toRadians;
-            float waveSideways = ((float) Math.sin(animationProgress / 2) * 12 - 17) * toRadians;
-
-            this.leftArm.xRot = armRaise;
-            this.leftArm.zRot = -waveSideways;
-            this.rightArm.xRot = -armRaise;
-            this.rightArm.zRot = waveSideways;
+            FreshVillagerAnimations.applyPanicAnimation(animationProgress, leftArm, rightArm);
         }
 
         applyVillagerDimensions(villager, villager.isCrouching());
+        
+        // CRÍTICO: Seios seguem movimento do torso - aplicado DEPOIS do applyVillagerDimensions
+        // O applyVillagerDimensions já copia body.xRot, mas precisamos copiar yRot e zRot também
+        // E ADICIONAR as transformações de posição às posições base que foram setadas
+        breasts.yRot += body.yRot;  // ADICIONA rotação Y do body
+        breasts.zRot += body.zRot;  // ADICIONA rotação Z do body
+        
+        // ADICIONA as posições do body às posições base (não sobrescreve)
+        breasts.x += body.x;
+        breasts.y += body.y;
+        breasts.z += body.z;
     }
 
     @Override

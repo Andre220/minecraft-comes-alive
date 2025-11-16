@@ -592,8 +592,10 @@
   "gui.button.stopworking": "Stop Work",
   "gui.button.call": "Call",
   "gui.button.familyTree": "Family Tree",
+  "gui.button.testAnimations": "🎬 Test Animations",
   "gui.button.armor": "Armor",
   "gui.button.library": "Library",
+  "gui.animationtest.title": "Animation Test Screen",
 
   "gui.button.professions": "Professions",
   "gui.button.profession.none": "Villager",

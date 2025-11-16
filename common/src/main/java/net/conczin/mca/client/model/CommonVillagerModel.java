@@ -78,7 +78,11 @@ public interface CommonVillagerModel<T extends LivingEntity> {
         getBreastPart().visible = villager.getGenetics().getGender() == Gender.FEMALE;
 
         for (ModelPart part : getBreastParts()) {
+            // Rotação base dos seios + rotação X do corpo (breathing/idle)
             part.xRot = (float) Math.PI * 0.3f + getBodyPart().xRot;
+            // Copia rotações Y e Z do corpo (inicializa com zero, será adicionado no setupAnim)
+            part.yRot = 0;
+            part.zRot = 0;
 
             float cy = 0.0f;
             float cz = 0.0f;

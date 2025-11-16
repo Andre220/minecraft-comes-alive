@@ -30,6 +30,7 @@ public interface MessagesMCA {
         c.register(SaveVillageMessage.TYPE, SaveVillageMessage.STREAM_CODEC, true);
         c.register(SetTargetMessage.TYPE, SetTargetMessage.STREAM_CODEC, true);
         c.register(SkinListRequest.TYPE, SkinListRequest.STREAM_CODEC, true);
+        c.register(TestAnimationMessage.TYPE, TestAnimationMessage.STREAM_CODEC, true);
         c.register(VillagerEditorSyncRequest.TYPE, VillagerEditorSyncRequest.STREAM_CODEC, true);
         c.register(VillagerNameRequest.TYPE, VillagerNameRequest.STREAM_CODEC, true);
 
