@@ -250,6 +250,14 @@ public class VillagerCommandHandler extends EntityCommandHandler<VillagerEntityM
                         entity.setProfession(ProfessionsMCA.ARCHER);
                         entity.sendChatMessage(player, "profession.set.archer");
                     }
+                    case "builder" -> {
+                        entity.setProfession(ProfessionsMCA.BUILDER);
+                        entity.sendChatMessage(player, "profession.set.builder");
+                    }
+                    case "miner" -> {
+                        entity.setProfession(ProfessionsMCA.MINER);
+                        entity.sendChatMessage(player, "profession.set.miner");
+                    }
                 }
                 return true;
             }

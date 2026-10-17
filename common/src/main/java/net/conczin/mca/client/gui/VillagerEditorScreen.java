@@ -715,6 +715,8 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                         ProfessionsMCA.OUTLAW,
                         ProfessionsMCA.ADVENTURER,
                         ProfessionsMCA.CULTIST,
+                        ProfessionsMCA.BUILDER,
+                        ProfessionsMCA.MINER,
                 }) {
                     ButtonWidget widget = addRenderableWidget(new ButtonWidget(width / 2 + (right ? DATA_WIDTH / 2 : 0), y, DATA_WIDTH / 2, 20, p.name(), b -> {
                         CompoundTag compound = VillagerEditorSyncRequest.createEditorPatch(createEditorData());

@@ -1474,5 +1474,8 @@
   "dialogue.rock_paper_scissor.loose.scissor/1": "Rock crushes scissors, I win!",
   "dialogue.rock_paper_scissor.win.rock/1": "Ahh, rock crushes scissor, I lost.",
   "dialogue.rock_paper_scissor.win.paper/1": "I can never seem to win with rock.",
-  "dialogue.rock_paper_scissor.win.scissor/1": "Scissors cut paper, you got me this time."
+  "dialogue.rock_paper_scissor.win.scissor/1": "Scissors cut paper, you got me this time.",
+  "profession.set.builder": "I'll build whatever this village needs!",
+  "profession.set.miner": "Pickaxe ready. Show me where to dig.",
+  "workorder.no_material": "We ran out of %2$s for the construction. Could someone put more in the village storage?"
 }

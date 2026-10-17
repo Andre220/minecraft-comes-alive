@@ -18,6 +18,7 @@ import net.conczin.mca.server.ServerInteractionManager;
 import net.conczin.mca.server.DestinyLocationResolver;
 import net.conczin.mca.server.command.AdminCommand;
 import net.conczin.mca.server.command.Command;
+import net.conczin.mca.server.command.WorkOrderCommand;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.util.network.datasync.MCAEntityDataSerializers;
 import net.minecraft.core.Registry;
@@ -137,6 +138,7 @@ public final class CommonNeoForge {
     public static void onCommandRegister(RegisterCommandsEvent event) {
         AdminCommand.register(event.getDispatcher());
         Command.register(event.getDispatcher());
+        WorkOrderCommand.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent

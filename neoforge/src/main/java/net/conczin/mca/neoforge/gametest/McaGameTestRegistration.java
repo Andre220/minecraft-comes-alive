@@ -33,6 +33,7 @@ import net.conczin.mca.entity.ai.brain.tasks.chore.ChoppingTaskGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.ChorePathfindingGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.FishingTaskGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HarvestingTaskGameTests;
+import net.conczin.mca.entity.ai.brain.tasks.workorder.WorkOrderGameTests;
 import net.conczin.mca.entity.ai.navigation.AutonomousPathfindingGameTests;
 import net.conczin.mca.entity.ai.navigation.FenceGateInteractionGameTests;
 import net.conczin.mca.entity.ai.navigation.HomeArrivalGameTests;
@@ -131,7 +132,8 @@ public final class McaGameTestRegistration {
             FloorScannerGameTests.class,
             ReportedFloorInteractionGameTests.class,
             ReportedStairHouseGameTests.class,
-            VillageMourningGameTests.class
+            VillageMourningGameTests.class,
+            WorkOrderGameTests.class
     );
 
     private McaGameTestRegistration() {

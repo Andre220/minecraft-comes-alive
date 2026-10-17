@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public final class Config extends CommonConfig {
     private static final int VERSION = 2;
-    private static final int DEFAULTS_VERSION = 1;
+    private static final int DEFAULTS_VERSION = 2;
     private static final Config INSTANCE = loadOrCreate();
 
     private static CommonConfig serverConfig;
@@ -902,6 +902,7 @@ public final class Config extends CommonConfig {
             "villagersplus:alchemist", "minecraft:cleric",
             "villagersplus:horticulturist", "minecraft:farmer",
             "villagersplus:miner", "mca:miner",
+            "mca:builder", "minecraft:mason",
             "villagersplus:oceanographer", "minecraft:fisherman",
             "villagersplus:occultist", "mca:cultist"
     );

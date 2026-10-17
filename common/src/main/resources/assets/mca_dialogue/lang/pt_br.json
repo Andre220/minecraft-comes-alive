@@ -1479,5 +1479,8 @@
   "dialogue.rock_paper_scissor.loose.scissor/1": "Pedra esmaga tesoura, eu ganhei!",
   "dialogue.rock_paper_scissor.win.rock/1": "Ahh, pedra esmaga tesoura, eu perdi.",
   "dialogue.rock_paper_scissor.win.paper/1": "Parece que eu nunca ganho com pedra.",
-  "dialogue.rock_paper_scissor.win.scissor/1": "Tesoura corta papel, você me pegou desta vez."
+  "dialogue.rock_paper_scissor.win.scissor/1": "Tesoura corta papel, você me pegou desta vez.",
+  "profession.set.builder": "Vou construir tudo o que esta vila precisar!",
+  "profession.set.miner": "Picareta pronta. Me mostre onde cavar.",
+  "workorder.no_material": "Acabou o %2$s da obra. Alguém pode colocar mais no depósito da vila?"
 }

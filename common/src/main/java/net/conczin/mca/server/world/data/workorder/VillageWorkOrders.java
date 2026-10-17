@@ -96,7 +96,7 @@ public class VillageWorkOrders {
     }
 
     public CreateResult create(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block,
-                               ServerPlayer author, boolean free) {
+                               UUID author, String authorName, boolean free) {
         Config config = Config.getInstance();
         if (area.volume() > config.workOrderMaxVolume) {
             return CreateResult.error("workorder.error.too_big", area.volume(), config.workOrderMaxVolume);
@@ -116,8 +116,7 @@ public class VillageWorkOrders {
             }
         }
 
-        WorkOrder order = new WorkOrder(nextId, type, area, block, author.getUUID(),
-                author.getGameProfile().name(), free, level.getGameTime());
+        WorkOrder order = new WorkOrder(nextId, type, area, block, author, authorName, free, level.getGameTime());
         int work = countRemaining(level, order);
         if (work == 0) {
             return CreateResult.error("workorder.error.nothing_to_do");
