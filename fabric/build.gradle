@@ -69,6 +69,16 @@ fabricApi {
         outputDirectory = rootProject.project(':common').file('src/generated/resources')
         strictValidation = true
     }
+    // ./gradlew :fabric:runClientGameTest drives a real client through src/gametest and saves screenshots
+    configureTests {
+        createSourceSet = true
+        modId = "${mod_id}-gametest"
+        enableGameTests = false
+        enableClientGameTests = true
+        eula = true
+        clearRunDirectory = true
+        username = devUsername
+    }
 }
 
 // Implement mcgradleconventions loader attribute.

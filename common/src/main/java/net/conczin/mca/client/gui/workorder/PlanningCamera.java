@@ -22,6 +22,7 @@ public final class PlanningCamera {
     private final Marker entity;
     private float yaw;
     private float pitch;
+    private boolean hidHud;
 
     public PlanningCamera(Minecraft minecraft, LocalPlayer player) {
         this.minecraft = minecraft;
@@ -40,12 +41,21 @@ public final class PlanningCamera {
 
     public void activate() {
         minecraft.setCameraEntity(entity);
+        // like F1: no hand, hotbar or crosshair in the way of the view
+        if (!minecraft.gui.hud.isHidden()) {
+            minecraft.gui.hud.toggle();
+            hidHud = true;
+        }
     }
 
     public void deactivate() {
         if (minecraft.getCameraEntity() == entity) {
             minecraft.setCameraEntity(minecraft.player);
         }
+        if (hidHud && minecraft.gui.hud.isHidden()) {
+            minecraft.gui.hud.toggle();
+        }
+        hidHud = false;
     }
 
     public boolean isActive() {

@@ -433,11 +433,11 @@ public class WorkPlanningScreen extends Screen {
 
         // controls right above the toolbar, what the selection would do above them
         int infoY = height - TOOLBAR_Y_OFFSET - 12;
-        Component help = selection.isActive()
-                ? Component.translatable("gui.workorder.help.selecting", Component.translatable(
-                selection.getType() == WorkOrderType.DIG ? "gui.workorder.depth" : "gui.workorder.height"))
-                : Component.translatable("gui.workorder.help.idle");
-        graphics.centeredText(font, help, width / 2, infoY, grey);
+        String helpKey = selection.isActive() ? "gui.workorder.help.selecting" : "gui.workorder.help.idle";
+        Component dimension = Component.translatable(selection.getType() == WorkOrderType.DIG ? "gui.workorder.depth" : "gui.workorder.height");
+        graphics.centeredText(font, Component.translatable(helpKey + ".2", dimension), width / 2, infoY, grey);
+        infoY -= 10;
+        graphics.centeredText(font, Component.translatable(helpKey + ".1", dimension), width / 2, infoY, grey);
         infoY -= 13;
         for (Component line : describeSelection()) {
             graphics.centeredText(font, line, width / 2, infoY, textColor);
