@@ -12,6 +12,7 @@ import net.conczin.mca.entity.ai.relationship.RelationshipState;
 import net.conczin.mca.registry.CriterionMCA;
 import net.conczin.mca.registry.ItemsMCA;
 import net.conczin.mca.registry.ProfessionsMCA;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.conczin.mca.server.world.data.FamilyTree;
 import net.conczin.mca.server.world.data.FamilyTreeNode;
 import net.conczin.mca.server.world.data.PlayerSaveData;
@@ -251,10 +252,16 @@ public class VillagerCommandHandler extends EntityCommandHandler<VillagerEntityM
                         entity.sendChatMessage(player, "profession.set.archer");
                     }
                     case "builder" -> {
+                        if (!WorkOrderPermissions.enabled()) {
+                            return true;
+                        }
                         entity.setProfession(ProfessionsMCA.BUILDER);
                         entity.sendChatMessage(player, "profession.set.builder");
                     }
                     case "miner" -> {
+                        if (!WorkOrderPermissions.enabled()) {
+                            return true;
+                        }
                         entity.setProfession(ProfessionsMCA.MINER);
                         entity.sendChatMessage(player, "profession.set.miner");
                     }

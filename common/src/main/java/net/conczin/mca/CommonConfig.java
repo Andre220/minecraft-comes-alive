@@ -36,6 +36,12 @@ public class CommonConfig {
     public boolean whistleCallMakesVillagersFollow = false;
 
     /**
+     * If true, players can plan dig and build work orders for their village (Blueprint book,
+     * Villager Editor or /mca workorder), and builders and miners carry them out.
+     */
+    public boolean villagerWorkOrders = false;
+
+    /**
      * Time (in ticks) until a baby grows up when held as an item.
      */
     public int babyItemGrowUpTime = 24000;

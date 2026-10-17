@@ -56,6 +56,7 @@ public final class WorkOrderGameTests {
     private static final Set<ChunkPos> CHUNKS = new HashSet<>();
     private static final Set<Integer> VILLAGES = new HashSet<>();
     private static Boolean previousTeleport;
+    private static Boolean previousEnabled;
 
     private WorkOrderGameTests() {
     }
@@ -205,6 +206,10 @@ public final class WorkOrderGameTests {
             previousTeleport = Config.getInstance().allowVillagerTeleporting;
         }
         Config.getInstance().allowVillagerTeleporting = false;
+        if (previousEnabled == null) {
+            previousEnabled = Config.getServerConfig().villagerWorkOrders;
+        }
+        Config.getServerConfig().villagerWorkOrders = true;
 
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-16, -4, -16), center.offset(16, 5, 16))) {
             BLOCKS.putIfAbsent(pos.immutable(), level.getBlockState(pos));
@@ -302,6 +307,10 @@ public final class WorkOrderGameTests {
         BLOCKS.clear();
         CHUNKS.forEach(chunk -> level.setChunkForced(chunk.x(), chunk.z(), false));
         CHUNKS.clear();
+        if (previousEnabled != null) {
+            Config.getServerConfig().villagerWorkOrders = previousEnabled;
+            previousEnabled = null;
+        }
         if (previousTeleport != null) {
             Config.getInstance().allowVillagerTeleporting = previousTeleport;
             previousTeleport = null;

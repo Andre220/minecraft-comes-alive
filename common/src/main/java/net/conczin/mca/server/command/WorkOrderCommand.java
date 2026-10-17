@@ -34,6 +34,7 @@ import java.util.Optional;
 public class WorkOrderCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
         dispatcher.register(Commands.literal(MCA.MOD_ID).then(Commands.literal("workorder")
+                .requires(source -> WorkOrderPermissions.enabled())
                 .then(Commands.literal("dig")
                         .then(Commands.argument("from", BlockPosArgument.blockPos())
                                 .then(Commands.argument("to", BlockPosArgument.blockPos())

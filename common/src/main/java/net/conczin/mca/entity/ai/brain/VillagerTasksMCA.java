@@ -27,6 +27,7 @@ import net.conczin.mca.registry.EntitiesMCA;
 import net.conczin.mca.registry.ProfessionsMCA;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.server.world.data.villageComponents.VillageGuardsManager;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.conczin.mca.server.world.data.workorder.WorkOrderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
@@ -186,7 +187,7 @@ public class VillagerTasksMCA {
             brain.addActivity(Activity.WORK, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.PANIC, VillagerTasksMCA.getGuardPanicPackage(0.5f), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.RAID, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
-        } else if (profession == ProfessionsMCA.BUILDER || profession == ProfessionsMCA.MINER) {
+        } else if ((profession == ProfessionsMCA.BUILDER || profession == ProfessionsMCA.MINER) && WorkOrderPermissions.enabled()) {
             // no job site: their work are the village's work orders
             brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
             brain.addActivity(Activity.WORK, VillagerTasksMCA.getWorkOrderPackage(profession), ImmutableSet.of(), ImmutableSet.of());

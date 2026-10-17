@@ -3,6 +3,7 @@ package net.conczin.mca.item;
 import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.network.s2c.OpenGuiRequest;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -19,6 +20,9 @@ public class VillagerEditorItem extends TooltippedItem {
     /** Used anywhere but on a villager, the editor opens the village planning view, where its orders need no materials. */
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (!WorkOrderPermissions.enabled()) {
+            return super.use(level, player, hand);
+        }
         if (player instanceof ServerPlayer serverPlayer) {
             Network.sendToPlayer(new OpenGuiRequest(OpenGuiRequest.Type.WORK_PLANNING), serverPlayer);
         }

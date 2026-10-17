@@ -35,6 +35,9 @@ public final class WorkOrderService {
     }
 
     public static Result create(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
+        if (!WorkOrderPermissions.enabled()) {
+            return Result.failure(Component.translatable("workorder.error.disabled"));
+        }
         ServerLevel level = player.level();
         Optional<Village> found = VillageManager.get(level).findNearestVillage(area.center(), Village.BORDER_MARGIN);
         if (found.isEmpty()) {

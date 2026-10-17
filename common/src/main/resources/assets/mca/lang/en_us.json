@@ -1303,6 +1303,7 @@
   "workorder.error.no_permission": "You need to be %1$s of %2$s, or hold a Villager Editor, to plan work.",
   "workorder.error.unknown": "There is no work order #%1$s.",
   "workorder.error.too_far": "That is too far away from you.",
+  "workorder.error.disabled": "Work orders are disabled (villagerWorkOrders in the MCA config).",
   "gui.blueprint.plan": "Plan Work",
   "gui.blueprint.plan.tooltip": "Fly over the village and plan where builders and miners should dig and build.",
   "gui.workorder.title": "Village Planning",

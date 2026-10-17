@@ -32,7 +32,15 @@ public final class WorkOrderPermissions {
     private WorkOrderPermissions() {
     }
 
+    /** The whole feature is behind the {@code villagerWorkOrders} config option. */
+    public static boolean enabled() {
+        return Config.getServerConfig().villagerWorkOrders;
+    }
+
     public static Access check(ServerPlayer player, Village village) {
+        if (!enabled()) {
+            return Access.DENIED;
+        }
         if (holdsEditor(player)) {
             return Access.EDITOR;
         }

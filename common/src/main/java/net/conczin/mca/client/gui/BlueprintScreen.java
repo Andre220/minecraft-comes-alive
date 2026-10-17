@@ -3,6 +3,7 @@ package net.conczin.mca.client.gui;
 import net.conczin.mca.MCA;
 import net.conczin.mca.client.gui.widget.LegacyImageButton;
 import net.conczin.mca.client.gui.workorder.WorkPlanningScreen;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.conczin.mca.client.gui.widget.TooltipButtonWidget;
 import net.conczin.mca.client.gui.widget.WidgetUtils;
 import net.conczin.mca.network.Network;
@@ -251,8 +252,10 @@ public class BlueprintScreen extends ExtendedScreen {
                 by += 22;
             }
             // not a page: leaves the book for the free camera planning view
-            addRenderableWidget(new ButtonWidget(bx, by + 6, NAVIGATION_WIDTH, 20, Component.translatable("gui.blueprint.plan"),
-                    b -> minecraft.gui.setScreen(new WorkPlanningScreen()), Component.translatable("gui.blueprint.plan.tooltip")));
+            if (WorkOrderPermissions.enabled()) {
+                addRenderableWidget(new ButtonWidget(bx, by + 6, NAVIGATION_WIDTH, 20, Component.translatable("gui.blueprint.plan"),
+                        b -> minecraft.gui.setScreen(new WorkPlanningScreen()), Component.translatable("gui.blueprint.plan.tooltip")));
+            }
         }
 
         switch (page) {

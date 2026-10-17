@@ -1,5 +1,6 @@
 package net.conczin.mca.fabric.gametest;
 
+import net.conczin.mca.Config;
 import net.conczin.mca.client.gui.workorder.WorkPlanningScreen;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.VillagerFactory;
@@ -114,6 +115,9 @@ public class WorkPlanningClientGameTest implements FabricClientGameTest {
         ServerLevel level = server.overworld();
         ServerPlayer player = server.getPlayerList().getPlayers().getFirst();
         PlayerSaveData.get(player).setOverrideVillageRequirements(true);
+        // the feature is off by default
+        Config.getInstance().villagerWorkOrders = true;
+        Config.getServerConfig().villagerWorkOrders = true;
 
         int groundY = level.getHeight(Heightmap.Types.MOTION_BLOCKING, player.getBlockX(), player.getBlockZ());
         BlockPos feet = new BlockPos(player.getBlockX(), groundY, player.getBlockZ());

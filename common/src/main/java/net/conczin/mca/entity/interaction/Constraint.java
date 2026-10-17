@@ -12,6 +12,7 @@ import net.conczin.mca.resources.Tasks;
 import net.conczin.mca.server.world.data.PlayerSaveData;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.server.world.data.VillageManager;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
@@ -94,6 +95,8 @@ public enum Constraint implements BiPredicate<VillagerLike<?>, ServerPlayer> {
 
     VILLAGE_HAS_SPACE("village_has_space", (villager, player) -> PlayerSaveData.get(player).getLastSeenVillage(VillageManager.get((ServerLevel) player.level())).filter(Village::hasSpace).isPresent()),
     NOT_VILLAGE_HAS_SPACE("!village_has_space", (villager, player) -> PlayerSaveData.get(player).getLastSeenVillage(VillageManager.get((ServerLevel) player.level())).filter(Village::hasSpace).isEmpty()),
+
+    WORK_ORDERS("work_orders", (villager, player) -> WorkOrderPermissions.enabled()),
 
     HAS_VILLAGE("has_village", (villager, player) -> villager instanceof VillagerEntityMCA mcaVillager && mcaVillager.getResidency().getHomeVillage().isPresent()),
     NOT_HAS_VILLAGE("!has_village", (villager, player) -> villager instanceof VillagerEntityMCA mcaVillager && mcaVillager.getResidency().getHomeVillage().isEmpty()),

@@ -1089,6 +1089,7 @@
   "workorder.error.no_permission": "Você precisa ser %1$s de %2$s, ou segurar um Editor de Aldeão, para planejar trabalhos.",
   "workorder.error.unknown": "Não existe a ordem de trabalho #%1$s.",
   "workorder.error.too_far": "Isso está longe demais de você.",
+  "workorder.error.disabled": "As ordens de trabalho estão desativadas (villagerWorkOrders na config do MCA).",
   "gui.blueprint.plan": "Planejar Obras",
   "gui.blueprint.plan.tooltip": "Sobrevoe a vila e planeje onde construtores e mineiros devem escavar e construir.",
   "gui.workorder.title": "Planejamento da Vila",
