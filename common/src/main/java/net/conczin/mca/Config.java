@@ -566,6 +566,28 @@ public final class Config extends CommonConfig {
     public int taxSeason = 168000;
 
     /**
+     * Lowest village rank allowed to plan work orders (dig or build jobs for builders and miners).
+     * One of outlaw, peasant, merchant, noble, mayor, monarch. Holding a Villager Editor always
+     * allows it, and such orders need no materials.
+     */
+    public String workOrderMinRank = "noble";
+
+    /**
+     * Largest number of blocks a single work order may cover.
+     */
+    public int workOrderMaxVolume = 4096;
+
+    /**
+     * Largest number of open work orders per village.
+     */
+    public int workOrderMaxPerVillage = 16;
+
+    /**
+     * Multiplier of how fast builders and miners break and place blocks.
+     */
+    public float workOrderSpeedMultiplier = 1.0f;
+
+    /**
      * Chance (0–1) per minute that a marriage event occurs in the village.
      */
     public float marriageChancePerMinute = 0.05f;

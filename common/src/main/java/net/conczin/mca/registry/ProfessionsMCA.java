@@ -44,6 +44,9 @@ public interface ProfessionsMCA {
             TradeOffersMCA.ADVENTURER_TRADES
     );
     VillagerProfession MERCENARY = register("mercenary", false, true, true, PoiType.NONE, VillagerProfession.ALL_ACQUIRABLE_JOBS, SoundEvents.VILLAGER_WORK_FLETCHER);
+    // work on the village's planned work orders instead of at a job site
+    VillagerProfession BUILDER = register("builder", false, true, false, PoiType.NONE, PoiType.NONE, SoundEvents.VILLAGER_WORK_MASON);
+    VillagerProfession MINER = register("miner", false, true, false, PoiType.NONE, PoiType.NONE, SoundEvents.VILLAGER_WORK_TOOLSMITH);
     VillagerProfession CULTIST = register(
             "cultist",
             true,

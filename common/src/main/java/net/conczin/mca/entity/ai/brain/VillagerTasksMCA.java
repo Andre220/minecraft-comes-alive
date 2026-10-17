@@ -20,12 +20,14 @@ import net.conczin.mca.entity.ai.brain.tasks.chore.ChoppingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.FishingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HarvestingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HuntingTask;
+import net.conczin.mca.entity.ai.brain.tasks.workorder.WorkOrderTask;
 import net.conczin.mca.entity.ai.navigation.BedApproachTarget;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.registry.EntitiesMCA;
 import net.conczin.mca.registry.ProfessionsMCA;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.server.world.data.villageComponents.VillageGuardsManager;
+import net.conczin.mca.server.world.data.workorder.WorkOrderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -51,6 +53,7 @@ import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
 import java.util.Optional;
 
 public class VillagerTasksMCA {
@@ -183,6 +186,12 @@ public class VillagerTasksMCA {
             brain.addActivity(Activity.WORK, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.PANIC, VillagerTasksMCA.getGuardPanicPackage(0.5f), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.RAID, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
+        } else if (profession == ProfessionsMCA.BUILDER || profession == ProfessionsMCA.MINER) {
+            // no job site: their work are the village's work orders
+            brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
+            brain.addActivity(Activity.WORK, VillagerTasksMCA.getWorkOrderPackage(profession), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.CORE, VillagerTasksMCA.getSelfDefencePackage(), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.RAID, VillagerTasksMCA.getRaidPackage(0.5F), ImmutableSet.of(), ImmutableSet.of());
         } else {
             brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
             brain.addActivity(Activity.CORE, VillagerTasksMCA.getWorkingCorePackage(profession, 0.5F), ImmutableSet.of(), ImmutableSet.of());
@@ -483,6 +492,24 @@ public class VillagerTasksMCA {
             tasks.add(Pair.of(task.getFirst(), task.getSecond()));
         }
         return tasks.build();
+    }
+
+    public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getWorkOrderPackage(VillagerProfession profession) {
+        // builders prefer building but dig too, miners only dig
+        WorkOrderTask work = new WorkOrderTask(profession == ProfessionsMCA.BUILDER
+                ? List.of(WorkOrderType.BUILD, WorkOrderType.DIG)
+                : List.of(WorkOrderType.DIG));
+        return ImmutableList.of(
+                Pair.of(5, work),
+                Pair.of(10, new ConditionalTask<>(new RunOne<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT),
+                        ImmutableList.of(
+                                Pair.of(VillageBoundRandomStroll.create(0.4F), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 2), 1),
+                                Pair.of(new DoNothing(30, 60), 2)
+                        )), (VillagerEntityMCA v) -> !work.isActive())),
+                Pair.of(99, UpdateActivityFromSchedule.create())
+        );
     }
 
     public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getPlayPackage(float speedModifier) {

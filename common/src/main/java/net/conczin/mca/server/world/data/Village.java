@@ -9,6 +9,7 @@ import net.conczin.mca.resources.API;
 import net.conczin.mca.resources.BuildingTypes;
 import net.conczin.mca.resources.data.BuildingType;
 import net.conczin.mca.server.world.data.villageComponents.*;
+import net.conczin.mca.server.world.data.workorder.VillageWorkOrders;
 import net.conczin.mca.util.BlockBoxExtended;
 import net.conczin.mca.util.NbtHelper;
 import net.conczin.mca.util.WorldUtils;
@@ -71,6 +72,7 @@ public class Village implements Iterable<Building> {
     private final VillageMarriageManager villageMarriageManager = new VillageMarriageManager(this);
     private final VillageProcreationManager villageProcreationManager = new VillageProcreationManager(this);
     private final VillageTaxesManager villageTaxesManager = new VillageTaxesManager(this);
+    private final VillageWorkOrders workOrders = new VillageWorkOrders(this);
 
     public long lastMoveIn;
     private String name = API.getVillagePool().pickVillageName("village");
@@ -108,6 +110,7 @@ public class Village implements Iterable<Building> {
         if (tag.contains("marriageThresholdFloat")) marriageThreshold = tag.getFloat("marriageThresholdFloat").orElse(marriageThreshold);
         autoScan = tag.getBoolean("autoScan").orElse(true);
         nextMourningTime = tag.getLong("nextMourningTime").orElse(0L);
+        workOrders.load(tag.getCompoundOrEmpty("workOrders"));
         this.world = world;
 
         RoomDFU.Result data = RoomDFU.load(tag);
@@ -570,6 +573,7 @@ public class Village implements Iterable<Building> {
         boolean taxSeason = time % Config.getInstance().taxSeason == 0;
         boolean update = time % MOVE_IN_COOLDOWN == 0;
         if (taxSeason && hasBuilding("storage")) villageTaxesManager.taxes(world);
+        workOrders.tick(world, time);
         if (time % 24000 == 0) cleanReputation();
         if (update && lastMoveIn + MOVE_IN_COOLDOWN < time && WorldUtils.isChunkLoaded(world, getCenter())) {
             villageGuardsManager.spawnGuards(world);
@@ -763,6 +767,7 @@ public class Village implements Iterable<Building> {
         tag.put("logicalBuildings", NbtHelper.fromList(logicalBuildings.values(), LogicalBuilding::save));
         tag.putBoolean("autoScan", autoScan);
         tag.putLong("nextMourningTime", nextMourningTime);
+        tag.put("workOrders", workOrders.save());
         return tag;
     }
 
@@ -1321,6 +1326,8 @@ public class Village implements Iterable<Building> {
     }
 
     public VillageGuardsManager getVillageGuardsManager() { return villageGuardsManager; }
+
+    public VillageWorkOrders getWorkOrders() { return workOrders; }
 
     public Optional<CivilRegistryManager> getCivilRegistry() {
         return world != null ? Optional.of(CivilRegistryManager.get(world, this)) : Optional.empty();
