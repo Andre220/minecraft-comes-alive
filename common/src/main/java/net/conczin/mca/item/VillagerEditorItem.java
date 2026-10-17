@@ -9,10 +9,20 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class VillagerEditorItem extends TooltippedItem {
     public VillagerEditorItem(Properties settings) {
         super(settings);
+    }
+
+    /** Used anywhere but on a villager, the editor opens the village planning view, where its orders need no materials. */
+    @Override
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (player instanceof ServerPlayer serverPlayer) {
+            Network.sendToPlayer(new OpenGuiRequest(OpenGuiRequest.Type.WORK_PLANNING), serverPlayer);
+        }
+        return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
     }
 
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
@@ -28,4 +38,3 @@ public class VillagerEditorItem extends TooltippedItem {
         }
     }
 }
-

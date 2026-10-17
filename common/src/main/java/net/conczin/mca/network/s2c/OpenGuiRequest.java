@@ -53,5 +53,6 @@ public record OpenGuiRequest(int gui, int villager) implements HandleablePayload
         NEEDLE_AND_THREAD,
         COMB,
         CLOSE,
+        WORK_PLANNING,
     }
 }

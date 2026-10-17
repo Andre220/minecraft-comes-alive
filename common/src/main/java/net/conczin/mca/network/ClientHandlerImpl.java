@@ -5,6 +5,7 @@ import net.conczin.mca.MCAClient;
 import net.conczin.mca.client.book.Book;
 import net.conczin.mca.client.book.CivilRegistryBook;
 import net.conczin.mca.client.gui.*;
+import net.conczin.mca.client.gui.workorder.WorkPlanningScreen;
 import net.conczin.mca.client.resources.ClientSkinCatalog;
 import net.conczin.mca.client.tts.SpeechManager;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -101,8 +102,16 @@ public class ClientHandlerImpl implements ClientHandler {
             case VILLAGER_TRACKER:
                 client.gui.setScreen(new VillagerTrackerSearchScreen());
                 break;
+            case WORK_PLANNING:
+                client.gui.setScreen(new WorkPlanningScreen());
+                break;
             default:
         }
+    }
+
+    @Override
+    public void handleWorkOrders(WorkOrdersResponse message) {
+        WorkPlanningScreen.receive(message);
     }
 
     @Override
