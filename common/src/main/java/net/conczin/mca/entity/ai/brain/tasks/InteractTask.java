@@ -25,7 +25,7 @@ public class InteractTask extends Behavior<VillagerEntityMCA> {
     public static boolean shouldRun(VillagerEntityMCA villager) {
         return villager.isAlive()
                && villager.getBrain().getMemoryInternal(MemoryModuleType.ATTACK_TARGET).isEmpty()
-               && villager.getInteractions().getInteractingPlayer().filter(player -> villager.distanceToSqr(player) <= 25).isPresent()
+               && villager.getInteractions().getEngagedPlayer().filter(player -> villager.distanceToSqr(player) <= 25).isPresent()
                && !villager.isInWater()
                && !villager.hurtMarked
                && villager.getVillagerBrain().getCurrentJob() == Chore.NONE;
@@ -66,7 +66,7 @@ public class InteractTask extends Behavior<VillagerEntityMCA> {
     private void followPlayer(VillagerEntityMCA villager) {
         Brain<?> brain = villager.getBrain();
 
-        villager.getInteractions().getInteractingPlayer().ifPresentOrElse(player -> {
+        villager.getInteractions().getEngagedPlayer().ifPresentOrElse(player -> {
             brain.setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(player, this.speedModifier, 2));
             brain.setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(player, true));
         }, () -> {

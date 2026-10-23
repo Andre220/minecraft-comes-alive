@@ -1,0 +1,19 @@
+{
+  "order": 2,
+  "requirements": [
+    {
+      "kind": "building",
+      "building": "town_center",
+      "count": 1
+    },
+    {
+      "kind": "building",
+      "building": "storage",
+      "count": 1
+    },
+    {
+      "kind": "population",
+      "count": 5
+    }
+  ]
+}

@@ -1,14 +1,20 @@
 package net.conczin.mca.fabric;
 
+import net.conczin.mca.expansion.building.SwingRenderer;
+import net.conczin.mca.expansion.building.Shutters;
+import net.conczin.mca.expansion.speech.MouthMotion;
 import net.conczin.mca.ClientProxyAbstractImpl;
 import net.conczin.mca.Config;
 import net.conczin.mca.KeyBindings;
+import net.conczin.mca.MCA;
 import net.conczin.mca.MCAClient;
 import net.conczin.mca.block.BlockEntityTypesMCA;
+import net.conczin.mca.client.FreshAnimationsIntegration;
 import net.conczin.mca.client.gui.MCAScreens;
 import net.conczin.mca.client.particle.InteractionParticle;
 import net.conczin.mca.client.render.*;
 import net.conczin.mca.client.resources.ColorPaletteLoader;
+import net.conczin.mca.client.resources.WorkAnimationLoader;
 import net.conczin.mca.client.resources.GeneratedEyeTextureReloadListener;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.registry.EntitiesMCA;
@@ -23,6 +29,8 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleProviderRegistry;
 import net.fabricmc.fabric.api.resource.v1.ResourceLoader;
+import net.fabricmc.fabric.api.resource.v1.pack.PackActivationType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -40,6 +48,7 @@ public final class MCAFabricClient extends ClientProxyAbstractImpl implements Cl
     @Override
     public void onInitializeClient() {
         Network.registerClientSender(ClientPlayNetworking::send);
+        MouthMotion.registerWithEntityModelFeatures(); // expansion: speech
 
         if (Config.getInstance().useSquidwardModels) {
             EntityRenderers.register(EntitiesMCA.MALE_VILLAGER, VillagerRenderer::new);
@@ -63,15 +72,25 @@ public final class MCAFabricClient extends ClientProxyAbstractImpl implements Cl
         ParticleProviderRegistry.getInstance().register(ParticleTypesMCA.POS_INTERACTION, InteractionParticle.Factory::new);
 
         BlockEntityRenderers.register(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
+        BlockEntityRenderers.register(Shutters.SWING, SwingRenderer::new); // expansion: building
 
         // Register resource reload listeners
         ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);
         registerReloadListener(resourceLoader, MCAScreens.ID, new MCAScreens());
         registerReloadListener(resourceLoader, ColorPaletteLoader.ID, new ColorPaletteLoader());
+        registerReloadListener(resourceLoader, WorkAnimationLoader.ID, new WorkAnimationLoader());
         registerReloadListener(resourceLoader, Supporters.ID, new Supporters());
         registerReloadListener(resourceLoader, ApiReloadListener.ID, new ApiReloadListener());
         registerReloadListener(resourceLoader, FaceList.ID, new FaceList());
         registerReloadListener(resourceLoader, GeneratedEyeTextureReloadListener.ID, GeneratedEyeTextureReloadListener.INSTANCE);
+
+        // Optional human-like villager model for Fresh Animations
+        FabricLoader.getInstance().getModContainer(MCA.MOD_ID).ifPresent(container -> ResourceLoader.registerBuiltinPack(
+                MCA.locate(FreshAnimationsIntegration.PACK_NAME),
+                container,
+                FreshAnimationsIntegration.DISPLAY_NAME,
+                FreshAnimationsIntegration.enabledByDefault() ? PackActivationType.DEFAULT_ENABLED : PackActivationType.NORMAL
+        ));
 
         ClientPlayConnectionEvents.JOIN.register((handler, sender, server) ->
                 MCAClient.onLogin()

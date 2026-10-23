@@ -1,5 +1,8 @@
 package net.conczin.mca.entity.interaction;
 
+import net.conczin.mca.expansion.barter.Barter;
+import net.conczin.mca.expansion.requests.Requests;
+import net.conczin.mca.expansion.economy.EconomyFeature;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.VillagerLike;
@@ -12,6 +15,7 @@ import net.conczin.mca.resources.Tasks;
 import net.conczin.mca.server.world.data.PlayerSaveData;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.server.world.data.VillageManager;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
@@ -94,6 +98,11 @@ public enum Constraint implements BiPredicate<VillagerLike<?>, ServerPlayer> {
 
     VILLAGE_HAS_SPACE("village_has_space", (villager, player) -> PlayerSaveData.get(player).getLastSeenVillage(VillageManager.get((ServerLevel) player.level())).filter(Village::hasSpace).isPresent()),
     NOT_VILLAGE_HAS_SPACE("!village_has_space", (villager, player) -> PlayerSaveData.get(player).getLastSeenVillage(VillageManager.get((ServerLevel) player.level())).filter(Village::hasSpace).isEmpty()),
+
+    WORK_ORDERS("work_orders", (villager, player) -> WorkOrderPermissions.enabled()),
+    ECONOMY("economy", (villager, player) -> EconomyFeature.enabled()), // expansion: economy
+    REQUESTS("requests", (villager, player) -> Requests.enabled()), // expansion: requests
+    BARTER("barter", (villager, player) -> Barter.enabled()), // expansion: barter
 
     HAS_VILLAGE("has_village", (villager, player) -> villager instanceof VillagerEntityMCA mcaVillager && mcaVillager.getResidency().getHomeVillage().isPresent()),
     NOT_HAS_VILLAGE("!has_village", (villager, player) -> villager instanceof VillagerEntityMCA mcaVillager && mcaVillager.getResidency().getHomeVillage().isEmpty()),

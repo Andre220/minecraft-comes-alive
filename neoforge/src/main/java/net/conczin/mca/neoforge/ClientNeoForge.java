@@ -1,15 +1,20 @@
 package net.conczin.mca.neoforge;
 
+import net.conczin.mca.expansion.building.SwingRenderer;
+import net.conczin.mca.expansion.building.Shutters;
+import net.conczin.mca.expansion.speech.MouthMotion;
 import com.google.common.reflect.TypeToken;
 import net.conczin.mca.ClientProxyAbstractImpl;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.MCAClient;
 import net.conczin.mca.block.BlockEntityTypesMCA;
+import net.conczin.mca.client.FreshAnimationsIntegration;
 import net.conczin.mca.client.gui.MCAScreens;
 import net.conczin.mca.client.particle.InteractionParticle;
 import net.conczin.mca.client.render.*;
 import net.conczin.mca.client.resources.ColorPaletteLoader;
+import net.conczin.mca.client.resources.WorkAnimationLoader;
 import net.conczin.mca.client.resources.GeneratedEyeTextureReloadListener;
 import net.conczin.mca.registry.EntitiesMCA;
 import net.conczin.mca.registry.ParticleTypesMCA;
@@ -21,6 +26,9 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.VillagerRenderer;
 import net.minecraft.client.renderer.entity.ZombieVillagerRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,6 +37,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 @Mod(value = MCA.MOD_ID, dist = Dist.CLIENT)
 @EventBusSubscriber(modid = MCA.MOD_ID, value = Dist.CLIENT)
@@ -40,6 +49,7 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // Block entity renderers
         event.registerBlockEntityRenderer(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(Shutters.SWING, SwingRenderer::new); // expansion: building
 
         // Entity renderers
         if (Config.getInstance().useSquidwardModels) {
@@ -68,10 +78,24 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
     public static void data(AddClientReloadListenersEvent event) {
         event.addListener(MCA.locate("screens"), new MCAScreens());
         event.addListener(MCA.locate("color_palettes"), new ColorPaletteLoader());
+        event.addListener(WorkAnimationLoader.ID, new WorkAnimationLoader());
         event.addListener(MCA.locate("supporters"), new Supporters());
         event.addListener(MCA.locate("api"), new ApiReloadListener());
         event.addListener(MCA.locate("faces_client"), new FaceList());
         event.addListener(GeneratedEyeTextureReloadListener.ID, GeneratedEyeTextureReloadListener.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void onAddPackFinders(AddPackFindersEvent event) {
+        // Optional human-like villager model for Fresh Animations
+        event.addPackFinders(
+                MCA.locate(FreshAnimationsIntegration.PACK_PATH),
+                PackType.CLIENT_RESOURCES,
+                FreshAnimationsIntegration.DISPLAY_NAME,
+                PackSource.BUILT_IN,
+                FreshAnimationsIntegration.enabledByDefault(),
+                Pack.Position.TOP
+        );
     }
 
     @SubscribeEvent
@@ -92,6 +116,7 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
 
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
+        MouthMotion.registerWithEntityModelFeatures(); // expansion: speech
         event.enqueueWork(() -> {
         });
     }

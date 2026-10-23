@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:crimson_trapdoor",
+    "minecraft:crimson_trapdoor"
+  ],
+  "result": {
+    "id": "mca:crimson_casement",
+    "count": 1
+  }
+}

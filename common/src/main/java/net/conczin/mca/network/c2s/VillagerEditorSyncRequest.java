@@ -93,7 +93,7 @@ public record VillagerEditorSyncRequest(String command, UUID uuid, CompoundTag d
         if (key.equals("HairDye") || key.equals("SkinDye") || key.equals("EyeDye") || key.equals("EyeLeftDye")) {
             return true;
         }
-        if (key.equals("InfectionProgress") || key.equals("Mood") || key.equals("Memories")) {
+        if (key.equals("InfectionProgress") || key.equals("Mood") || key.equals("Memories") || key.equals("Schedule")) {
             return true;
         }
         return false;

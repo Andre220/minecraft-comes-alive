@@ -1,0 +1,39 @@
+{
+  "order": 4,
+  "requirements": [
+    {
+      "kind": "any",
+      "of": [
+        {
+          "kind": "building",
+          "building": "library",
+          "count": 1
+        },
+        {
+          "kind": "building",
+          "building": "school",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "kind": "building",
+      "building": "infirmary",
+      "count": 1
+    },
+    {
+      "kind": "workshops",
+      "count": 4,
+      "level": 1
+    },
+    {
+      "kind": "tier",
+      "tier": "common_house",
+      "count": 4
+    },
+    {
+      "kind": "population",
+      "count": 12
+    }
+  ]
+}

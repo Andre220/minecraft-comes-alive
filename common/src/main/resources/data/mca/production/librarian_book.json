@@ -1,0 +1,27 @@
+{
+  "profession": "minecraft:librarian",
+  "ticks": 1200,
+  "inputs": [
+    {
+      "item": "minecraft:paper",
+      "count": 3
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:book",
+      "count": 1
+    }
+  ],
+  "rare": [
+    {
+      "item": "minecraft:experience_bottle",
+      "count": 1,
+      "chance": 0.05
+    }
+  ]
+}

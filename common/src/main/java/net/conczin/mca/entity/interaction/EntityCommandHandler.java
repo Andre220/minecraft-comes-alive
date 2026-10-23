@@ -27,6 +27,25 @@ public abstract class EntityCommandHandler<T extends Entity & VillagerLike<?>> {
         return Optional.ofNullable(interactingPlayer).filter(player -> player.containerMenu != null);
     }
 
+    // expansion: speech - who the entity is talking to in a speech bubble, and until when
+    @Nullable
+    private Player speakingTo;
+    private long speakingUntil;
+
+    public void speakTo(Player player, int ticks) {
+        speakingTo = player;
+        speakingUntil = entity.level().getGameTime() + ticks;
+    }
+
+    public Optional<Player> getSpeakingTo() {
+        return Optional.ofNullable(speakingTo).filter(player -> entity.level().getGameTime() < speakingUntil && player.isAlive());
+    }
+
+    /** Whoever holds the entity's attention: the player interacting with it, or the one it is talking to. */
+    public Optional<Player> getEngagedPlayer() {
+        return getInteractingPlayer().or(this::getSpeakingTo);
+    }
+
     public void stopInteracting() {
         if (!entity.level().isClientSide()) {
             if (interactingPlayer instanceof ServerPlayer serverPlayer) {

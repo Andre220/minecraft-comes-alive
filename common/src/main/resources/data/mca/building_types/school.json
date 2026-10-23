@@ -1,0 +1,12 @@
+{
+  "color": "ff88cc55",
+  "visible": true,
+  "priority": 3,
+  "blocks": {
+    "minecraft:lectern": 1,
+    "#minecraft:wooden_stairs": 4,
+    "minecraft:bookshelf": 4
+  },
+  "iconU": 7,
+  "iconV": 0
+}

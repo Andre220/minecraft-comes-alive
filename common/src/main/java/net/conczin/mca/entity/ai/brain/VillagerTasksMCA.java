@@ -1,5 +1,7 @@
 package net.conczin.mca.entity.ai.brain;
 
+import net.conczin.mca.expansion.minds.routine.DailyTogglesTask;
+import net.conczin.mca.expansion.minds.routine.IdleRoutineTask;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -20,12 +22,20 @@ import net.conczin.mca.entity.ai.brain.tasks.chore.ChoppingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.FishingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HarvestingTask;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HuntingTask;
+import net.conczin.mca.entity.ai.brain.tasks.workorder.WorkOrderTask;
+import net.conczin.mca.expansion.economy.EconomyFeature;
+import net.conczin.mca.expansion.minds.AptitudeJobTask;
+import net.conczin.mca.expansion.minds.SchoolTask;
+import net.conczin.mca.expansion.economy.EconomyRegistry;
+import net.conczin.mca.expansion.economy.task.EconomyTasks;
 import net.conczin.mca.entity.ai.navigation.BedApproachTarget;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.registry.EntitiesMCA;
 import net.conczin.mca.registry.ProfessionsMCA;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.server.world.data.villageComponents.VillageGuardsManager;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
+import net.conczin.mca.server.world.data.workorder.WorkOrderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -51,6 +61,7 @@ import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 
+import java.util.List;
 import java.util.Optional;
 
 public class VillagerTasksMCA {
@@ -183,6 +194,18 @@ public class VillagerTasksMCA {
             brain.addActivity(Activity.WORK, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.PANIC, VillagerTasksMCA.getGuardPanicPackage(0.5f), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.RAID, VillagerTasksMCA.getGuardWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
+        } else if ((profession == ProfessionsMCA.BUILDER || profession == ProfessionsMCA.MINER) && WorkOrderPermissions.enabled()) {
+            // no job site: their work are the village's work orders
+            brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
+            brain.addActivity(Activity.WORK, VillagerTasksMCA.getWorkOrderPackage(profession), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.CORE, VillagerTasksMCA.getSelfDefencePackage(), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.RAID, VillagerTasksMCA.getRaidPackage(0.5F), ImmutableSet.of(), ImmutableSet.of());
+        } else if (profession == EconomyRegistry.HAULER && EconomyFeature.enabled()) {
+            // expansion: economy - no job site: haulers carry goods between workshops and the storage
+            brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
+            brain.addActivity(Activity.WORK, EconomyTasks.haulerWorkPackage(), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.CORE, VillagerTasksMCA.getSelfDefencePackage(), ImmutableSet.of(), ImmutableSet.of());
+            brain.addActivity(Activity.RAID, VillagerTasksMCA.getRaidPackage(0.5F), ImmutableSet.of(), ImmutableSet.of());
         } else {
             brain.setSchedule(SchedulesMCA.getTypeSchedule(villager));
             brain.addActivity(Activity.CORE, VillagerTasksMCA.getWorkingCorePackage(profession, 0.5F), ImmutableSet.of(), ImmutableSet.of());
@@ -220,7 +243,14 @@ public class VillagerTasksMCA {
         brain.setCoreActivities(ImmutableSet.of(Activity.CORE));
         brain.setDefaultActivity(Activity.IDLE);
         brain.setActiveActivityIfPossible(Activity.IDLE);
-        brain.updateActivityFromSchedule(villager.level().environmentAttributes(), villager.level().getGameTime(), villager.position());
+        // During construction the MCA brain does not exist yet; the schedule task catches up later.
+        String customSchedule = villager.getVillagerBrain() == null ? "" : villager.getVillagerBrain().getCustomSchedule();
+        if (customSchedule.isEmpty()) {
+            brain.updateActivityFromSchedule(villager.level().environmentAttributes(), villager.level().getGameTime(), villager.position());
+        } else {
+            Activity scheduled = SchedulesMCA.activityOf(customSchedule.charAt(SchedulesMCA.currentSlot(villager.level())));
+            brain.setActiveActivityToFirstValid(List.of(scheduled, Activity.IDLE));
+        }
 
         return brain;
     }
@@ -272,6 +302,13 @@ public class VillagerTasksMCA {
                 Pair.of(0, ReactToBell.create()),
                 Pair.of(0, SetRaidStatus.create()),
                 Pair.of(5, GoToWantedItem.create(speedModifier, false, 4)),
+                // needs: hungry villagers fetch food from home, thirsty ones drink at a cauldron, lonely ones look for company
+                Pair.of(6, new NeedsFetchFoodTask()),
+                Pair.of(6, NeedsFetchFoodTask.forDrinks()),
+                Pair.of(6, new NeedsDrinkTask()),
+                Pair.of(6, new NeedsSocializeTask()),
+                Pair.of(6, new GoHomeTask()),
+                Pair.of(7, new DailyTogglesTask()), // expansion: minds - shutters open in the morning, lamps lit at dusk
                 Pair.of(10, new ExtendedFindPointOfInterestTask(registryEntry -> registryEntry.is(PoiTypes.MEETING), MemoryModuleType.MEETING_POINT, true, Optional.of((byte) 14), (villager) -> {
                     //report a town bell, the only building always added
                     villager.getBrain().getMemoryInternal(MemoryModuleType.MEETING_POINT).ifPresent(p -> {
@@ -295,7 +332,9 @@ public class VillagerTasksMCA {
                 Pair.of(0, ValidateNearbyPoi.create(profession.acquirableJobSite(), MemoryModuleType.POTENTIAL_JOB_SITE)),
                 Pair.of(2, PoiCompetitorScan.create()),
                 Pair.of(3, new LookAndFollowTradingPlayerSink(speedModifier)),
-                Pair.of(6, LazyFindPointOfInterestTask.create(profession.acquirableJobSite(), MemoryModuleType.JOB_SITE, MemoryModuleType.POTENTIAL_JOB_SITE, true, Optional.empty())),
+                Pair.of(5, new AptitudeJobTask()), // expansion: minds - jobless villagers look for what they are best at
+                // expansion: economy - its stations are only taken while the feature is on
+                Pair.of(6, LazyFindPointOfInterestTask.create(profession.acquirableJobSite().and(EconomyRegistry::isAcquirable), MemoryModuleType.JOB_SITE, MemoryModuleType.POTENTIAL_JOB_SITE, true, Optional.empty())),
                 Pair.of(7, new GoToPotentialJobSite(speedModifier)),
                 Pair.of(8, YieldJobSite.create(speedModifier)),
                 Pair.of(10, AssignProfessionFromJobSite.create()),
@@ -360,7 +399,7 @@ public class VillagerTasksMCA {
                         RandomStroll.stroll(0.4f),
                         VillagerTasksMCA::shouldUseHomelessGuardStroll
                 )),
-                Pair.of(99, UpdateActivityFromSchedule.create())
+                Pair.of(99, UpdateScheduleActivityTask.create())
         );
     }
 
@@ -374,7 +413,7 @@ public class VillagerTasksMCA {
         float f = speedModifier * 1.5F;
         return ImmutableList.of(
                 Pair.of(0, new ConditionalTask<>(
-                        UpdateActivityFromSchedule.create(),
+                        UpdateScheduleActivityTask.create(),
                         villager -> !guardTooHurt(villager)
                 )),
                 Pair.of(1, VillagerCalmDown.create()),
@@ -477,18 +516,51 @@ public class VillagerTasksMCA {
     }
 
     public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getWorkPackage(VillagerProfession profession, float speedModifier) {
+        if (EconomyTasks.hasGathererPackage(profession)) {
+            return EconomyTasks.gathererWorkPackage(profession); // expansion: economy
+        }
         ImmutableList.Builder<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> tasks = ImmutableList.builder();
+        // working at the station with an animation; the vanilla strolls around it wait meanwhile
+        WorkAtJobSiteTask work = new WorkAtJobSiteTask();
+        tasks.add(Pair.of(4, work));
         for (Pair<Integer, ? extends BehaviorControl<? super Villager>> task : VillagerGoalPackages.getWorkPackage(
                 BuiltInRegistries.VILLAGER_PROFESSION.wrapAsHolder(profession), speedModifier)) {
-            tasks.add(Pair.of(task.getFirst(), task.getSecond()));
+            if (task.getSecond() instanceof RunOne<?>) {
+                tasks.add(Pair.of(task.getFirst(), new ConditionalTask<VillagerEntityMCA>(task.getSecond(), v -> !work.isActive())));
+            } else {
+                tasks.add(Pair.of(task.getFirst(), task.getSecond()));
+            }
         }
+        tasks.addAll(EconomyTasks.workshopTasks(profession)); // expansion: economy
         return tasks.build();
+    }
+
+    public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getWorkOrderPackage(VillagerProfession profession) {
+        // builders prefer raising blueprints, then filling, and dig too; miners only dig
+        WorkOrderTask work = new WorkOrderTask(profession == ProfessionsMCA.BUILDER
+                ? List.of(WorkOrderType.BLUEPRINT, WorkOrderType.BUILD, WorkOrderType.DIG)
+                : List.of(WorkOrderType.DIG));
+        // expansion: economy - miners without dig orders work a dig site
+        BehaviorControl<VillagerEntityMCA> dig = EconomyTasks.digSite(profession, v -> !work.isActive());
+        return ImmutableList.of(
+                Pair.of(5, work),
+                Pair.of(6, dig),
+                Pair.of(10, new ConditionalTask<>(new RunOne<>(
+                        ImmutableMap.of(MemoryModuleType.WALK_TARGET, MemoryStatus.VALUE_ABSENT),
+                        ImmutableList.of(
+                                Pair.of(VillageBoundRandomStroll.create(0.4F), 2),
+                                Pair.of(SetWalkTargetFromLookTarget.create(0.4F, 2), 1),
+                                Pair.of(new DoNothing(30, 60), 2)
+                        )), (VillagerEntityMCA v) -> !work.isActive() && dig.getStatus() != Behavior.Status.RUNNING)),
+                Pair.of(99, UpdateScheduleActivityTask.create())
+        );
     }
 
     public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getPlayPackage(float speedModifier) {
         return ImmutableList.of(
                 Pair.of(0, new MoveToTargetSink(80, 120)),
                 getFullLookBehavior(),
+                Pair.of(4, new SchoolTask()), // expansion: minds - children go to school in the daytime
                 Pair.of(5, PlayTagWithOtherKids.create()),
                 Pair.of(5, new RunOne<>(
                         ImmutableMap.of(MemoryModuleType.VISIBLE_VILLAGER_BABIES, MemoryStatus.VALUE_ABSENT),
@@ -500,7 +572,7 @@ public class VillagerTasksMCA {
                                 Pair.of(new JumpOnBed(speedModifier), 2),
                                 Pair.of(new DoNothing(20, 40), 2)
                         ))),
-                Pair.of(99, UpdateActivityFromSchedule.create())
+                Pair.of(99, UpdateScheduleActivityTask.create())
         );
     }
 
@@ -541,6 +613,8 @@ public class VillagerTasksMCA {
                     return memory == null || memory.isEmpty();
                 })),
                 Pair.of(3, new SleepInBed()),
+                // homeless villagers sheltering indoors sleep in a free bed without claiming it
+                Pair.of(3, new ShelterSleepTask()),
                 // An already-active REST activity may linger for a tick after an
                 // archer acquires ATTACK_TARGET. Do not let its random stroll or
                 // village-seeking behavior fight the combat movement controller.
@@ -555,7 +629,7 @@ public class VillagerTasksMCA {
                         // 1-2 second idle between legs; keep normal homeless idling once the villager arrives.
                         Pair.of(new ConditionalTask<>(new DoNothing(20, 40),
                                 v -> v.level() instanceof ServerLevel level && level.isVillage(v.blockPosition())), 2)))),
-                Pair.of(99, UpdateActivityFromSchedule.create()));
+                Pair.of(99, UpdateScheduleActivityTask.create()));
     }
 
     private static boolean isForcedHomeOccupiedByOtherSleeper(ServerLevel world, VillagerEntityMCA villager,
@@ -593,21 +667,24 @@ public class VillagerTasksMCA {
                         ImmutableList.of(Pair.of(new TradeWithVillager(), 1)) // GOSSIP TASK
                 )),
                 getFullLookBehavior(),
-                Pair.of(99, UpdateActivityFromSchedule.create())
+                Pair.of(99, UpdateScheduleActivityTask.create())
         );
     }
 
     public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getIdlePackage(float speedModifier) {
+        // expansion: minds - with routines on, free time uses what the place offers instead of random strolls
+        IdleRoutineTask routine = new IdleRoutineTask();
         return ImmutableList.of(
                 Pair.of(1, new EnterFavoredBuildingTask(0.5f)),
+                Pair.of(2, routine),
                 Pair.of(2, new RunOne<>(
                         ImmutableMap.of(MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT),
                         ImmutableList.of(
                                 Pair.of(InteractWith.of(EntitiesMCA.FEMALE_VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
                                 Pair.of(InteractWith.of(EntitiesMCA.MALE_VILLAGER, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 2),
                                 Pair.of(InteractWith.of(EntityTypes.CAT, 8, MemoryModuleType.INTERACTION_TARGET, speedModifier, 2), 1),
-                                Pair.of(VillageBoundRandomStroll.create(speedModifier), 1),
-                                Pair.of(SetWalkTargetFromLookTarget.create(speedModifier, 2), 1),
+                                Pair.of(new ConditionalTask<VillagerEntityMCA>(VillageBoundRandomStroll.create(speedModifier), v -> !IdleRoutineTask.enabled()), 1),
+                                Pair.of(new ConditionalTask<VillagerEntityMCA>(SetWalkTargetFromLookTarget.create(speedModifier, 2), v -> !IdleRoutineTask.enabled()), 1),
                                 Pair.of(new JumpOnBed(speedModifier), 1),
                                 Pair.of(new DoNothing(30, 60), 1)
                         )
@@ -624,7 +701,7 @@ public class VillagerTasksMCA {
                                 Pair.of(new TradeWithVillager(), 1))
                 )),
                 getFullLookBehavior(),
-                Pair.of(99, UpdateActivityFromSchedule.create())
+                Pair.of(99, UpdateScheduleActivityTask.create())
         );
     }
 
@@ -668,7 +745,9 @@ public class VillagerTasksMCA {
         return ImmutableList.of(
                 Pair.of(0, SetHiddenState.create(15, 3)),
                 Pair.of(1, LocateHidingPlace.create(32, speedModifier * 1.25F, 2)),
-                getMinimalLookBehavior()
+                getMinimalLookBehavior(),
+                // leaves hiding started by low safety (raid hiding is left by SetHiddenState)
+                Pair.of(99, UpdateScheduleActivityTask.createForHiding())
         );
     }
 

@@ -1,0 +1,38 @@
+{
+  "kind": "read",
+  "blocks": [
+    "storagedelight:acacia_bookshelf_with_door",
+    "storagedelight:acacia_drawer_with_books",
+    "storagedelight:bamboo_bookshelf_with_door",
+    "storagedelight:bamboo_drawer_with_books",
+    "storagedelight:birch_bookshelf_with_door",
+    "storagedelight:birch_drawer_with_books",
+    "storagedelight:cherry_bookshelf_with_door",
+    "storagedelight:cherry_drawer_with_books",
+    "storagedelight:crimson_bookshelf_with_door",
+    "storagedelight:crimson_drawer_with_books",
+    "storagedelight:dark_oak_bookshelf_with_door",
+    "storagedelight:dark_oak_drawer_with_books",
+    "storagedelight:jungle_bookshelf_with_door",
+    "storagedelight:jungle_drawer_with_books",
+    "storagedelight:mangrove_bookshelf_with_door",
+    "storagedelight:mangrove_drawer_with_books",
+    "storagedelight:oak_bookshelf_with_door",
+    "storagedelight:oak_drawer_with_books",
+    "storagedelight:pale_oak_bookshelf_with_door",
+    "storagedelight:pale_oak_drawer_with_books",
+    "storagedelight:spruce_bookshelf_with_door",
+    "storagedelight:spruce_drawer_with_books",
+    "storagedelight:warped_bookshelf_with_door",
+    "storagedelight:warped_drawer_with_books"
+  ],
+  "appeal": 1.0,
+  "rooms": {
+    "library": 1.8,
+    "school": 1.8
+  },
+  "professions": {
+    "minecraft:librarian": 1.5
+  },
+  "hold": "minecraft:book"
+}

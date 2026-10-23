@@ -1,5 +1,6 @@
 package net.conczin.mca.block;
 
+import net.conczin.mca.expansion.building.Shutters;
 import net.conczin.mca.MCA;
 import net.conczin.mca.registry.BlocksMCA;
 import net.minecraft.core.BlockPos;
@@ -33,6 +34,7 @@ public class BlockEntityTypesMCA {
                         BlocksMCA.DEEPSLATE_SLANTED_HEADSTONE
                 }
         );
+        Shutters.registerBlockEntityTypes(register); // expansion: building
     }
 
     public interface TriFunction<E extends BlockEntity> {

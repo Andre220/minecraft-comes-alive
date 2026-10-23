@@ -1,0 +1,16 @@
+{
+  "profession": "minecraft:toolsmith",
+  "ticks": 2400,
+  "inputs": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 4
+    }
+  ],
+  "outputs": [
+    {
+      "item": "mca:crowbar",
+      "count": 1
+    }
+  ]
+}

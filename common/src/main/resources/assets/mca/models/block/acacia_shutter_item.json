@@ -1,0 +1,6 @@
+{
+  "parent": "mca:block/template_shutter_item",
+  "textures": {
+    "panel": "minecraft:block/acacia_trapdoor"
+  }
+}

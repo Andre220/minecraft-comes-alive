@@ -1,0 +1,19 @@
+{
+  "kind": "read",
+  "blocks": [
+    "minecraft:lectern",
+    "minecraft:bookshelf",
+    "minecraft:chiseled_bookshelf"
+  ],
+  "appeal": 1.0,
+  "rooms": {
+    "library": 1.8,
+    "school": 1.8
+  },
+  "professions": {
+    "minecraft:librarian": 1.5,
+    "minecraft:cartographer": 1.3,
+    "minecraft:cleric": 1.2
+  },
+  "hold": "minecraft:book"
+}

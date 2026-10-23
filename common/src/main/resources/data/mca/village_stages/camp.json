@@ -1,0 +1,14 @@
+{
+  "order": 1,
+  "requirements": [
+    {
+      "kind": "tier",
+      "tier": "small_house",
+      "count": 3
+    },
+    {
+      "kind": "population",
+      "count": 3
+    }
+  ]
+}

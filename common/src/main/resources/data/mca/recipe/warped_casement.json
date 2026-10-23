@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:warped_trapdoor",
+    "minecraft:warped_trapdoor"
+  ],
+  "result": {
+    "id": "mca:warped_casement",
+    "count": 1
+  }
+}

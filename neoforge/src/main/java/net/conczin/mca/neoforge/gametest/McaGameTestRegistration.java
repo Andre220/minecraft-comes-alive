@@ -11,6 +11,7 @@ import net.conczin.mca.entity.VillagerRecoveryFoodGameTests;
 import net.conczin.mca.entity.VillagerVoicePitchGameTests;
 import net.conczin.mca.entity.ai.ChoreToolMatchingGameTests;
 import net.conczin.mca.entity.ai.ResidencyGoHomeGameTests;
+import net.conczin.mca.entity.ai.VillagerDrinksGameTests;
 import net.conczin.mca.entity.ai.ResidencySetHomeGameTests;
 import net.conczin.mca.entity.ai.brain.ForcedHomeOccupiedBedGameTests;
 import net.conczin.mca.entity.ai.brain.sensor.GuardEnemiesSensorGameTests;
@@ -33,6 +34,15 @@ import net.conczin.mca.entity.ai.brain.tasks.chore.ChoppingTaskGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.ChorePathfindingGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.FishingTaskGameTests;
 import net.conczin.mca.entity.ai.brain.tasks.chore.HarvestingTaskGameTests;
+import net.conczin.mca.entity.ai.brain.tasks.workorder.WorkOrderGameTests;
+import net.conczin.mca.expansion.economy.EconomyGameTests;
+import net.conczin.mca.expansion.minds.MindsGameTests;
+import net.conczin.mca.expansion.requests.RequestsGameTests;
+import net.conczin.mca.expansion.progression.ProgressionGameTests;
+import net.conczin.mca.expansion.minds.RoutineGameTests;
+import net.conczin.mca.expansion.barter.BarterGameTests;
+import net.conczin.mca.expansion.speech.SpeechGameTests;
+import net.conczin.mca.expansion.minds.ActionLabelGameTests;
 import net.conczin.mca.entity.ai.navigation.AutonomousPathfindingGameTests;
 import net.conczin.mca.entity.ai.navigation.FenceGateInteractionGameTests;
 import net.conczin.mca.entity.ai.navigation.HomeArrivalGameTests;
@@ -131,7 +141,17 @@ public final class McaGameTestRegistration {
             FloorScannerGameTests.class,
             ReportedFloorInteractionGameTests.class,
             ReportedStairHouseGameTests.class,
-            VillageMourningGameTests.class
+            VillageMourningGameTests.class,
+            WorkOrderGameTests.class,
+            EconomyGameTests.class,
+            MindsGameTests.class,
+            RequestsGameTests.class,
+            ProgressionGameTests.class,
+            RoutineGameTests.class,
+            BarterGameTests.class,
+            SpeechGameTests.class,
+            ActionLabelGameTests.class,
+            VillagerDrinksGameTests.class
     );
 
     private McaGameTestRegistration() {

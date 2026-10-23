@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "F",
+    "L"
+  ],
+  "key": {
+    "F": "minecraft:flint",
+    "L": "#minecraft:logs"
+  },
+  "result": {
+    "id": "mca:chopping_block"
+  }
+}

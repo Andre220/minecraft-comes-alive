@@ -8,6 +8,8 @@ import net.conczin.mca.resources.data.BuildingType;
 import net.conczin.mca.server.ReaperSpawner;
 import net.conczin.mca.server.SpawnQueue;
 import net.conczin.mca.util.NbtHelper;
+import net.conczin.mca.server.property.PadlockDisplays;
+import net.conczin.mca.server.property.PropertyCrimes;
 import net.conczin.mca.util.WorldUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -145,6 +147,8 @@ public class VillageManager extends SavedData implements Iterable<Village> {
     }
 
     public void tick() {
+        PadlockDisplays.tick(world);
+        PropertyCrimes.tickForcing(world);
         if (world.getOverworldClockTime() % 100 == 0) {
             world.players().forEach(player -> PlayerSaveData.get(player).updateLastSeenVillage(this, player));
         }

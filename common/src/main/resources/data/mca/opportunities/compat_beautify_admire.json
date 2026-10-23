@@ -1,0 +1,28 @@
+{
+  "kind": "admire",
+  "blocks": [
+    "beautify:oak_picture_frame",
+    "beautify:spruce_picture_frame",
+    "beautify:birch_picture_frame",
+    "beautify:jungle_picture_frame",
+    "beautify:acacia_picture_frame",
+    "beautify:dark_oak_picture_frame",
+    "beautify:mangrove_picture_frame",
+    "beautify:cherry_picture_frame",
+    "beautify:crimson_picture_frame",
+    "beautify:warped_picture_frame",
+    "beautify:quartz_picture_frame",
+    "beautify:hanging_pot",
+    "beautify:oak_trellis",
+    "beautify:spruce_trellis",
+    "beautify:birch_trellis",
+    "beautify:jungle_trellis",
+    "beautify:acacia_trellis",
+    "beautify:dark_oak_trellis",
+    "beautify:mangrove_trellis",
+    "beautify:cherry_trellis",
+    "beautify:crimson_trellis",
+    "beautify:warped_trellis"
+  ],
+  "appeal": 0.9
+}

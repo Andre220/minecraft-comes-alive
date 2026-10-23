@@ -1,0 +1,746 @@
+{
+  "credit": "MCA human-like villager. Part layout follows Fresh Animations by FreshLX (whose own animation file is used, not included); arm animation adapted from HEVI FreshAni Activator by Seb Semos.",
+  "textureSize": [
+    64,
+    64
+  ],
+  "models": [
+    {
+      "part": "root",
+      "id": "root",
+      "model": "villager_animations.jpm",
+      "attach": "true"
+    },
+    {
+      "part": "head",
+      "id": "head",
+      "invertAxis": "xy",
+      "translate": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "part": "headwear",
+      "id": "headwear",
+      "invertAxis": "xy",
+      "translate": [
+        0,
+        -24,
+        0
+      ],
+      "boxes": [
+        {
+          "coordinates": [
+            -4,
+            24,
+            -4,
+            8,
+            8,
+            8
+          ],
+          "textureOffset": [
+            32,
+            0
+          ],
+          "sizeAdd": 0.5
+        }
+      ]
+    },
+    {
+      "part": "nose",
+      "id": "nose",
+      "invertAxis": "xy",
+      "translate": [
+        0,
+        -24,
+        0
+      ],
+      "boxes": [
+        {
+          "coordinates": [
+            -4,
+            24,
+            -4,
+            8,
+            8,
+            8
+          ],
+          "textureOffset": [
+            0,
+            0
+          ]
+        }
+      ],
+      "submodels": [
+        {
+          "id": "nose2",
+          "invertAxis": "xy",
+          "translate": [
+            0,
+            26.5,
+            -4
+          ]
+        },
+        {
+          "id": "face",
+          "invertAxis": "xy",
+          "translate": [
+            0,
+            27,
+            -4
+          ],
+          "submodels": [
+            {
+              "id": "r_eye_white",
+              "invertAxis": "xy",
+              "translate": [
+                1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    0,
+                    0,
+                    -0.002,
+                    2,
+                    2,
+                    0
+                  ],
+                  "uvNorth": [
+                    56,
+                    16,
+                    62,
+                    22
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "r_pupil",
+              "invertAxis": "xy",
+              "translate": [
+                1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    0,
+                    0.5,
+                    0,
+                    1,
+                    1,
+                    0
+                  ],
+                  "uvNorth": [
+                    0,
+                    0,
+                    1,
+                    1
+                  ],
+                  "sizeAdd": 0.005
+                }
+              ]
+            },
+            {
+              "id": "l_eye_white",
+              "invertAxis": "xy",
+              "translate": [
+                -1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -2,
+                    0,
+                    -0.002,
+                    2,
+                    2,
+                    0
+                  ],
+                  "uvNorth": [
+                    56,
+                    24,
+                    62,
+                    30
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "l_pupil",
+              "invertAxis": "xy",
+              "translate": [
+                -1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -1,
+                    0.5,
+                    0,
+                    1,
+                    1,
+                    0
+                  ],
+                  "uvNorth": [
+                    1,
+                    0,
+                    2,
+                    1
+                  ],
+                  "sizeAdd": 0.005
+                }
+              ]
+            },
+            {
+              "id": "brow",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                0.5,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -4,
+                    -0.5,
+                    -0.006,
+                    8,
+                    2,
+                    0
+                  ],
+                  "uvNorth": [
+                    0,
+                    6,
+                    8,
+                    8
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "left_brow",
+              "invertAxis": "xy",
+              "translate": [
+                -2,
+                0.5,
+                0
+              ]
+            },
+            {
+              "id": "right_brow",
+              "invertAxis": "xy",
+              "translate": [
+                2,
+                0.5,
+                0
+              ]
+            },
+            {
+              "id": "mouth",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -2,
+                    -2,
+                    -0.002,
+                    4,
+                    1,
+                    0
+                  ],
+                  "uvNorth": [
+                    2,
+                    0,
+                    6,
+                    1
+                  ]
+                }
+              ],
+              "submodels": [
+                {
+                  "id": "mca_mouth_inside",
+                  "invertAxis": "xy",
+                  "translate": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "boxes": [
+                    {
+                      "coordinates": [
+                        -2,
+                        -2,
+                        -0.003,
+                        4,
+                        1,
+                        0
+                      ],
+                      "uvNorth": [
+                        6,
+                        0,
+                        7,
+                        1
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "id": "mca_tongue",
+                  "invertAxis": "xy",
+                  "translate": [
+                    0,
+                    0,
+                    0
+                  ],
+                  "boxes": [
+                    {
+                      "coordinates": [
+                        -1,
+                        -2,
+                        -0.004,
+                        2,
+                        1,
+                        0
+                      ],
+                      "uvNorth": [
+                        7,
+                        0,
+                        8,
+                        1
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mca_r_eye_closed",
+              "invertAxis": "xy",
+              "translate": [
+                1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    0,
+                    0,
+                    -0.003,
+                    2,
+                    1,
+                    0
+                  ],
+                  "uvNorth": [
+                    6,
+                    1,
+                    8,
+                    2
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "mca_l_eye_closed",
+              "invertAxis": "xy",
+              "translate": [
+                -1,
+                -1,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -2,
+                    0,
+                    -0.003,
+                    2,
+                    1,
+                    0
+                  ],
+                  "uvNorth": [
+                    6,
+                    2,
+                    8,
+                    3
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "body",
+      "id": "body",
+      "invertAxis": "xy",
+      "translate": [
+        0,
+        -24,
+        0
+      ],
+      "boxes": [
+        {
+          "coordinates": [
+            -4,
+            12,
+            -2,
+            8,
+            12,
+            4
+          ],
+          "textureOffset": [
+            16,
+            16
+          ]
+        }
+      ],
+      "submodels": [
+        {
+          "id": "mca_jacket",
+          "invertAxis": "xy",
+          "translate": [
+            0,
+            0,
+            0
+          ],
+          "boxes": [
+            {
+              "coordinates": [
+                -4,
+                12,
+                -2,
+                8,
+                12,
+                4
+              ],
+              "textureOffset": [
+                16,
+                32
+              ],
+              "sizeAdd": 0.25
+            }
+          ]
+        },
+        {
+          "id": "mca_right_arm",
+          "invertAxis": "xy",
+          "translate": [
+            5,
+            22,
+            0
+          ],
+          "boxes": [
+            {
+              "coordinates": [
+                -1,
+                -10,
+                -2,
+                4,
+                12,
+                4
+              ],
+              "textureOffset": [
+                40,
+                16
+              ]
+            }
+          ],
+          "submodels": [
+            {
+              "id": "mca_right_sleeve",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -1,
+                    -10,
+                    -2,
+                    4,
+                    12,
+                    4
+                  ],
+                  "textureOffset": [
+                    40,
+                    32
+                  ],
+                  "sizeAdd": 0.25
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "mca_left_arm",
+          "invertAxis": "xy",
+          "translate": [
+            -5,
+            22,
+            0
+          ],
+          "boxes": [
+            {
+              "coordinates": [
+                -3,
+                -10,
+                -2,
+                4,
+                12,
+                4
+              ],
+              "textureOffset": [
+                32,
+                48
+              ]
+            }
+          ],
+          "submodels": [
+            {
+              "id": "mca_left_sleeve",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -3,
+                    -10,
+                    -2,
+                    4,
+                    12,
+                    4
+                  ],
+                  "textureOffset": [
+                    48,
+                    48
+                  ],
+                  "sizeAdd": 0.25
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "animations": [
+        {
+          "var.mca_ls": "limb_swing/if(is_child, 2, 1)/if(limb_speed>0.75, 1.4 +(0.2*random(id)), 1.1 +(0.2*random(id)))",
+          "var.mca_r": "pi*random(id)*4",
+          "var.mca_b": "age/(11 -random(id)*2)*if(is_child, 1.5, 1)",
+          "var.mca_pose": "if(is_riding||is_in_water&&!is_on_ground, 0, clamp(1-limb_speed*4, 0, 1))*clamp(random(id)+0.3, 0.3, 1)",
+          "var.mca_nov2": "if(random(id)<0.7, clamp(-78 +cos(-pi/4 +var.mca_r +var.mca_b/20)*80, 0, 1)*clamp(1-limb_speed*2, 0, 1), 0)",
+          "var.mca_swim": "limb_swing/2 +age/4",
+          "mca_right_arm.rx": "if(!is_riding&&!is_on_ground&&is_in_water, torad(-50) -cos(var.mca_swim)/4*clamp(1-limb_speed*8, 0, 1) +(cos(var.mca_swim +sin(var.mca_swim)) +torad(30))*clamp(limb_speed*8, 0, 1), if(is_riding, torad(-45), -sin(var.mca_ls)*limb_speed) +torad(head_yaw)/8) +torad(5)*var.mca_pose +( -sin(-pi/3 +var.mca_r+var.mca_b +sin(var.mca_r+var.mca_b) )/6 )*var.mca_nov2 +(sin(limb_swing/2) -pi/4)/2*if(is_hurt, -sin(hurt_time*pi/5)/6*hurt_time, 0)",
+          "mca_left_arm.rx": "if(!is_riding&&!is_on_ground&&is_in_water, torad(-50) -cos(var.mca_swim)/4*clamp(1-limb_speed*8, 0, 1) +(cos(var.mca_swim +sin(var.mca_swim)) +torad(30))*clamp(limb_speed*8, 0, 1), if(is_riding, torad(-45), sin(var.mca_ls)*limb_speed) -torad(head_yaw)/8) +torad(5)*var.mca_pose +( -sin(-pi/3 +var.mca_r+var.mca_b +sin(var.mca_r+var.mca_b) )/6 )*var.mca_nov2 +(sin(limb_swing/2) -pi/4)/2*if(is_hurt, -sin(hurt_time*pi/5)/6*hurt_time, 0)",
+          "mca_right_arm.ry": "if(!is_riding&&!is_on_ground&&is_in_water, torad(30) -sin(var.mca_swim +cos(var.mca_swim)/4)*clamp(1-limb_speed*8, 0, 1) +(torad(5) +cos(pi/8 +var.mca_swim +sin(var.mca_swim)/2)/2 +clamp(-sin(var.mca_swim), -pi/2, 0))*clamp(limb_speed*8, 0, 1), if(is_riding, -torad(20), 0) -torad(15)*clamp(limb_speed*4, 0, 1) +cos(var.mca_r +var.mca_b)/30) -torad(5)*var.mca_pose",
+          "mca_left_arm.ry": "if(!is_riding&&!is_on_ground&&is_in_water, torad(-30) +sin(var.mca_swim +cos(var.mca_swim)/4)*clamp(1-limb_speed*8, 0, 1) +(torad(-5) -cos(pi/8 +var.mca_swim +sin(var.mca_swim)/2)/2 +clamp(sin(var.mca_swim), 0, pi/2))*clamp(limb_speed*8, 0, 1), if(is_riding, torad(20), 0) +torad(15)*clamp(limb_speed*4, 0, 1) -cos(var.mca_r +var.mca_b)/30) +torad(5)*var.mca_pose",
+          "mca_right_arm.rz": "if(!is_riding&&!is_on_ground&&is_in_water, -cos(var.mca_swim)/2 +(torad(20) +cos(var.mca_swim)/2)*clamp(limb_speed*8, 0, 1), 0) -torad(head_pitch)/14 +torad(8 +0.5*var.mca_pose)",
+          "mca_left_arm.rz": "if(!is_riding&&!is_on_ground&&is_in_water, cos(var.mca_swim)/2 +(torad(-20) -cos(var.mca_swim)/2)*clamp(limb_speed*8, 0, 1), 0) +torad(head_pitch)/14 +torad(-8 +0.5*var.mca_pose)",
+          "head.sx": "if(is_child, 1.2, 1)",
+          "head.sy": "if(is_child, 1.2, 1)",
+          "head.sz": "if(is_child, 1.2, 1)",
+          "mca_r_eye_closed.visible": "mca_sleeping > 0.5",
+          "mca_l_eye_closed.visible": "mca_sleeping > 0.5",
+          "r_eye_white.visible": "mca_sleeping < 0.5",
+          "l_eye_white.visible": "mca_sleeping < 0.5",
+          "r_pupil.visible": "mca_sleeping < 0.5",
+          "l_pupil.visible": "mca_sleeping < 0.5",
+          "mca_mouth_inside.visible": "mca_talk > 0.05",
+          "mca_mouth_inside.sx": "0.75*(1 +0.5*mca_talk)",
+          "mca_tongue.visible": "mca_talk > 0.4",
+          "mca_tongue.tx": "sin(age*0.37 +random(id)*6)*0.375*mca_talk",
+          "mca_mouth_inside.sy": "0.75",
+          "mca_tongue.sx": "0.75",
+          "mca_tongue.sy": "0.75"
+        }
+      ]
+    },
+    {
+      "part": "arms",
+      "id": "arms",
+      "invertAxis": "xy",
+      "translate": [
+        0,
+        -24,
+        0
+      ],
+      "submodels": [
+        {
+          "id": "arms_rotation",
+          "invertAxis": "xy",
+          "translate": [
+            0,
+            22.5,
+            0.35
+          ],
+          "rotate": [
+            43,
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "part": "right_leg",
+      "id": "right_leg",
+      "invertAxis": "xy",
+      "translate": [
+        -2,
+        0,
+        0
+      ],
+      "submodels": [
+        {
+          "id": "right_leg2",
+          "invertAxis": "xy",
+          "translate": [
+            2,
+            12,
+            0
+          ],
+          "boxes": [
+            {
+              "coordinates": [
+                -2,
+                -12,
+                -2,
+                4,
+                12,
+                4
+              ],
+              "textureOffset": [
+                0,
+                16
+              ]
+            }
+          ],
+          "submodels": [
+            {
+              "id": "mca_right_pants",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -2,
+                    -12,
+                    -2,
+                    4,
+                    12,
+                    4
+                  ],
+                  "textureOffset": [
+                    0,
+                    32
+                  ],
+                  "sizeAdd": 0.25
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "left_leg",
+      "id": "left_leg",
+      "invertAxis": "xy",
+      "translate": [
+        2,
+        0,
+        0
+      ],
+      "submodels": [
+        {
+          "id": "left_leg2",
+          "invertAxis": "xy",
+          "translate": [
+            -2,
+            12,
+            0
+          ],
+          "boxes": [
+            {
+              "coordinates": [
+                -2,
+                -12,
+                -2,
+                4,
+                12,
+                4
+              ],
+              "textureOffset": [
+                16,
+                48
+              ]
+            }
+          ],
+          "submodels": [
+            {
+              "id": "mca_left_pants",
+              "invertAxis": "xy",
+              "translate": [
+                0,
+                0,
+                0
+              ],
+              "boxes": [
+                {
+                  "coordinates": [
+                    -2,
+                    -12,
+                    -2,
+                    4,
+                    12,
+                    4
+                  ],
+                  "textureOffset": [
+                    0,
+                    48
+                  ],
+                  "sizeAdd": 0.25
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "part": "headwear2"
+    },
+    {
+      "part": "bodywear"
+    }
+  ]
+}

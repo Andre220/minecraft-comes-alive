@@ -3,6 +3,7 @@ package net.conczin.mca.registry;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.conczin.mca.MCA;
+import net.conczin.mca.expansion.ExpansionContent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -44,6 +45,9 @@ public interface ProfessionsMCA {
             TradeOffersMCA.ADVENTURER_TRADES
     );
     VillagerProfession MERCENARY = register("mercenary", false, true, true, PoiType.NONE, VillagerProfession.ALL_ACQUIRABLE_JOBS, SoundEvents.VILLAGER_WORK_FLETCHER);
+    // work on the village's planned work orders instead of at a job site
+    VillagerProfession BUILDER = register("builder", false, true, false, PoiType.NONE, PoiType.NONE, SoundEvents.VILLAGER_WORK_MASON);
+    VillagerProfession MINER = register("miner", false, true, false, PoiType.NONE, PoiType.NONE, SoundEvents.VILLAGER_WORK_TOOLSMITH);
     VillagerProfession CULTIST = register(
             "cultist",
             true,
@@ -134,6 +138,7 @@ public interface ProfessionsMCA {
     }
 
     static void registerProfessions(MCA.RegisterHelper<VillagerProfession> helper) {
+        ExpansionContent.bootstrap(); // expansion: all
         PROFESSIONS.forEach(helper::register);
 
         CAN_NOT_TRADE.add(VillagerProfession.NONE);

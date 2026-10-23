@@ -1,5 +1,6 @@
 package net.conczin.mca.server.world.data.villageComponents;
 
+import net.conczin.mca.expansion.economy.EconomyFeature;
 import net.conczin.mca.Config;
 import net.conczin.mca.resources.Rank;
 import net.conczin.mca.resources.Tasks;
@@ -73,6 +74,11 @@ public class VillageTaxesManager {
         //upgrades
         if (village.hasBuilding("library")) {
             taxes *= 1.5;
+        }
+
+        // expansion: economy - the village's share of real production replaces taxes out of thin air
+        if (EconomyFeature.enabled()) {
+            taxes = 0.0;
         }
 
         //choose as many items as possible

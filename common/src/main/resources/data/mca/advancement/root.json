@@ -35,7 +35,8 @@
   },
   "rewards": {
     "loot": [
-      "mca:books/romance"
+      "mca:books/romance",
+      "mca:books/expansion_guide"
     ]
   },
   "requirements": [

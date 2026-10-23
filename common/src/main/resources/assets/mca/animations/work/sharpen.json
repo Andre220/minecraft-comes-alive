@@ -1,0 +1,38 @@
+{
+  "loop": true,
+  "animation_length": 0.8,
+  "mca:tool": "minecraft:iron_sword",
+  "mca:impact": {"sound": "minecraft:block.grindstone.use", "volume": 0.12, "pitch": 1.6, "particle": "minecraft:electric_spark", "particle_count": 3},
+  "mca:events": {"0.4": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-60, -20, 0],
+        "0.4": {"post": [-75, -5, 0], "lerp_mode": "ease_in_out"},
+        "0.8": {"post": [-60, -20, 0], "lerp_mode": "ease_in_out"}
+      },
+      "position": {
+        "0.0": [0, 0, 0],
+        "0.4": {"post": [0, 0, -1.5], "lerp_mode": "ease_in_out"},
+        "0.8": {"post": [0, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": {
+        "0.0": [-55, 25, 0],
+        "0.4": {"post": [-70, 10, 0], "lerp_mode": "ease_in_out"},
+        "0.8": {"post": [-55, 25, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "body": {
+      "rotation": {
+        "0.0": [10, 0, 0],
+        "0.4": {"post": [14, 0, 0], "lerp_mode": "ease_in_out"},
+        "0.8": {"post": [10, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "head": {
+      "rotation": [6, 0, 0]
+    }
+  }
+}

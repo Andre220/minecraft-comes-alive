@@ -1,0 +1,33 @@
+{
+  "loop": true,
+  "animation_length": 2.4,
+  "mca:tool": "minecraft:map",
+  "mca:impact": {"sound": "minecraft:ui.cartography_table.take_result", "volume": 0.15, "pitch": 1.2, "particle": "none"},
+  "mca:events": {"1.2": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": {"post": [-50, -25, 0], "lerp_mode": "ease_in_out"},
+        "0.5": {"post": [-52, 8, 0], "lerp_mode": "ease_in_out"},
+        "0.8": {"post": [-48, 0, 0], "lerp_mode": "ease_in_out"},
+        "1.2": {"post": [-55, -15, 0], "lerp_mode": "ease_in_out"},
+        "1.7": {"post": [-50, 5, 0], "lerp_mode": "ease_in_out"},
+        "2.4": {"post": [-50, -25, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": [-50, 20, 0]
+    },
+    "body": {
+      "rotation": [14, 0, 0]
+    },
+    "head": {
+      "rotation": {
+        "0.0": {"post": [8, -12, 0], "lerp_mode": "catmullrom"},
+        "0.8": {"post": [8, 10, 0], "lerp_mode": "catmullrom"},
+        "1.6": {"post": [10, 0, 0], "lerp_mode": "catmullrom"},
+        "2.4": {"post": [8, -12, 0], "lerp_mode": "catmullrom"}
+      }
+    }
+  }
+}

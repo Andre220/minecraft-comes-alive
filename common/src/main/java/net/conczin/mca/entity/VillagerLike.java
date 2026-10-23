@@ -1,5 +1,6 @@
 package net.conczin.mca.entity;
 
+import net.conczin.mca.expansion.looks.Beards;
 import com.mojang.serialization.JsonOps;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
@@ -433,6 +434,32 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
 
     boolean setAgeState(AgeState state);
 
+    /**
+     * Extra size of children on squidward models, per age stage (configurable), since the
+     * player-shaped body keeps adult proportions. The stage is recognised by its age height.
+     */
+    static float squidwardChildSize(float ageHeight) {
+        Config config = Config.getInstance();
+        if (!config.useSquidwardModels || ageHeight >= 1.0F) {
+            return 1.0F;
+        }
+        if (ageHeight <= AgeState.BABY.getHeight()) {
+            return config.squidwardBabySize;
+        }
+        if (ageHeight <= AgeState.TODDLER.getHeight()) {
+            return config.squidwardToddlerSize;
+        }
+        if (ageHeight <= AgeState.CHILD.getHeight()) {
+            return config.squidwardChildSize;
+        }
+        return config.squidwardTeenSize;
+    }
+
+    /** Squidward models use the vanilla villager size unless the genetic hitbox is enabled. */
+    private boolean usesVanillaSquidwardSize() {
+        return Config.getInstance().useSquidwardModels && !Config.getServerConfig().squidwardGeneticHitbox;
+    }
+
     /** Scale used by collision/physical dimensions. */
     default float getPhysicalHorizontalScaleFactor() {
         return Math.min(MAX_PHYSICAL_SCALE, getVisualHorizontalScaleFactor());
@@ -440,13 +467,14 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
 
     /** Uncapped scale used by the rendered model. */
     default float getVisualHorizontalScaleFactor() {
-        if (getGenetics() == null || Config.getInstance().useSquidwardModels) {
+        if (getGenetics() == null || usesVanillaSquidwardSize()) {
             return asEntity().isBaby() ? 0.5f : 1.0f;
         }
         return getGenetics().getHorizontalScaleFactor()
                * getTraits().getHorizontalScaleFactor()
                * getVillagerDimensions().getWidth()
-               * getGenetics().getGender().getHorizontalScaleFactor();
+               * getGenetics().getGender().getHorizontalScaleFactor()
+               * squidwardChildSize(getVillagerDimensions().getHeight());
     }
 
     /** Scale used by collision/physical dimensions. */
@@ -456,13 +484,14 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
 
     /** Uncapped scale used by the rendered model. */
     default float getVisualVerticalScaleFactor() {
-        if (getGenetics() == null || Config.getInstance().useSquidwardModels) {
+        if (getGenetics() == null || usesVanillaSquidwardSize()) {
             return asEntity().isBaby() ? 0.5f : 1.0f;
         } else {
             return getGenetics().getVerticalScaleFactor()
                    * getTraits().getVerticalScaleFactor()
                    * getVillagerDimensions().getHeight()
-                   * getGenetics().getGender().getScaleFactor();
+                   * getGenetics().getGender().getScaleFactor()
+                   * squidwardChildSize(getVillagerDimensions().getHeight());
         }
     }
 
@@ -513,6 +542,9 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
         randomizeSkin();
         randomizeClothes();
         randomizeHair();
+        if (!isPlayer) {
+            Beards.randomize(this); // expansion: looks
+        }
 
         //colored hair
         if (!isPlayer) {

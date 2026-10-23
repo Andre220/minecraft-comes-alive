@@ -1,0 +1,31 @@
+{
+  "loop": true,
+  "animation_length": 0.6,
+  "mca:tool": "minecraft:stone_pickaxe",
+  "mca:impact": {"sound": "block", "volume": 0.3, "pitch": 1.2, "particle": "block", "particle_count": 3},
+  "mca:events": {"0.38": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-45, -12, 0],
+        "0.25": {"post": [-85, -12, 5], "lerp_mode": "ease_out"},
+        "0.38": {"post": [-40, -12, 0], "lerp_mode": "ease_in"},
+        "0.45": {"post": [-47, -12, 0], "lerp_mode": "ease_out"},
+        "0.6": {"post": [-45, -12, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": [-50, 20, 0]
+    },
+    "body": {
+      "rotation": {
+        "0.0": [10, 0, 0],
+        "0.38": {"post": [13, 0, 0], "lerp_mode": "ease_in"},
+        "0.6": {"post": [10, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "head": {
+      "rotation": [5, 0, 0]
+    }
+  }
+}

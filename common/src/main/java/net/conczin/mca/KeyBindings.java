@@ -13,6 +13,8 @@ public class KeyBindings {
     private static final KeyMapping.Category MCA_CATEGORY = KeyMapping.Category.register(MCA.locate("mca_tab"));
 
     public static final KeyMapping SKIN_LIBRARY = newKey("skin_library", GLFW.GLFW_KEY_U);
+    /** While holding the villager editor: freezes or unfreezes the selected villager's AI. */
+    public static final KeyMapping DEBUG_FREEZE = newKey("debug_freeze", GLFW.GLFW_KEY_K);
 
     private static KeyMapping newKey(String name, int code) {
         KeyMapping key = new KeyMapping(

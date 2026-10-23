@@ -1,0 +1,14 @@
+[
+  {
+    "identifier": "gui.button.talk",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.interact",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  }
+]

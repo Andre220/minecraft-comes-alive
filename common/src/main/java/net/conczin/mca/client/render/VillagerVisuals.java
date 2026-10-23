@@ -1,5 +1,7 @@
 package net.conczin.mca.client.render;
 
+import net.conczin.mca.expansion.looks.Beards;
+import net.conczin.mca.Config;
 import net.conczin.mca.client.resources.EyeTextureLayers;
 import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.entity.ai.Genetics;
@@ -47,7 +49,8 @@ public record VillagerVisuals(
         int tickCount,
         int entityId,
         boolean sleeping,
-        boolean deadOrDying
+        boolean deadOrDying,
+        String beard // expansion: looks
 ) {
     private static final int MIN_BLINK_INTERVAL_A = 50;
     private static final int MIN_BLINK_INTERVAL_B = 57;
@@ -130,7 +133,8 @@ public record VillagerVisuals(
                 animationTickCount(renderEntity),
                 renderEntity.getId(),
                 renderEntity.isSleeping(),
-                renderEntity.isDeadOrDying()
+                renderEntity.isDeadOrDying(),
+                Beards.forVisuals(villager)
         );
     }
 
@@ -153,6 +157,9 @@ public record VillagerVisuals(
     public boolean isBlinking() {
         if (sleeping || deadOrDying) {
             return true;
+        }
+        if (!Config.getInstance().mcaEyeBlinking) {
+            return false;
         }
 
         int time = tickCount / 2 + (int) (hemoglobinGene * 65536);

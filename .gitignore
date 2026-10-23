@@ -47,3 +47,14 @@ neoforge/run-searchbudget-*
 common/logs/
 fabric/logs/
 fabric/config/
+
+# developer guide images (Mojang textures must not be redistributed)
+docs/dev/_assets/
+
+# third-party resource packs kept for reference only (not ours to redistribute)
+/references/
+common/src/main/resources/references/
+# other mods' jars used for local testing
+fabric/dev-mods/
+# local backup copies
+common/src/main/resources/assets/mca/skins/face - Copia/

@@ -1,0 +1,7 @@
+{
+    "pack": {
+        "description": "MCA human-like villagers for Fresh Animations (requires Fresh Animations below this pack)",
+        "min_format": 84,
+        "max_format": 999
+    }
+}

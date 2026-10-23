@@ -1,7 +1,10 @@
 package net.conczin.mca.mixin.client;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.conczin.mca.client.gui.PreviewEntityAnimation;
+import net.conczin.mca.client.render.VanillaVillagerLook;
+import net.conczin.mca.client.render.VanillaVillagerLookHolder;
 import net.conczin.mca.client.render.VillagerStateHolder;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -23,6 +26,14 @@ public class MixinLivingEntityRenderer {
             CallbackInfo ci
     ) {
         VillagerStateHolder.require(state).mca$setPreviewEntityAnimationState(PreviewEntityAnimation.getActiveState(entity));
+    }
+
+    @Inject(method = "scale(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V", at = @At("TAIL"))
+    private void mca$scaleHumanLikeVillager(LivingEntityRenderState state, PoseStack poseStack, CallbackInfo ci) {
+        if (state instanceof VanillaVillagerLookHolder holder && holder.mca$getLookVisuals() != null) {
+            float[] scale = VanillaVillagerLook.modelScale(holder.mca$getLookVisuals());
+            poseStack.scale(scale[0], scale[1], scale[0]);
+        }
     }
 
     @ModifyReturnValue(

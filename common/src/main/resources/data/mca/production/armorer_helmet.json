@@ -1,0 +1,23 @@
+{
+  "profession": "minecraft:armorer",
+  "ticks": 3000,
+  "inputs": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 5
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:iron_helmet",
+      "count": 1
+    }
+  ],
+  "rare": [
+    {
+      "item": "minecraft:diamond",
+      "count": 1,
+      "chance": 0.01
+    }
+  ]
+}

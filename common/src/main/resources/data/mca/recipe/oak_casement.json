@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:oak_trapdoor",
+    "minecraft:oak_trapdoor"
+  ],
+  "result": {
+    "id": "mca:oak_casement",
+    "count": 1
+  }
+}

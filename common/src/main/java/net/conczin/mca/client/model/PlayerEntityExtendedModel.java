@@ -2,6 +2,7 @@ package net.conczin.mca.client.model;
 
 import com.google.common.collect.ImmutableList;
 import net.conczin.mca.client.render.VillagerStateHolder;
+import net.conczin.mca.client.render.layer.Player3dLayer;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.entity.ai.relationship.VillagerDimensions;
 import net.minecraft.client.model.HumanoidModel;
@@ -179,13 +180,18 @@ public class PlayerEntityExtendedModel<T extends LivingEntity> extends PlayerMod
         }
         syncWearParts();
 
-        if (wearsHidden) {
+        // Outer layers drawn as cubes (Player3dLayer) leave the flat clothing and hair layers out.
+        boolean layersAsCubes = receivesDeferredAnimationPose && Player3dLayer.isActive(state);
+        if (wearsHidden || layersAsCubes) {
             jacket.visible = false;
             leftPants.visible = false;
             rightPants.visible = false;
             leftSleeve.visible = false;
             rightSleeve.visible = false;
             breastsWear.visible = false;
+        }
+        if (layersAsCubes) {
+            hat.visible = false;
         }
     }
 

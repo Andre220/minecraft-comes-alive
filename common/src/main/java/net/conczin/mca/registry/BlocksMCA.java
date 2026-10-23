@@ -3,6 +3,7 @@ package net.conczin.mca.registry;
 import net.conczin.mca.MCA;
 import net.conczin.mca.block.InfernalFlameBlock;
 import net.conczin.mca.block.TombstoneBlock;
+import net.conczin.mca.expansion.ExpansionContent;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
@@ -55,6 +56,7 @@ public interface BlocksMCA {
     }
 
     static void registerBlocks(MCA.RegisterHelper<Block> helper) {
+        ExpansionContent.bootstrap(); // expansion: all
         BLOCKS.forEach((name, block) -> helper.register(MCA.locate(name), block));
     }
 }

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:birch_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:birch_shutter",
+    "count": 2
+  }
+}

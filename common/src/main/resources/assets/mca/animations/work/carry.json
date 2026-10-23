@@ -1,0 +1,27 @@
+{
+  "loop": true,
+  "animation_length": 1.0,
+  "mca:carry": {"item": "minecraft:chest", "position": [0, -0.5, -8], "rotation": [0, 180, 0], "scale": 1.0},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": {"post": [-72, -8, 0], "lerp_mode": "catmullrom"},
+        "0.5": {"post": [-69, -8, 0], "lerp_mode": "catmullrom"},
+        "1.0": {"post": [-72, -8, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "left_arm": {
+      "rotation": {
+        "0.0": {"post": [-72, 8, 0], "lerp_mode": "catmullrom"},
+        "0.5": {"post": [-69, 8, 0], "lerp_mode": "catmullrom"},
+        "1.0": {"post": [-72, 8, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "body": {
+      "rotation": [-4, 0, 0]
+    },
+    "head": {
+      "rotation": [-3, 0, 0]
+    }
+  }
+}

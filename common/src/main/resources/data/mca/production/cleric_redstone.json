@@ -1,0 +1,28 @@
+{
+  "profession": "minecraft:cleric",
+  "ticks": 1200,
+  "inputs": [
+    {
+      "item": "minecraft:rotten_flesh",
+      "count": 4
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:redstone",
+      "count": 1
+    }
+  ],
+  "rare": [
+    {
+      "item": "minecraft:lapis_lazuli",
+      "count": 1,
+      "chance": 0.1
+    },
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 1,
+      "chance": 0.03
+    }
+  ]
+}

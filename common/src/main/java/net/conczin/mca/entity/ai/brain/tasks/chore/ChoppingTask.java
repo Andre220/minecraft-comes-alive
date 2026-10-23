@@ -1,31 +1,21 @@
 package net.conczin.mca.entity.ai.brain.tasks.chore;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonSyntaxException;
-import net.conczin.mca.Config;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Chore;
 import net.conczin.mca.entity.ai.TaskUtils;
 import net.conczin.mca.util.InventoryUtils;
-import net.conczin.mca.util.RegistryHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ChoppingTask extends AbstractChoreTask {
     private static final double MAX_WORK_DISTANCE_SQUARED = 6.0;
@@ -84,18 +74,12 @@ public class ChoppingTask extends AbstractChoreTask {
 
             // valid "trees" are logs on the ground with leaves around them
             nearbyLogs.stream()
-                    .filter(log -> isTreeStartLog(world, log))
+                    .filter(log -> TreeFelling.isTreeStartLog(world, log))
                     .forEach(nearbyTrees::add);
             targetTree = TaskUtils.getNearestPoint(villager.blockPosition(), nearbyTrees);
 
             if (targetTree != null) {
-                ItemStack stack = villager.getItemInHand(villager.getDominantHand());
-                BlockPos pos = targetTree;
-                BlockState state;
-                while ((state = world.getBlockState(pos)).is(BlockTags.LOGS)) {
-                    targetTreeTicks += (int) (getTicksFor(state, 60) / stack.getDestroySpeed(state));
-                    pos = pos.offset(0, 1, 0);
-                }
+                targetTreeTicks += TreeFelling.ticksToFell(world, targetTree, villager.getItemInHand(villager.getDominantHand()));
             }
 
             failedTicks = FAILED_COOLDOWN;
@@ -114,7 +98,8 @@ public class ChoppingTask extends AbstractChoreTask {
                 if (chopTicks >= targetTreeTicks) {
                     chopTicks = 0;
 
-                    destroyTree(world, targetTree);
+                    TreeFelling.fell(world, targetTree, villager, villager.getItemInHand(villager.getDominantHand()))
+                            .forEach(villager.getInventory()::addItem);
                 }
             }
         } else {
@@ -123,89 +108,5 @@ public class ChoppingTask extends AbstractChoreTask {
         }
 
         super.tick(world, villager, time);
-    }
-
-    /**
-     * Returns trues if origin is bottom point of tree.
-     */
-    private boolean isTreeStartLog(ServerLevel world, BlockPos origin) {
-        if (!world.getBlockState(origin).is(BlockTags.LOGS)) {
-            return false;
-        }
-
-        // ensure we're looking at a valid tree before continuing
-        if (!isValidTree(world, origin.below())) {
-            return false;
-        }
-
-        // check upside continues and valid leaves exist.
-        BlockPos.MutableBlockPos posUp = origin.mutable(); // copy as mutable for reduce resources
-        for (int y = 0; y < Config.getInstance().maxTreeHeight; y++) {
-            BlockState up = world.getBlockState(posUp.setY(posUp.getY() + 1)); // use set directly instead of "pos_up.move(Direction.UP)" (set is faster)
-            if (up.is(BlockTags.LOGS)) {
-                continue;
-            } else return up.is(BlockTags.LEAVES);
-        }
-        return false;
-    }
-
-    private void destroyTree(ServerLevel world, BlockPos origin) {
-        ItemStack stack = villager.getItemInHand(villager.getDominantHand());
-        BlockPos pos = origin;
-        BlockState state;
-
-        while ((state = world.getBlockState(pos)).is(BlockTags.LOGS)) {
-            if (world.destroyBlock(pos, false, villager)) {
-                pos = pos.offset(0, 1, 0);
-                villager.getInventory().addItem(new ItemStack(state.getBlock(), 1));
-                stack.hurtAndBreak(1, villager, EquipmentSlot.MAINHAND);
-            } else {
-                break;
-            }
-        }
-    }
-
-    private boolean isValidTree(ServerLevel world, BlockPos pos) {
-        // Similar logic to WanderOrTeleportToTargetTask#isAreaSafe
-        final BlockState state = world.getBlockState(pos);
-        final Identifier stateId = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-        for (String blockId : Config.getInstance().validTreeSources) {
-            if (blockId.equals(stateId.toString())) {
-                return true;
-            } else if (blockId.charAt(0) == '#') {
-                Identifier identifier = Identifier.parse(blockId.substring(1));
-                TagKey<Block> tag = TagKey.create(Registries.BLOCK, identifier);
-                if (!RegistryHelper.isTagEmpty(tag)) {
-                    if (state.is(tag)) {
-                        return true;
-                    }
-                } else {
-                    throw new JsonSyntaxException("Unknown block tag in validTreeSources '" + identifier + "'");
-                }
-            }
-        }
-        return false;
-    }
-
-    private int getTicksFor(BlockState state, int fallback) {
-        // Similar logic to WanderOrTeleportToTargetTask#isAreaSafe
-        final Map<String, Integer> sources = Config.getInstance().maxTreeTicks;
-        final Identifier stateId = BuiltInRegistries.BLOCK.getKey(state.getBlock());
-        for (String blockId : sources.keySet()) {
-            if (blockId.equals(stateId.toString())) {
-                return sources.get(blockId);
-            } else if (blockId.charAt(0) == '#') {
-                Identifier identifier = Identifier.parse(blockId.substring(1));
-                TagKey<Block> tag = TagKey.create(Registries.BLOCK, identifier);
-                if (!RegistryHelper.isTagEmpty(tag)) {
-                    if (state.is(tag)) {
-                        return sources.get(blockId);
-                    }
-                } else {
-                    throw new JsonSyntaxException("Unknown block tag in maxTreeTicks '" + identifier + "'");
-                }
-            }
-        }
-        return fallback;
     }
 }

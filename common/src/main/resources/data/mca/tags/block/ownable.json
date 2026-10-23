@@ -1,0 +1,12 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:beds",
+    "#minecraft:wooden_doors",
+    "#minecraft:wooden_trapdoors",
+    "#c:chests",
+    "minecraft:chest",
+    "minecraft:trapped_chest",
+    "minecraft:barrel"
+  ]
+}

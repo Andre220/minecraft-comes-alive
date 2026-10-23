@@ -1,8 +1,10 @@
 package net.conczin.mca.client.gui;
 
+import net.conczin.mca.expansion.looks.Beards;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.MCAClient;
+import net.conczin.mca.client.debug.VillagerDebugInfo;
 import net.conczin.mca.client.gui.widget.*;
 import net.conczin.mca.client.resources.*;
 import net.conczin.mca.client.tts.SpeechManager;
@@ -10,6 +12,7 @@ import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.entity.ai.Genetics;
 import net.conczin.mca.entity.ai.Memories;
+import net.conczin.mca.entity.ai.SchedulesMCA;
 import net.conczin.mca.entity.ai.Traits;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.entity.ai.relationship.Gender;
@@ -48,10 +51,16 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.commons.io.FileUtils;
@@ -117,6 +126,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     private List<String> filteredHairStyles = new LinkedList<>();
     private List<String> filteredBodySkins = new LinkedList<>();
     private List<String> filteredLayeredHair = new LinkedList<>();
+    private List<String> filteredBeards = new LinkedList<>(); // expansion: looks
     private Gender filterGender = Gender.NEUTRAL;
     private String searchString = "";
     private int hoveredClothingId;
@@ -136,6 +146,11 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     private boolean rotatePreviewLeft;
     private boolean rotatePreviewRight;
     private boolean previewFollowsMouse = true;
+    private String inspectTab = "genetics";
+    private Activity scheduleBrush = Activity.WORK;
+    // Whether the real villager lacks the places WORK and MEET need; null while unknown.
+    private Boolean scheduleNoJobSite;
+    private Boolean scheduleNoMeetingPoint;
 
     private static final int PRESETS_PER_PAGE = 4;
     private final File presetsDir = new File(Minecraft.getInstance().gameDirectory, "config/mca/presets");
@@ -573,6 +588,11 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 }));
                 y += 22;
 
+                if (Beards.enabled()) { // expansion: looks
+                    addBeardRow(y);
+                    y += 22;
+                }
+
                 if (hsvColoredHair) {
                     addRgbColorSliders(y, this::refreshHairColor);
                 } else {
@@ -715,6 +735,8 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                         ProfessionsMCA.OUTLAW,
                         ProfessionsMCA.ADVENTURER,
                         ProfessionsMCA.CULTIST,
+                        ProfessionsMCA.BUILDER,
+                        ProfessionsMCA.MINER,
                 }) {
                     ButtonWidget widget = addRenderableWidget(new ButtonWidget(width / 2 + (right ? DATA_WIDTH / 2 : 0), y, DATA_WIDTH / 2, 20, p.name(), b -> {
                         CompoundTag compound = VillagerEditorSyncRequest.createEditorPatch(createEditorData());
@@ -748,6 +770,59 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 //mood
                 integerChanger(y, v -> villager.getVillagerBrain().modifyMoodValue(v), () -> Component.translatable("gui.interact.label.mood", villager.getVillagerBrain().getMoodValue()));
             }
+            case "schedule" -> {
+                int x = width / 2 + (DATA_WIDTH - ScheduleTimelineWidget.WIDTH) / 2;
+                addRenderableWidget(new ScheduleTimelineWidget(x, y, this::displayedSchedule,
+                        schedule -> villager.getVillagerBrain().setCustomSchedule(schedule),
+                        () -> scheduleBrush, this::scheduleWarning));
+                y += ScheduleTimelineWidget.HEIGHT + 6;
+
+                //brushes
+                List<Activity> brushes = SchedulesMCA.SCHEDULE_ACTIVITIES;
+                int bw = DATA_WIDTH / brushes.size();
+                for (int i = 0; i < brushes.size(); i++) {
+                    Activity activity = brushes.get(i);
+                    addRenderableWidget(new ButtonWidget(width / 2 + i * bw, y, bw, 20,
+                            ScheduleTimelineWidget.name(activity).copy().withColor(ScheduleTimelineWidget.color(activity) & 0xFFFFFF), b -> {
+                        scheduleBrush = activity;
+                        setPage("schedule");
+                    })).active = scheduleBrush != activity;
+                }
+                y += 26;
+
+                //presets
+                SchedulesMCA.Preset[] presets = SchedulesMCA.Preset.values();
+                int pw = DATA_WIDTH / 3;
+                for (int i = 0; i < presets.length; i++) {
+                    SchedulesMCA.Preset preset = presets[i];
+                    addRenderableWidget(new ButtonWidget(width / 2 + (i % 3) * pw, y + (i / 3) * 20, pw, 20,
+                            Component.translatable("gui.villager_editor.schedule.preset." + preset.id()),
+                            b -> villager.getVillagerBrain().setCustomSchedule(preset.schedule())));
+                }
+                y += 44;
+
+                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.schedule.reset"),
+                        b -> villager.getVillagerBrain().setCustomSchedule("")));
+            }
+            case "inspect" -> {
+                String[] tabs = {"genetics", "social", "look", "ai", "places"};
+                int w = DATA_WIDTH / tabs.length;
+                for (int i = 0; i < tabs.length; i++) {
+                    String tab = tabs[i];
+                    addRenderableWidget(new ButtonWidget(width / 2 + i * w, y, w, 20, Component.translatable("gui.villager_editor.inspect." + tab), b -> {
+                        inspectTab = tab;
+                        setPage("inspect");
+                    })).active = !inspectTab.equals(tab);
+                }
+                if (inspectTab.equals("ai")) {
+                    addRenderableWidget(new ButtonWidget(width / 2, height / 2 + 74, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.inspect.freeze"), b -> {
+                        if (minecraft.player != null) {
+                            Villager target = inspectTarget();
+                            minecraft.player.sendSystemMessage(VillagerDebugInfo.toggleFreeze(target == null ? null : VillagerDebugInfo.serverMob(target)));
+                        }
+                    }));
+                }
+            }
             case "hair_advanced" -> {
                 addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.randLayeredHair"), b -> randomLayeredHair()));
                 y += 24;
@@ -762,7 +837,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     setPage(this instanceof CombScreen ? "hair" : "hair_style");
                 }));
             }
-            case "clothing", "hair", "skin", "hair_base", "hair_bangs", "hair_back", "hair_front", "hair_extra" -> {
+            case "clothing", "hair", "skin", "hair_base", "hair_bangs", "hair_back", "hair_front", "hair_extra", "beard" -> {
                 filterGender = villager.getGenetics().getGender();
                 searchString = "";
 
@@ -1094,6 +1169,32 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         }));
     }
 
+    // expansion: looks - the beard: cycle through the choices, or pick one from previews
+    private void addBeardRow(int y) {
+        int arrowWidth = 20;
+        int selectWidth = 45;
+        int labelWidth = DATA_WIDTH - arrowWidth * 2 - selectWidth;
+        addRenderableWidget(new ButtonWidget(width / 2, y, arrowWidth, 20, Component.literal("<"), b -> cycleBeard(-1)));
+        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth, y, labelWidth, 20, getBeardText(), b -> {
+        }));
+        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth + labelWidth, y, arrowWidth, 20, Component.literal(">"), b -> cycleBeard(1)));
+        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth * 2 + labelWidth, y, selectWidth, 20, Component.translatable("gui.villager_editor.select"), b -> {
+            setPage("beard");
+        }));
+    }
+
+    private void cycleBeard(int step) {
+        String beard = Beards.cycle(Beards.get(villager), step);
+        Beards.set(villager, beard);
+        Beards.set(villagerVisualization, beard);
+        init();
+    }
+
+    private Component getBeardText() {
+        String style = Beards.styleOf(Beards.get(villager));
+        return Component.translatable("gui.villager_editor.beard", Component.translatable("gui.villager_editor.beard." + (style.isEmpty() ? "none" : style)));
+    }
+
     private void addLayeredHairCyclerRow(int y, LayeredHair.Category category) {
         int arrowWidth = 20;
         int selectWidth = 45;
@@ -1388,6 +1489,13 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             filteredHairStyles = filter(ClientSkinCatalog.hairStyles());
         } else if (Objects.equals(page, "skin")) {
             filteredBodySkins = filter(ClientSkinCatalog.bodySkins());
+        } else if (Objects.equals(page, "beard")) { // expansion: looks
+            filteredBeards = Beards.choices().stream()
+                    .filter(choice -> MCA.isBlankString(searchString) || choice.contains(searchString))
+                    .toList();
+            clothingPageCount = Math.max(1, (int) Math.ceil(filteredBeards.size() / ((float) getSelectionItemsPerPage())));
+            clothingPage = Math.clamp(clothingPage, 0, clothingPageCount - 1);
+            updateClothingPageWidget();
         } else if (isLayeredHairPage()) {
             LayeredHair.Category category = getLayeredHairCategory();
             filteredLayeredHair = filter(ClientSkinCatalog.layeredHair().entrySet().stream()
@@ -1421,19 +1529,24 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     }
 
     private int getSelectionItemsPerPage() {
-        return isLayeredHairPage() ? LAYERED_HAIR_PER_PAGE : CLOTHES_PER_PAGE;
+        return largeSelection() ? LAYERED_HAIR_PER_PAGE : CLOTHES_PER_PAGE;
+    }
+
+    /** Selection pages with fewer, larger previews: the hair layers and the beards. */
+    private boolean largeSelection() {
+        return isLayeredHairPage() || page.equals("beard");
     }
 
     protected String[] getPages() {
         if (villagerUUID.equals(playerUUID)) {
             return new String[]{"general", "body", "traits"};
         } else {
-            return new String[]{"general", "body", "personality", "traits", "debug"};
+            return new String[]{"general", "body", "personality", "traits", "schedule", "debug", "inspect"};
         }
     }
 
     private boolean isSelectionPage() {
-        return page.equals("clothing") || page.equals("hair") || page.equals("skin") || isLayeredHairPage();
+        return page.equals("clothing") || page.equals("hair") || page.equals("skin") || isLayeredHairPage() || page.equals("beard");
     }
 
     protected boolean isLayeredHairPage() {
@@ -1449,6 +1562,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             case "clothing" -> filteredClothing;
             case "hair" -> filteredHairStyles;
             case "skin" -> filteredBodySkins;
+            case "beard" -> filteredBeards; // expansion: looks
             default -> filteredLayeredHair;
         };
     }
@@ -1664,6 +1778,15 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
         }
 
+        if (page.equals("beard") && hoveredClothingId >= 0 && filteredBeards.size() > hoveredClothingId) { // expansion: looks
+            String beard = filteredBeards.get(hoveredClothingId);
+            Beards.set(villager, beard);
+            Beards.set(villagerVisualization, beard);
+            setPage("hair_style");
+            eventCallback("beard");
+            return true;
+        }
+
         if (isLayeredHairPage() && (hoveredClothingId >= 0 && filteredLayeredHair.size() > hoveredClothingId)) {
             String selectedLayerPage = page;
             LayeredHair.Category category = getLayeredHairCategory();
@@ -1732,6 +1855,9 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         super.tick();
         villager.tickCount++;
         villagerVisualization.tickCount++;
+        if ("schedule".equals(page) && villager.tickCount % 20 == 1) {
+            updateScheduleWarnings();
+        }
     }
 
     private boolean acceptsPreviewRotationInput() {
@@ -1866,6 +1992,12 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             }
         }
 
+        if (page.equals("inspect")) {
+            drawInspectPage(context);
+        } else if (page.equals("schedule")) {
+            drawScheduleStatus(context);
+        }
+
         if (isSelectionPage()) {
             CompoundTag nbt = saveEntityData(villager);
             villagerVisualization.load(TagValueInput.create(ProblemReporter.DISCARDING, villagerVisualization.registryAccess(), nbt));
@@ -1876,7 +2008,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             List<String> selection = getFilteredSelection();
             int itemsPerPage = getSelectionItemsPerPage();
             int totalOnPage = Math.min(itemsPerPage, selection.size() - clothingPage * itemsPerPage);
-            int row0Count = Math.min(totalOnPage, isLayeredHairPage() ? LAYERED_HAIR_PER_PAGE : CLOTHES_H);
+            int row0Count = Math.min(totalOnPage, largeSelection() ? LAYERED_HAIR_PER_PAGE : CLOTHES_H);
             int row1Count = Math.max(0, totalOnPage - row0Count);
 
             for (int i = 0; i < totalOnPage; i++) {
@@ -1889,13 +2021,14 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     case "clothing" -> villagerVisualization.setClothes(selection.get(index));
                     case "hair" -> applyHairStyle(villagerVisualization, selection.get(index));
                     case "skin" -> villagerVisualization.setSkin(selection.get(index));
+                    case "beard" -> Beards.set(villagerVisualization, selection.get(index)); // expansion: looks
                     default -> {
                         villagerVisualization.setHair("");
                         villagerVisualization.setLayeredHair(getLayeredHairCategory(), selection.get(index));
                     }
                 }
 
-                boolean layeredHairSelection = isLayeredHairPage();
+                boolean layeredHairSelection = largeSelection();
                 int spacing = layeredHairSelection ? 56 : 40;
                 int cx = width / 2 + (int) ((x - numInRow / 2.0 + 0.5 - 0.5 * (y % 2)) * spacing);
                 int cy = layeredHairSelection ? height / 2 + 8 : height / 2 + (int) ((y - CLOTHES_V / 2.0 + 0.5) * 65);
@@ -1916,7 +2049,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
                 boolean hovered = hoveredClothingId == index;
                 int previewPadding = hovered ? 5 : 0;
-                float rotationOffset = layeredHairSelection && getLayeredHairCategory() == LayeredHair.Category.BACK ? 180.0F : 0.0F;
+                float rotationOffset = isLayeredHairPage() && getLayeredHairCategory() == LayeredHair.Category.BACK ? 180.0F : 0.0F;
 
                 int size = layeredHairSelection ? (hovered ? 45 : 40) : (hovered ? 35 : 30);
 
@@ -1933,6 +2066,115 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             int paginationY = startY + 22 + count * 20 + 6;
             context.centeredText(font, Component.literal((currentPage + 1) + " / " + (maxPage + 1)), rightX + DATA_WIDTH / 2, paginationY, 0xFFAAAAAA);
         }
+    }
+
+    /** The villager's personal schedule, or the timeline it most likely follows. */
+    private String displayedSchedule() {
+        String custom = villager.getVillagerBrain().getCustomSchedule();
+        return custom.isEmpty() ? SchedulesMCA.presetFor(villager).schedule() : custom;
+    }
+
+    /** Why an activity cannot run for this villager, which then idles; null when it can (or unknown). */
+    private Component scheduleWarning(Activity activity) {
+        if (activity == Activity.WORK && Boolean.TRUE.equals(scheduleNoJobSite)) {
+            return Component.translatable("gui.villager_editor.schedule.warning.job_site");
+        } else if (activity == Activity.MEET && Boolean.TRUE.equals(scheduleNoMeetingPoint)) {
+            return Component.translatable("gui.villager_editor.schedule.warning.meeting_point");
+        } else if (activity == Activity.PLAY && villager.getAgeState() == AgeState.ADULT) {
+            return Component.translatable("gui.villager_editor.schedule.warning.play");
+        }
+        return null;
+    }
+
+    /** Reads the places WORK and MEET need from the real villager (singleplayer only). */
+    private void updateScheduleWarnings() {
+        Villager target = inspectTarget();
+        Mob server = target == null ? null : VillagerDebugInfo.serverMob(target);
+        if (server == null) {
+            scheduleNoJobSite = null;
+            scheduleNoMeetingPoint = null;
+            return;
+        }
+        try {
+            scheduleNoJobSite = !server.getBrain().hasMemoryValue(MemoryModuleType.JOB_SITE);
+            scheduleNoMeetingPoint = !server.getBrain().hasMemoryValue(MemoryModuleType.MEETING_POINT);
+        } catch (RuntimeException e) {
+            scheduleNoJobSite = null;
+            scheduleNoMeetingPoint = null;
+        }
+    }
+
+    private void drawScheduleStatus(GuiGraphicsExtractor context) {
+        String custom = villager.getVillagerBrain().getCustomSchedule();
+        Component status = custom.isEmpty()
+                ? Component.translatable("gui.villager_editor.schedule.following",
+                Component.translatable("gui.villager_editor.schedule.preset." + SchedulesMCA.presetFor(villager).id()))
+                : Component.translatable("gui.villager_editor.schedule.custom");
+        Component now = Component.empty();
+        if (minecraft.level != null) {
+            long time = Math.floorMod(minecraft.level.getOverworldClockTime(), (long) SchedulesMCA.SLOTS * SchedulesMCA.SLOT_TICKS);
+            int slot = (int) (time / SchedulesMCA.SLOT_TICKS);
+            int minutes = (int) (time % SchedulesMCA.SLOT_TICKS * 60 / SchedulesMCA.SLOT_TICKS);
+            Activity activity = SchedulesMCA.activityOf(displayedSchedule().charAt(slot));
+            now = Component.translatable("gui.villager_editor.schedule.now",
+                    String.format(Locale.ROOT, "%02d:%02d", ScheduleTimelineWidget.hourOf(slot), minutes),
+                    ScheduleTimelineWidget.name(activity));
+        }
+
+        final Matrix3x2fStack matrices = context.pose();
+        matrices.pushMatrix();
+        matrices.translate(width / 2.0F + 2, height / 2.0F + 72);
+        matrices.scale(0.75F, 0.75F);
+        context.text(font, now, 0, 0, 0xFFFFFFFF);
+        context.text(font, status, 0, font.lineHeight + 2, custom.isEmpty() ? 0xFFAAAAAA : 0xFF88DDFF);
+        matrices.popMatrix();
+    }
+
+    /** The edited villager in the world, while it is loaded on the client. */
+    private Villager inspectTarget() {
+        if (minecraft.level == null) {
+            return null;
+        }
+        for (Entity entity : minecraft.level.entitiesForRendering()) {
+            if (entity instanceof Villager v && entity.getUUID().equals(villagerUUID)) {
+                return v;
+            }
+        }
+        return null;
+    }
+
+    /** Live debug data of the inspected villager; genes and traits fall back to the editor's copy. */
+    private void drawInspectPage(GuiGraphicsExtractor context) {
+        Villager target = inspectTarget();
+        Villager source = target != null ? target : villager;
+        List<VillagerDebugInfo.Line> lines = switch (inspectTab) {
+            case "social" -> VillagerDebugInfo.social(source);
+            case "look" -> target != null ? VillagerDebugInfo.look(target) : List.of(new VillagerDebugInfo.Line("Villager not loaded nearby.", VillagerDebugInfo.TEXT_COLOR));
+            case "ai" -> VillagerDebugInfo.ai(target == null ? null : VillagerDebugInfo.serverMob(target));
+            case "places" -> target == null ? VillagerDebugInfo.ai(null) : VillagerDebugInfo.places(VillagerDebugInfo.serverMob(target));
+            default -> VillagerDebugInfo.genetics(source);
+        };
+
+        float scale = 0.75F;
+        int x = width / 2 + 2;
+        int top = height / 2 - 56;
+        int bottom = height / 2 + (inspectTab.equals("ai") ? 72 : 96);
+        final Matrix3x2fStack matrices = context.pose();
+        matrices.pushMatrix();
+        matrices.translate(x, top);
+        matrices.scale(scale, scale);
+        int y = 0;
+        for (VillagerDebugInfo.Line line : lines) {
+            for (FormattedCharSequence part : font.split(Component.literal(line.text()), (int) ((DATA_WIDTH - 4) / scale))) {
+                if (top + (y + font.lineHeight) * scale > bottom) {
+                    matrices.popMatrix();
+                    return;
+                }
+                context.text(font, part, 0, y, line.color());
+                y += font.lineHeight + 1;
+            }
+        }
+        matrices.popMatrix();
     }
 
     protected boolean shouldDrawEntity() {

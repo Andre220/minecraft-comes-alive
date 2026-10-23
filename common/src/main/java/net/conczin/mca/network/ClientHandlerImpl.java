@@ -1,10 +1,12 @@
 package net.conczin.mca.network;
 
+import net.conczin.mca.expansion.speech.SpeechBubbles;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCAClient;
 import net.conczin.mca.client.book.Book;
 import net.conczin.mca.client.book.CivilRegistryBook;
 import net.conczin.mca.client.gui.*;
+import net.conczin.mca.client.gui.workorder.WorkPlanningScreen;
 import net.conczin.mca.client.resources.ClientSkinCatalog;
 import net.conczin.mca.client.tts.SpeechManager;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -101,8 +103,21 @@ public class ClientHandlerImpl implements ClientHandler {
             case VILLAGER_TRACKER:
                 client.gui.setScreen(new VillagerTrackerSearchScreen());
                 break;
+            case WORK_PLANNING:
+                client.gui.setScreen(new WorkPlanningScreen());
+                break;
             default:
         }
+    }
+
+    @Override
+    public void handleWorkOrders(WorkOrdersResponse message) {
+        WorkPlanningScreen.receive(message);
+    }
+
+    @Override
+    public void handleBlueprint(BlueprintResponse message) {
+        WorkPlanningScreen.receiveBlueprint(message.toBlueprint());
     }
 
     @Override
@@ -249,7 +264,9 @@ public class ClientHandlerImpl implements ClientHandler {
     public void handleVillagerMessage(VillagerMessage message) {
         MutableComponent full = message.prefix().copy().append(message.message());
         client.gui.chatListener().handleSystemMessage(full, false);
-        SpeechManager.INSTANCE.onChatMessage(message.message(), message.uuid());
+        if (SpeechBubbles.show(message.message(), message.uuid())) { // expansion: speech
+            SpeechManager.INSTANCE.onChatMessage(message.message(), message.uuid());
+        }
     }
 
     @Override

@@ -1,11 +1,19 @@
 package net.conczin.mca.client.render;
 
+import net.conczin.mca.expansion.minds.ActionLabels;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.conczin.mca.expansion.speech.SpeechBubbleRenderer;
+import net.conczin.mca.expansion.speech.SpeechBubbles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.conczin.mca.Config;
 import net.conczin.mca.client.gui.VillagerEditorScreen;
 import net.conczin.mca.client.model.VillagerEntityBaseModelMCA;
 import net.conczin.mca.client.model.VillagerEntityModelMCA;
+import net.conczin.mca.client.resources.WorkAnimationClip;
+import net.conczin.mca.client.resources.WorkAnimationLoader;
 import net.conczin.mca.entity.Infectable;
+import net.conczin.mca.entity.ai.brain.VillagerBrain;
 import net.conczin.mca.entity.VillagerLike;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
@@ -17,15 +25,20 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemUseAnimation;
 import org.jetbrains.annotations.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -33,6 +46,7 @@ public class VillagerLikeEntityMCARenderer<T extends Mob & VillagerLike<T>>
     extends HumanoidMobRenderer<T, VillagerRenderState, VillagerEntityModelMCA> {
     private static final Identifier TEXTURE = Identifier.parse("textures/entity/steve.png");
     private static final float BABY_SITTING_OFFSET_Y = 0.6F;
+    private static final Map<Identifier, ItemStack> WORK_TOOLS = new HashMap<>();
 
     public VillagerLikeEntityMCARenderer(EntityRendererProvider.Context ctx, VillagerEntityModelMCA model) {
         super(ctx, model, 0.5F);
@@ -95,7 +109,57 @@ public class VillagerLikeEntityMCARenderer<T extends Mob & VillagerLike<T>>
         VillagerStateHolder holder = VillagerStateHolder.require(state);
         holder.mca$setVillagerRenderData(VillagerRenderData.create(VillagerLike.PlayerModel.VILLAGER, entity));
         state.panicAnimationProgress = entity.getVillagerBrain().getPanicAnimationProgress(partialTicks);
+        extractWorkAnimation(entity, state, partialTicks);
         VillagerRenderStateHooks.extractScaledBounds(entity, state);
+        state.speechLines = SpeechBubbles.visibleLines(entity.getUUID()); // expansion: speech
+        state.actionLabel = SpeechBubbleRenderer.actionLabel(entity, entity.getTrackedValue(ActionLabels.LABEL)); // expansion: minds
+    }
+
+    @Override
+    public void submit(VillagerRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, pose, collector, camera);
+        SpeechBubbleRenderer.submit(state, state.speechLines, state.actionLabel, pose, collector, camera); // expansion: speech
+    }
+
+    private void extractWorkAnimation(T entity, VillagerRenderState state, float partialTicks) {
+        VillagerBrain<?> brain = entity.getVillagerBrain();
+        WorkAnimationClip clip = WorkAnimationLoader.get(brain.getShownWorkAnimation(), entity.getProfessionId());
+        state.workAnimationClip = clip;
+        state.carry = null;
+        state.carriedItem.clear();
+        if (clip == null) return;
+
+        state.workAnimationPhase = clip.phase(brain.getWorkAnimationTicks(partialTicks));
+        state.workAnimationBlend = brain.getWorkAnimationProgress(partialTicks);
+        state.attackTime = 0.0F;
+
+        WorkAnimationClip.Carry carry = clip.carry();
+        if (carry != null && state.workAnimationBlend > 0.5F) {
+            state.carry = carry;
+            itemModelResolver.updateForLiving(state.carriedItem, workItem(carry.item()), ItemDisplayContext.FIXED, entity);
+        }
+
+        // an empty hand holds the clip's tool, just for the looks
+        Identifier tool = clip.tool();
+        if (tool != null && state.workAnimationBlend > 0.5F && entity.getMainHandItem().isEmpty()) {
+            ItemStack stack = workItem(tool);
+            boolean right = state.mainArm == HumanoidArm.RIGHT;
+            itemModelResolver.updateForLiving(
+                    right ? state.rightHandItemState : state.leftHandItemState,
+                    stack,
+                    right ? ItemDisplayContext.THIRD_PERSON_RIGHT_HAND : ItemDisplayContext.THIRD_PERSON_LEFT_HAND,
+                    entity
+            );
+            if (right) {
+                state.rightHandItemStack = stack;
+            } else {
+                state.leftHandItemStack = stack;
+            }
+        }
+    }
+
+    private static ItemStack workItem(Identifier id) {
+        return WORK_TOOLS.computeIfAbsent(id, key -> new ItemStack(BuiltInRegistries.ITEM.getOptional(key).orElse(Items.AIR)));
     }
 
     @Override

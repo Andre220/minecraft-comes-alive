@@ -1,5 +1,9 @@
 package net.conczin.mca.entity.interaction;
 
+import net.conczin.mca.expansion.barter.Barter;
+import net.conczin.mca.expansion.requests.Requests;
+import net.conczin.mca.expansion.economy.EconomyFeature;
+import net.conczin.mca.expansion.economy.EconomyRegistry;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -12,6 +16,7 @@ import net.conczin.mca.entity.ai.relationship.RelationshipState;
 import net.conczin.mca.registry.CriterionMCA;
 import net.conczin.mca.registry.ItemsMCA;
 import net.conczin.mca.registry.ProfessionsMCA;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.conczin.mca.server.world.data.FamilyTree;
 import net.conczin.mca.server.world.data.FamilyTreeNode;
 import net.conczin.mca.server.world.data.PlayerSaveData;
@@ -197,6 +202,18 @@ public class VillagerCommandHandler extends EntityCommandHandler<VillagerEntityM
                 entity.setProfession(ProfessionsMCA.OUTLAW);
                 return true;
             }
+            case "negotiate" -> { // expansion: barter
+                Barter.open(player, entity);
+                return false;
+            }
+            case "peek_inventory" -> { // expansion: barter
+                Barter.describe(player, entity);
+                return true;
+            }
+            case "request" -> { // expansion: requests
+                Requests.interact(player, entity);
+                return true;
+            }
             case "pardon" -> {
                 entity.setProfession(BuiltInRegistries.VILLAGER_PROFESSION.getOrThrow(VillagerProfession.NONE).value());
                 return true;
@@ -249,6 +266,27 @@ public class VillagerCommandHandler extends EntityCommandHandler<VillagerEntityM
                     case "archer" -> {
                         entity.setProfession(ProfessionsMCA.ARCHER);
                         entity.sendChatMessage(player, "profession.set.archer");
+                    }
+                    case "builder" -> {
+                        if (!WorkOrderPermissions.enabled()) {
+                            return true;
+                        }
+                        entity.setProfession(ProfessionsMCA.BUILDER);
+                        entity.sendChatMessage(player, "profession.set.builder");
+                    }
+                    case "miner" -> {
+                        if (!WorkOrderPermissions.enabled()) {
+                            return true;
+                        }
+                        entity.setProfession(ProfessionsMCA.MINER);
+                        entity.sendChatMessage(player, "profession.set.miner");
+                    }
+                    case "hauler" -> { // expansion: economy
+                        if (!EconomyFeature.enabled()) {
+                            return true;
+                        }
+                        entity.setProfession(EconomyRegistry.HAULER);
+                        entity.sendChatMessage(player, "profession.set.hauler");
                     }
                 }
                 return true;

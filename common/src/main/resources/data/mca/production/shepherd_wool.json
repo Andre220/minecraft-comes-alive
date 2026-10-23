@@ -1,0 +1,10 @@
+{
+  "profession": "minecraft:shepherd",
+  "ticks": 1200,
+  "outputs": [
+    {
+      "item": "minecraft:white_wool",
+      "count": 1
+    }
+  ]
+}

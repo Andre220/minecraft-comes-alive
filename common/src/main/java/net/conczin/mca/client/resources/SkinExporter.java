@@ -177,6 +177,19 @@ public class SkinExporter {
         );
     }
 
+    /** Width of a layer texture, or 0 when it cannot be loaded. */
+    public static int textureWidth(Identifier id) {
+        NativeImage image = loadTexture(id);
+        if (image == null) {
+            return 0;
+        }
+        try {
+            return image.getWidth();
+        } finally {
+            image.close();
+        }
+    }
+
     public static NativeImage loadTexture(Identifier id) {
         if (id.getNamespace().equals("immersive_library")) {
             try {
@@ -213,6 +226,10 @@ public class SkinExporter {
     }
 
     public static void compositeFace(NativeImage base, Identifier faceId, VillagerVisuals visuals) {
+        compositeFace(base, faceId, visuals, true);
+    }
+
+    public static void compositeFace(NativeImage base, Identifier faceId, VillagerVisuals visuals, boolean iris) {
         NativeImage face = loadTexture(faceId);
         if (face == null) {
             return;
@@ -223,6 +240,9 @@ public class SkinExporter {
             int splitX = bounds.minX() + bounds.width() / 2;
             compositeEyeLayer(base, face, EyeTextureLayers.Layer.SCLERA, EyeTextureLayers.Side.FULL, splitX, 0xFFFFFFFF);
             compositeEyeLayer(base, face, EyeTextureLayers.Layer.DETAILS, EyeTextureLayers.Side.FULL, splitX, EyeTextureLayers.DETAILS_TINT);
+            if (!iris) {
+                return;
+            }
             if (visuals.heterochromia()) {
                 compositeEyeLayer(base, face, EyeTextureLayers.Layer.IRIS, EyeTextureLayers.Side.LEFT, splitX, getEyeColor(visuals, true));
                 compositeEyeLayer(base, face, EyeTextureLayers.Layer.IRIS, EyeTextureLayers.Side.RIGHT, splitX, getEyeColor(visuals, false));
@@ -239,14 +259,16 @@ public class SkinExporter {
     }
 
     public static void compositeEyeLayer(NativeImage base, NativeImage face, EyeTextureLayers.Layer layer, EyeTextureLayers.Side side, int splitX, int tintColor) {
-        int width = Math.min(base.getWidth(), face.getWidth());
-        int height = Math.min(base.getHeight(), face.getHeight());
+        // Layers of any resolution share the layout: sample the face proportionally.
+        int width = base.getWidth();
+        int height = base.getHeight();
         for (int x = 0; x < width; x++) {
-            if (!EyeTextureLayers.isInSide(x, splitX, side)) {
+            int faceX = x * face.getWidth() / width;
+            if (!EyeTextureLayers.isInSide(faceX, splitX, side)) {
                 continue;
             }
             for (int y = 0; y < height; y++) {
-                int pixel = face.getPixel(x, y);
+                int pixel = face.getPixel(faceX, y * face.getHeight() / height);
                 int alpha = ARGB.alpha(pixel);
                 if (!EyeTextureLayers.isPixelForLayer(layer, alpha, ARGB.red(pixel), ARGB.green(pixel), ARGB.blue(pixel))) {
                     continue;
@@ -266,12 +288,14 @@ public class SkinExporter {
         }
         
         try {
-            int width = Math.min(base.getWidth(), overlay.getWidth());
-            int height = Math.min(base.getHeight(), overlay.getHeight());
+            // Layers of any resolution share the layout: sample the overlay proportionally.
+            int width = base.getWidth();
+            int height = base.getHeight();
 
             for (int x = 0; x < width; x++) {
+                int overlayX = x * overlay.getWidth() / width;
                 for (int y = 0; y < height; y++) {
-                    int overPixel = overlay.getPixel(x, y);
+                    int overPixel = overlay.getPixel(overlayX, y * overlay.getHeight() / height);
                     compositePixel(base, x, y, overPixel, tintColor);
                 }
             }

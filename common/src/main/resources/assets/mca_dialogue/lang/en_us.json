@@ -11,6 +11,15 @@
   "villager.warning/2": "Last warning!",
   "villager.warning/3": "That's enough!",
   "villager.warning/4": "You have been warned!",
+  "villager.crime.witness/0": "Thief! Stop right there, %1$s!",
+  "villager.crime.witness/1": "Hey! That is not yours!",
+  "villager.crime.witness/2": "Guards! We have a thief!",
+  "villager.crime.owner/0": "Those are my things, %1$s! Get away!",
+  "villager.crime.owner/1": "Thief! In my own house!",
+  "villager.crime.owner/2": "I trusted you, %1$s. I won't forget this.",
+  "villager.crime.heard/0": "Who's there?!",
+  "villager.crime.heard/1": "What was that noise?",
+  "villager.crime.heard/2": "Did you hear that?",
   "villager.cant_find_bed/0": "Hmm, I can't find the way home...",
   "villager.cant_find_bed/1": "I think I'm lost, I can't find a way home.",
   "villager.cant_find_bed/2": "Not again. I need a new home, I can't find my current one.",
@@ -1474,5 +1483,8 @@
   "dialogue.rock_paper_scissor.loose.scissor/1": "Rock crushes scissors, I win!",
   "dialogue.rock_paper_scissor.win.rock/1": "Ahh, rock crushes scissor, I lost.",
   "dialogue.rock_paper_scissor.win.paper/1": "I can never seem to win with rock.",
-  "dialogue.rock_paper_scissor.win.scissor/1": "Scissors cut paper, you got me this time."
+  "dialogue.rock_paper_scissor.win.scissor/1": "Scissors cut paper, you got me this time.",
+  "profession.set.builder": "I'll build whatever this village needs!",
+  "profession.set.miner": "Pickaxe ready. Show me where to dig.",
+  "workorder.no_material": "We ran out of %2$s for the construction. Could someone put more in the village storage?"
 }

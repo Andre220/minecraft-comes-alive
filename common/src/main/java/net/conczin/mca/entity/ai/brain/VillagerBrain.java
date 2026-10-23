@@ -42,6 +42,9 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
     private static final CDataParameter<Optional<UUID>> CHORE_ASSIGNING_PLAYER = CParameter.create("ChoreAssigningPlayer", Optional.empty());
     private static final CDataParameter<Boolean> PANICKING = CParameter.create("IsPanicking", false);
     private static final CDataParameter<Boolean> WEAR_ARMOR = CParameter.create("WearArmor", false);
+    private static final CDataParameter<String> SCHEDULE = CParameter.create("Schedule", "");
+    private static final CEnumParameter<WorkAnimation> WORK_ANIMATION = CParameter.create("WorkAnimation", WorkAnimation.NONE);
+    private static final CDataParameter<Integer> WORK_ANIMATION_SEQUENCE = CParameter.create("WorkAnimationSequence", 0);
 
     private static final int PANIC_ANIMATION_HOLD_TICKS = 20;
     private static final float PANIC_ANIMATION_STEP = 0.25F;
@@ -49,6 +52,16 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
     private int panicAnimationHoldTicks;
     private float panicAnimationProgress;
     private float panicAnimationProgressO;
+
+    private static final float WORK_ANIMATION_STEP = 0.2F;
+    // server: the animation stops on its own unless a task keeps renewing it
+    private long workAnimationLeaseUntil;
+    // client: what is shown, and since when, so the loop phase starts at zero on every restart
+    private WorkAnimation shownWorkAnimation = WorkAnimation.NONE;
+    private int shownWorkAnimationSequence = -1;
+    private int workAnimationStartTick;
+    private float workAnimationProgress;
+    private float workAnimationProgressO;
 
     public VillagerBrain(E entity) {
         this.entity = entity;
@@ -63,7 +76,10 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
                 ACTIVE_CHORE,
                 CHORE_ASSIGNING_PLAYER,
                 PANICKING,
-                WEAR_ARMOR
+                WEAR_ARMOR,
+                SCHEDULE,
+                WORK_ANIMATION,
+                WORK_ANIMATION_SEQUENCE
         );
     }
 
@@ -84,6 +100,11 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
         boolean panicking = entity.getBrain().isActive(Activity.PANIC);
         if (panicking != entity.getTrackedValue(PANICKING)) {
             entity.setTrackedValue(PANICKING, panicking);
+        }
+
+        if (getWorkAnimation() != WorkAnimation.NONE
+            && (panicking || entity.isSleeping() || entity.level().getGameTime() > workAnimationLeaseUntil)) {
+            entity.setTrackedValue(WORK_ANIMATION, WorkAnimation.NONE);
         }
 
         if (entity.tickCount % 20 == 0) {
@@ -223,6 +244,64 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
         return Mth.clamp(Mth.lerp(partialTick, panicAnimationProgressO, panicAnimationProgress), 0.0F, 1.0F);
     }
 
+    public WorkAnimation getWorkAnimation() {
+        return entity.getTrackedValue(WORK_ANIMATION);
+    }
+
+    /**
+     * Plays (or keeps playing) a work animation for the given ticks; callers renew it while they work.
+     */
+    public void setWorkAnimation(WorkAnimation animation, int leaseTicks) {
+        workAnimationLeaseUntil = entity.level().getGameTime() + leaseTicks;
+        if (getWorkAnimation() != animation) {
+            entity.setTrackedValue(WORK_ANIMATION, animation);
+            restartWorkAnimation();
+        }
+    }
+
+    /**
+     * Starts the current loop over from its first frame, e.g. to line the impact up with a server action.
+     */
+    public void restartWorkAnimation() {
+        entity.setTrackedValue(WORK_ANIMATION_SEQUENCE, entity.getTrackedValue(WORK_ANIMATION_SEQUENCE) + 1);
+    }
+
+    public void stopWorkAnimation() {
+        entity.setTrackedValue(WORK_ANIMATION, WorkAnimation.NONE);
+    }
+
+    public void tickWorkAnimation() {
+        workAnimationProgressO = workAnimationProgress;
+
+        WorkAnimation target = getWorkAnimation();
+        int sequence = entity.getTrackedValue(WORK_ANIMATION_SEQUENCE);
+        if (target != WorkAnimation.NONE && (target != shownWorkAnimation || sequence != shownWorkAnimationSequence)) {
+            shownWorkAnimation = target;
+            shownWorkAnimationSequence = sequence;
+            workAnimationStartTick = entity.tickCount;
+        }
+
+        float goal = target != WorkAnimation.NONE ? 1.0F : 0.0F;
+        float delta = Mth.clamp(goal - workAnimationProgress, -WORK_ANIMATION_STEP, WORK_ANIMATION_STEP);
+        workAnimationProgress = Mth.clamp(workAnimationProgress + delta, 0.0F, 1.0F);
+        if (workAnimationProgress == 0.0F && workAnimationProgressO == 0.0F) {
+            shownWorkAnimation = WorkAnimation.NONE;
+        }
+    }
+
+    /** The clip being shown, which lingers while it blends out. */
+    public WorkAnimation getShownWorkAnimation() {
+        return shownWorkAnimation;
+    }
+
+    public float getWorkAnimationTicks(float partialTick) {
+        return entity.tickCount - workAnimationStartTick + partialTick;
+    }
+
+    public float getWorkAnimationProgress(float partialTick) {
+        return Mth.clamp(Mth.lerp(partialTick, workAnimationProgressO, workAnimationProgress), 0.0F, 1.0F);
+    }
+
     private boolean hasPanicStimulus() {
         return entity.getBrain().hasMemoryValue(MemoryModuleType.HURT_BY)
                || entity.getBrain().hasMemoryValue(MemoryModuleType.HURT_BY_ENTITY)
@@ -235,6 +314,16 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
 
     public int getMoodValue() {
         return entity.getTrackedValue(MOOD);
+    }
+
+    /** The personal schedule (see {@link SchedulesMCA#isValidSchedule}), or empty to follow the villager's timeline. */
+    public String getCustomSchedule() {
+        String schedule = entity.getTrackedValue(SCHEDULE);
+        return SchedulesMCA.isValidSchedule(schedule) ? schedule : "";
+    }
+
+    public void setCustomSchedule(String schedule) {
+        entity.setTrackedValue(SCHEDULE, SchedulesMCA.isValidSchedule(schedule) ? schedule : "");
     }
 
     public MoveState getMoveState() {
@@ -327,6 +416,9 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
 
         memory.modInteractionFatigue(1);
         memory.modHearts(hearts);
+        if (entity instanceof VillagerEntityMCA villager) {
+            villager.getNeeds().onPlayerInteraction();
+        }
         CriterionMCA.HEARTS.trigger(player, memory.getHearts(), hearts, "interaction");
         entity.getVillagerBrain().modifyMoodValue(hearts);
     }

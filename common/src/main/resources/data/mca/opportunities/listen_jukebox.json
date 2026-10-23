@@ -1,0 +1,11 @@
+{
+  "kind": "listen",
+  "blocks": [
+    "minecraft:jukebox"
+  ],
+  "properties": {
+    "has_record": "true"
+  },
+  "appeal": 1.5,
+  "particle": "minecraft:note"
+}

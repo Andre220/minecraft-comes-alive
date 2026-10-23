@@ -1,0 +1,6 @@
+{
+  "parent": "mca:block/template_shutter_closed_left",
+  "textures": {
+    "panel": "minecraft:block/jungle_trapdoor"
+  }
+}

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Chore;
 import net.conczin.mca.entity.ai.TaskUtils;
+import net.conczin.mca.entity.ai.WorkAnimation;
 import net.conczin.mca.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,6 +41,8 @@ public class HarvestingTask extends AbstractChoreTask {
     private int lastLandScan = -1200;
     private int lastCropScan = -1200;
     private int workingTick = 0;
+    /** Length of the crouch clip, see assets/mca/animations/work/crouch.json. */
+    private static final int WORK_TICKS = 40;
 
     private BlockPos currentPos;
 
@@ -63,6 +66,7 @@ public class HarvestingTask extends AbstractChoreTask {
     @Override
     protected void stop(ServerLevel world, VillagerEntityMCA villager, long time) {
         clearChoreItem(villager);
+        villager.getVillagerBrain().stopWorkAnimation();
 
         workingTick = 0;
 
@@ -184,10 +188,13 @@ public class HarvestingTask extends AbstractChoreTask {
         // work
         if (villager.distanceToSqr(Vec3.atBottomCenterOf(currentPos)) <= 6) {
             workingTick++;
-            if (workingTick % 5 == 0) {
-                villager.swing(villager.getDominantHand());
+            // crouch over the crop; one crouch cycle long, so the work lands on the animation's reach
+            if (workingTick == 1) {
+                villager.getVillagerBrain().restartWorkAnimation();
             }
-            if (workingTick > 40) { //todo magic number
+            villager.getVillagerBrain().setWorkAnimation(WorkAnimation.CROUCH, 5);
+            villager.getLookControl().setLookAt(Vec3.atCenterOf(currentPos));
+            if (workingTick > WORK_TICKS) {
                 plantable.remove(currentPos);
                 harvestable.remove(currentPos);
                 bonemealable.remove(currentPos);

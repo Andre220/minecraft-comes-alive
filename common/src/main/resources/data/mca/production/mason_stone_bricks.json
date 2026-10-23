@@ -1,0 +1,16 @@
+{
+  "profession": "minecraft:mason",
+  "ticks": 600,
+  "inputs": [
+    {
+      "item": "minecraft:cobblestone",
+      "count": 4
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:stone_bricks",
+      "count": 4
+    }
+  ]
+}

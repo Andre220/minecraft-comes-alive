@@ -1,0 +1,34 @@
+{
+  "order": 6,
+  "requirements": [
+    {
+      "kind": "tier",
+      "tier": "huge_house",
+      "count": 1
+    },
+    {
+      "kind": "building",
+      "building": "prison",
+      "count": 1
+    },
+    {
+      "kind": "building",
+      "building": "school",
+      "count": 1
+    },
+    {
+      "kind": "building",
+      "building": "library",
+      "count": 1
+    },
+    {
+      "kind": "workshops",
+      "count": 2,
+      "level": 3
+    },
+    {
+      "kind": "population",
+      "count": 30
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.expansion.speech.SpeechPause;
 import net.conczin.mca.ClientProxy;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
@@ -136,6 +137,7 @@ public interface Messenger extends EntityWrapper {
         }
 
         playSpeechEffect();
+        SpeechPause.onSpoke(asEntity(), receiver, message); // expansion: speech
 
         return message;
     }

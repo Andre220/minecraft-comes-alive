@@ -1,0 +1,42 @@
+{
+  "family": "house",
+  "types": [
+    "house",
+    "big_house"
+  ],
+  "tiers": [
+    {
+      "name": "small_house",
+      "minArea": 0,
+      "blocks": {
+        "#minecraft:beds": 1
+      }
+    },
+    {
+      "name": "common_house",
+      "minArea": 30,
+      "blocks": {
+        "#minecraft:beds": 2,
+        "#mca:chests": 1
+      }
+    },
+    {
+      "name": "big_house",
+      "minArea": 80,
+      "blocks": {
+        "#minecraft:beds": 4,
+        "#mca:chests": 2,
+        "minecraft:furnace": 1
+      }
+    },
+    {
+      "name": "huge_house",
+      "minArea": 140,
+      "blocks": {
+        "#minecraft:beds": 6,
+        "#mca:chests": 3,
+        "#mca:decoration": 6
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:crimson_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:crimson_shutter",
+    "count": 2
+  }
+}

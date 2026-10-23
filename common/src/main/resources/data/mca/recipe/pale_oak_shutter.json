@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:pale_oak_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:pale_oak_shutter",
+    "count": 2
+  }
+}

@@ -101,6 +101,8 @@ public class VillagerEntityBaseModelMCA extends HumanoidModel<VillagerRenderStat
             this.rightArm.zRot = Mth.lerp(panicAnimationProgress, this.rightArm.zRot, waveSideways);
         }
 
+        WorkAnimationPlayer.apply(this, state);
+
         applyVillagerDimensions(visuals);
         if (receivesDeferredAnimationPose && state instanceof VillagerStateHolder holder && holder.mca$getHumanoidModelPose() != null) {
             holder.mca$getHumanoidModelPose().applyTo(this);

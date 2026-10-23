@@ -32,6 +32,8 @@ public class Genetics implements Iterable<Genetics.Gene> {
     public static final GeneType EYE_BRIGHTNESS = new GeneType("EyeBrightness");
     public static final GeneType VOICE = new GeneType("Voice");
     public static final GeneType VOICE_TONE = new GeneType("VoiceTone");
+    /** How much and how fast a villager can learn its profession. */
+    public static final GeneType INTELLIGENCE = new GeneType("Intelligence"); // expansion: minds
 
     private static final CEnumParameter<Gender> GENDER = CParameter.create("Gender", Gender.UNASSIGNED);
 
@@ -49,7 +51,13 @@ public class Genetics implements Iterable<Genetics.Gene> {
     }
 
     public float getVerticalScaleFactor() {
-        return 0.75F + getGene(SIZE) / 2;
+        return squidwardHeight(0.75F + getGene(SIZE) / 2);
+    }
+
+    /** Applies the squidward height variation to a gene based height factor around 1. */
+    public static float squidwardHeight(float factor) {
+        Config config = Config.getInstance();
+        return config.useSquidwardModels ? Math.max(0.1F, 1.0F + (factor - 1.0F) * config.squidwardHeightVariation) : factor;
     }
 
     public float getHorizontalScaleFactor() {

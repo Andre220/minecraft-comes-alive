@@ -1,5 +1,9 @@
 package net.conczin.mca;
 
+import net.conczin.mca.expansion.speech.MouthMotion;
+import net.conczin.mca.expansion.speech.SpeechBubbles;
+import net.conczin.mca.client.debug.VillagerDebugTool;
+import net.conczin.mca.client.render.WorkAnimationEffects;
 import net.conczin.mca.client.gui.SkinLibraryScreen;
 import net.conczin.mca.client.gui.BlueprintScreen;
 import net.conczin.mca.client.resources.ClientSkinCatalog;
@@ -82,6 +86,10 @@ public class MCAClient {
         }
 
         SpeechManager.INSTANCE.tick(client);
+        VillagerDebugTool.tick(client);
+        SpeechBubbles.tick(client); // expansion: speech
+        MouthMotion.tick(client); // expansion: speech
+        WorkAnimationEffects.tick(client);
     }
 
     public static void addPlayerData(UUID uuid, VillagerEntityMCA villager) {

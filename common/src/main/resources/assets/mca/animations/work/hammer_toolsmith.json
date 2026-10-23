@@ -1,0 +1,42 @@
+{
+  "loop": true,
+  "animation_length": 0.8,
+  "mca:tool": "minecraft:iron_pickaxe",
+  "mca:impact": {"sound": "minecraft:block.smithing_table.use", "volume": 0.2, "pitch": 1.5, "particle": "block", "particle_count": 3},
+  "mca:events": {"0.5": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-40, -10, 0],
+        "0.28": {"post": [-140, -10, 10], "lerp_mode": "ease_out"},
+        "0.4": {"post": [-148, -10, 10], "lerp_mode": "ease_in_out"},
+        "0.5": {"post": [-35, -10, 0], "lerp_mode": "ease_in"},
+        "0.56": {"post": [-45, -10, 0], "lerp_mode": "ease_out"},
+        "0.8": {"post": [-40, -10, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": {
+        "0.0": [-45, 15, 0],
+        "0.5": {"post": [-45, 15, 0], "lerp_mode": "ease_in_out"},
+        "0.55": {"post": [-40, 15, 0], "lerp_mode": "ease_out"},
+        "0.8": {"post": [-45, 15, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "body": {
+      "rotation": {
+        "0.0": [8, 0, 0],
+        "0.4": {"post": [4, -5, 0], "lerp_mode": "ease_in_out"},
+        "0.5": {"post": [11, 2, 0], "lerp_mode": "ease_in"},
+        "0.8": {"post": [8, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "head": {
+      "rotation": {
+        "0.0": [3, 0, 0],
+        "0.53": {"post": [6, 0, 0], "lerp_mode": "ease_out"},
+        "0.8": {"post": [3, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    }
+  }
+}

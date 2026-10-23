@@ -1,0 +1,16 @@
+{
+  "profession": "minecraft:butcher",
+  "ticks": 300,
+  "inputs": [
+    {
+      "item": "minecraft:porkchop",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:cooked_porkchop",
+      "count": 1
+    }
+  ]
+}

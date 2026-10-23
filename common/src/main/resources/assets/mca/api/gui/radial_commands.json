@@ -1,0 +1,42 @@
+[
+  {
+    "identifier": "gui.button.backarrow",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.follow",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "!following",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.stay",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "!staying",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.move",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "following",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.move",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "staying",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.ridehorse",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": ""
+  }
+]

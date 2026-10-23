@@ -1,0 +1,31 @@
+{
+  "loop": true,
+  "animation_length": 2.2,
+  "mca:tool": "minecraft:stick",
+  "mca:impact": {"sound": "minecraft:entity.generic.splash", "volume": 0.08, "pitch": 1.6, "particle": "minecraft:splash", "particle_count": 3},
+  "mca:events": {"1.1": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": {"post": [-50, -15, 0], "lerp_mode": "catmullrom"},
+        "0.55": {"post": [-60, 10, 0], "lerp_mode": "catmullrom"},
+        "1.1": {"post": [-70, -15, 0], "lerp_mode": "catmullrom"},
+        "1.65": {"post": [-60, -35, 0], "lerp_mode": "catmullrom"},
+        "2.2": {"post": [-50, -15, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "left_arm": {
+      "rotation": [-45, 20, 0]
+    },
+    "body": {
+      "rotation": {
+        "0.0": {"post": [14, -5, 0], "lerp_mode": "catmullrom"},
+        "1.1": {"post": [14, 5, 0], "lerp_mode": "catmullrom"},
+        "2.2": {"post": [14, -5, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "head": {
+      "rotation": [6, 0, 0]
+    }
+  }
+}

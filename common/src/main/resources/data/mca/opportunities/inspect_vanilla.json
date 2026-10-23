@@ -1,0 +1,20 @@
+{
+  "kind": "inspect",
+  "entities": [
+    {
+      "type": "minecraft:armor_stand"
+    },
+    {
+      "type": "minecraft:item_frame"
+    },
+    {
+      "type": "minecraft:glow_item_frame"
+    }
+  ],
+  "appeal": 0.8,
+  "professions": {
+    "minecraft:toolsmith": 1.5,
+    "minecraft:weaponsmith": 1.5,
+    "minecraft:armorer": 1.5
+  }
+}

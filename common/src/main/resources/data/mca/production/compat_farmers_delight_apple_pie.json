@@ -1,0 +1,26 @@
+{
+  "profession": "minecraft:butcher",
+  "building": "bakery",
+  "ticks": 800,
+  "inputs": [
+    {
+      "item": "minecraft:wheat",
+      "count": 3
+    },
+    {
+      "item": "minecraft:sugar",
+      "count": 2
+    },
+    {
+      "item": "minecraft:apple",
+      "count": 3
+    }
+  ],
+  "outputs": [
+    {
+      "item": "farmersdelight:apple_pie",
+      "count": 1
+    }
+  ],
+  "optional": true
+}

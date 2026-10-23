@@ -48,4 +48,8 @@ public interface ClientHandler {
     void handleCivilRegistryResponse(CivilRegistryResponse response);
 
     void handleBuildingPolymorph(BuildingPolymorphMessage message);
+
+    void handleWorkOrders(WorkOrdersResponse message);
+
+    void handleBlueprint(BlueprintResponse message);
 }

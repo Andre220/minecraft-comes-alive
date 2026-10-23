@@ -1,6 +1,7 @@
 package net.conczin.mca.client.render;
 
 import net.conczin.mca.client.model.VillagerEntityModelMCA;
+import net.conczin.mca.client.render.layer.CarriedItemLayer;
 import net.conczin.mca.client.render.layer.ClothingLayer;
 import net.conczin.mca.client.render.layer.FaceLayer;
 import net.conczin.mca.client.render.layer.HairLayer;
@@ -27,6 +28,7 @@ public class VillagerEntityMCARenderer extends VillagerLikeEntityMCARenderer<Vil
         addLayer(new ClothingLayer<>(this, createVisibleModel(VillagerEntityModelMCA.bodyData(new CubeDeformation(0.0625F))), "normal"));
         addLayer(new HairLayer<>(this, createVisibleModel(VillagerEntityModelMCA.hairData(new CubeDeformation(0.125F)))));
         addLayer(new VillagerFishingLineLayer(this));
+        addLayer(new CarriedItemLayer(this));
     }
 
     @Override

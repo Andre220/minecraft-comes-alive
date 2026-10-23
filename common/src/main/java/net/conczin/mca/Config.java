@@ -1,5 +1,6 @@
 package net.conczin.mca;
 
+import net.conczin.mca.expansion.speech.SpeechSound;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,7 +21,7 @@ import java.util.UUID;
 
 public final class Config extends CommonConfig {
     private static final int VERSION = 2;
-    private static final int DEFAULTS_VERSION = 1;
+    private static final int DEFAULTS_VERSION = 2;
     private static final Config INSTANCE = loadOrCreate();
 
     private static CommonConfig serverConfig;
@@ -337,7 +338,86 @@ public final class Config extends CommonConfig {
     /**
      * If true, villagers use the vanilla “Squidward” (nose) model.
      */
-    public boolean useSquidwardModels = false;
+    public boolean useSquidwardModels = true;
+
+    /**
+     * With squidward models, reshapes adult villagers into MCA's player-like body and dresses them
+     * with MCA skin, face, clothing and hair as a single texture. Adds no animation of its own.
+     * Without an entity model mod the arms stay still; with Fresh Animations use its MCA integration.
+     * Applied on resource reload.
+     */
+    public boolean squidwardHumanLikeModels = false;
+
+    /**
+     * With squidward models, uses the human-like villager visuals with Fresh Animations: enables
+     * MCA's "MCA x Fresh Animations" resource pack by default, a player-shaped villager model that
+     * uses Fresh Animations' own animation (it must be placed above Fresh Animations).
+     * Applied on restart.
+     */
+    public boolean freshAnimationsIntegration = false;
+
+    /**
+     * What villagers say shows in a box above their head, letter by letter, and they stand still while speaking.
+     * It is still copied to the chat. // expansion: speech
+     */
+    public boolean villagerSpeechBubbles = false;
+
+    /** Sound while a speech bubble's text appears: BEEP, MCA_VOICE (MCA's text to speech) or NONE. */
+    public SpeechSound speechBubbleSound = SpeechSound.BEEP;
+
+    /** How fast the text of a speech bubble appears. */
+    public int speechBubbleLettersPerSecond = 30;
+
+    /**
+     * With the Fresh Animations integration, a speaking villager's mouth opens on the vowels and its tongue moves,
+     * in time with its speech bubble. // expansion: speech
+     */
+    public boolean villagerMouthAnimation = false;
+
+    /** Beards: grown men often have one, tinted with their hair colour; pick one in the villager editor. // expansion: looks */
+    public boolean villagerBeards = false;
+
+    /** A short line above villagers saying what they are doing, shown when you are close. // expansion: minds */
+    public boolean villagerActionLabels = false;
+
+    /**
+     * With human-like squidward villagers, turns the outer layers (hat, jacket, sleeves, pants) into
+     * small cubes per pixel when the villager is close, similar to 3D skin layer mods.
+     */
+    public boolean squidward3dLayers = false;
+
+    /**
+     * Extra size per age stage of children on squidward models, on top of MCA's age size, since the
+     * player-shaped body keeps adult proportions.
+     */
+    public float squidwardBabySize = 0.75f;
+    public float squidwardToddlerSize = 0.75f;
+    public float squidwardChildSize = 0.75f;
+    public float squidwardTeenSize = 0.9f;
+
+    /**
+     * How strongly the height gene varies villager height on squidward models: 1 keeps MCA's
+     * variation, 2 doubles how far tall and short villagers are from average, 0 makes them equal.
+     */
+    public float squidwardHeightVariation = 1.0f;
+
+    /**
+     * For players drawn with MCA's villager renderer, turns the outer clothing and hair layers into
+     * small cubes per pixel when close.
+     */
+    public boolean player3dLayers = false;
+
+    /**
+     * Whether MCA's own renderer makes eyes blink. Turn off when another source animates the eyes,
+     * such as Fresh Animations. Closed eyes while sleeping or dying are kept.
+     */
+    public boolean mcaEyeBlinking = true;
+
+    /**
+     * Shows the villager interaction buttons as a radial menu around the screen center, with item
+     * icons; off brings back the classic button columns.
+     */
+    public boolean radialInteractMenu = true;
 
     /**
      * Enables female body features (visual only).
@@ -564,6 +644,33 @@ public final class Config extends CommonConfig {
      * Interval (in ticks) between tax collection seasons.
      */
     public int taxSeason = 168000;
+
+    /**
+     * Lowest village rank allowed to plan work orders (dig or build jobs for builders and miners).
+     * One of outlaw, peasant, merchant, noble, mayor, monarch. Holding a Villager Editor always
+     * allows it, and such orders need no materials.
+     */
+    public String workOrderMinRank = "noble";
+
+    /**
+     * Largest number of blocks a single work order may cover.
+     */
+    public int workOrderMaxVolume = 4096;
+
+    /**
+     * Largest number of open work orders per village.
+     */
+    public int workOrderMaxPerVillage = 16;
+
+    /**
+     * Multiplier of how fast builders and miners break and place blocks.
+     */
+    public float workOrderSpeedMultiplier = 1.0f;
+
+    /**
+     * Largest width, height and depth of a blueprint, both when capturing and when placing one.
+     */
+    public int blueprintMaxSize = 48;
 
     /**
      * Chance (0–1) per minute that a marriage event occurs in the village.
@@ -880,6 +987,7 @@ public final class Config extends CommonConfig {
             "villagersplus:alchemist", "minecraft:cleric",
             "villagersplus:horticulturist", "minecraft:farmer",
             "villagersplus:miner", "mca:miner",
+            "mca:builder", "minecraft:mason",
             "villagersplus:oceanographer", "minecraft:fisherman",
             "villagersplus:occultist", "mca:cultist"
     );

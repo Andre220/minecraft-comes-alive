@@ -1,0 +1,7 @@
+{
+  "kind": "inspect",
+  "blocks": ["tabletop:placed_items"],
+  "contents": true,
+  "appeal": 1.3,
+  "rooms": {"inn": 1.5, "library": 1.3, "music_store": 1.5}
+}

@@ -1,0 +1,8 @@
+{
+  "kind": "listen",
+  "blocks": [
+    "minecraft:note_block"
+  ],
+  "appeal": 0.7,
+  "particle": "minecraft:note"
+}

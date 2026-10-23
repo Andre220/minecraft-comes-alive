@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "mca:chopping_block",
+    "mca:hunting_rack",
+    "mca:forage_basket"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "parent": "mca:block/template_shutter_open",
+  "textures": {
+    "panel": "minecraft:block/bamboo_trapdoor"
+  }
+}

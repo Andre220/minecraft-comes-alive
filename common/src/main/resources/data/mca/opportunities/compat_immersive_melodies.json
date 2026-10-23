@@ -1,0 +1,6 @@
+{
+  "kind": "play",
+  "items": ["#immersive_melodies:instruments"],
+  "appeal": 1.2,
+  "rooms": {"inn": 2.0, "music_store": 2.0, "town_center": 1.3}
+}

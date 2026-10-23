@@ -1,0 +1,20 @@
+{
+  "profession": "minecraft:toolsmith",
+  "ticks": 2400,
+  "inputs": [
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 3
+    },
+    {
+      "item": "minecraft:stick",
+      "count": 2
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:iron_axe",
+      "count": 1
+    }
+  ]
+}

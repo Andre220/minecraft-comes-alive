@@ -42,5 +42,41 @@
     "notifyServer": true,
     "targetServer": false,
     "constraints": ""
+  },
+  {
+    "identifier": "gui.button.profession.builder",
+    "x": -90,
+    "y": 10,
+    "row": 3,
+    "width": 80,
+    "height": 20,
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "work_orders",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.profession.miner",
+    "x": -90,
+    "y": 10,
+    "row": 4,
+    "width": 80,
+    "height": 20,
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "work_orders",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.profession.hauler",
+    "x": -90,
+    "y": 10,
+    "row": 5,
+    "width": 80,
+    "height": 20,
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "economy",
+    "hideOnFail": true
   }
 ]

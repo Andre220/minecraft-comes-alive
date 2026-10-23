@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:flower_pots",
+    "#minecraft:wool_carpets",
+    "#minecraft:candles",
+    "#minecraft:banners",
+    "minecraft:bookshelf",
+    "minecraft:chiseled_bookshelf",
+    "minecraft:lantern",
+    "minecraft:soul_lantern",
+    "minecraft:decorated_pot",
+    "minecraft:jukebox",
+    "minecraft:note_block",
+    "minecraft:lectern",
+    "minecraft:moss_carpet",
+    "minecraft:pale_moss_carpet",
+    "minecraft:flowering_azalea",
+    "minecraft:azalea"
+  ]
+}

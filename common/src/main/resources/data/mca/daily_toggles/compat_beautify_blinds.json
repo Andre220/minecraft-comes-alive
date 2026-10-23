@@ -1,0 +1,20 @@
+{
+  "blocks": [
+    "beautify:oak_blinds",
+    "beautify:spruce_blinds",
+    "beautify:birch_blinds",
+    "beautify:jungle_blinds",
+    "beautify:acacia_blinds",
+    "beautify:dark_oak_blinds",
+    "beautify:mangrove_blinds",
+    "beautify:cherry_blinds",
+    "beautify:crimson_blinds",
+    "beautify:warped_blinds",
+    "beautify:iron_blinds"
+  ],
+  "property": "open",
+  "active": "true",
+  "inactive": "false",
+  "from": 0,
+  "to": 12500
+}

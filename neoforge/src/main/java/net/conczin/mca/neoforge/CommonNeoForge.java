@@ -1,5 +1,10 @@
 package net.conczin.mca.neoforge;
 
+import net.conczin.mca.expansion.minds.routine.DailyToggles;
+import net.conczin.mca.expansion.minds.routine.OpportunityTypes;
+import net.conczin.mca.expansion.progression.VillageStages;
+import net.conczin.mca.expansion.progression.BuildingTiers;
+import net.conczin.mca.expansion.requests.RequestPool;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
@@ -18,6 +23,9 @@ import net.conczin.mca.server.ServerInteractionManager;
 import net.conczin.mca.server.DestinyLocationResolver;
 import net.conczin.mca.server.command.AdminCommand;
 import net.conczin.mca.server.command.Command;
+import net.conczin.mca.server.command.WorkOrderCommand;
+import net.conczin.mca.expansion.economy.EconomyRegistry;
+import net.conczin.mca.expansion.economy.ProductionRecipes;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.util.network.datasync.MCAEntityDataSerializers;
 import net.minecraft.core.Registry;
@@ -93,6 +101,7 @@ public final class CommonNeoForge {
         registerHelper(event, BuiltInRegistries.VILLAGER_PROFESSION, ProfessionsMCA::registerProfessions);
         registerHelper(event, BuiltInRegistries.DATA_COMPONENT_TYPE, DataComponentsMCA::registerProfessions);
         registerHelper(event, BuiltInRegistries.TRIGGER_TYPES, CriterionMCA::registerCriteria);
+        registerHelper(event, BuiltInRegistries.POINT_OF_INTEREST_TYPE, EconomyRegistry::registerPoiTypes); // expansion: economy
 
         if (event.getRegistryKey() == Registries.BLOCK_ENTITY_TYPE) {
             event.register(Registries.BLOCK_ENTITY_TYPE, helper ->
@@ -127,6 +136,12 @@ public final class CommonNeoForge {
         event.addListener(MCA.locate("hair_styles"), new HairStyleList());
         event.addListener(MCA.locate("layered_hair"), new LayeredHairList());
         event.addListener(MCA.locate("gifts"), new GiftLoader());
+        event.addListener(ProductionRecipes.ID, new ProductionRecipes()); // expansion: economy
+        event.addListener(RequestPool.ID, new RequestPool()); // expansion: requests
+        event.addListener(BuildingTiers.ID, new BuildingTiers()); // expansion: progression
+        event.addListener(VillageStages.ID, new VillageStages()); // expansion: progression
+        event.addListener(OpportunityTypes.ID, new OpportunityTypes()); // expansion: minds
+        event.addListener(DailyToggles.ID, new DailyToggles()); // expansion: minds
         event.addListener(MCA.locate("dialogues"), new Dialogues());
         event.addListener(MCA.locate("tasks"), new Tasks());
         event.addListener(MCA.locate("names"), new Names());
@@ -137,6 +152,7 @@ public final class CommonNeoForge {
     public static void onCommandRegister(RegisterCommandsEvent event) {
         AdminCommand.register(event.getDispatcher());
         Command.register(event.getDispatcher());
+        WorkOrderCommand.register(event.getDispatcher(), event.getBuildContext());
     }
 
     @SubscribeEvent

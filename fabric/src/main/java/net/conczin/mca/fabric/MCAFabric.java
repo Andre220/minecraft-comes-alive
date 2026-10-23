@@ -1,5 +1,10 @@
 package net.conczin.mca.fabric;
 
+import net.conczin.mca.expansion.minds.routine.DailyToggles;
+import net.conczin.mca.expansion.minds.routine.OpportunityTypes;
+import net.conczin.mca.expansion.progression.VillageStages;
+import net.conczin.mca.expansion.progression.BuildingTiers;
+import net.conczin.mca.expansion.requests.RequestPool;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.block.BlockEntityTypesMCA;
@@ -17,6 +22,9 @@ import net.conczin.mca.server.ServerInteractionManager;
 import net.conczin.mca.server.DestinyLocationResolver;
 import net.conczin.mca.server.command.AdminCommand;
 import net.conczin.mca.server.command.Command;
+import net.conczin.mca.server.command.WorkOrderCommand;
+import net.conczin.mca.expansion.economy.EconomyRegistry;
+import net.conczin.mca.expansion.economy.ProductionRecipes;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.util.network.datasync.MCAEntityDataSerializers;
 import net.fabricmc.api.EnvType;
@@ -104,6 +112,9 @@ public final class MCAFabric implements ModInitializer {
         registerHelper(BuiltInRegistries.VILLAGER_PROFESSION, ProfessionsMCA::registerProfessions);
         registerHelper(BuiltInRegistries.DATA_COMPONENT_TYPE, DataComponentsMCA::registerProfessions);
         registerHelper(BuiltInRegistries.TRIGGER_TYPES, CriterionMCA::registerCriteria);
+        // expansion: economy
+        registerHelper(BuiltInRegistries.POINT_OF_INTEREST_TYPE, EconomyRegistry::registerPoiTypes);
+        EconomyRegistry.bindPoiStates();
 
         SchedulesMCA.bootstrap();
         TagsMCA.Blocks.bootstrap();
@@ -127,6 +138,12 @@ public final class MCAFabric implements ModInitializer {
         registerReloadListener(resourceLoader, Dialogues.ID, new Dialogues());
         registerReloadListener(resourceLoader, Tasks.ID, new Tasks());
         registerReloadListener(resourceLoader, Names.ID, new Names());
+        registerReloadListener(resourceLoader, ProductionRecipes.ID, new ProductionRecipes()); // expansion: economy
+        registerReloadListener(resourceLoader, RequestPool.ID, new RequestPool()); // expansion: requests
+        registerReloadListener(resourceLoader, BuildingTiers.ID, new BuildingTiers()); // expansion: progression
+        registerReloadListener(resourceLoader, VillageStages.ID, new VillageStages()); // expansion: progression
+        registerReloadListener(resourceLoader, OpportunityTypes.ID, new OpportunityTypes()); // expansion: minds
+        registerReloadListener(resourceLoader, DailyToggles.ID, new DailyToggles()); // expansion: minds
         registerReloadListener(resourceLoader, BuildingTypes.ID, new BuildingTypes());
 
         // Create the creative mode tab
@@ -171,6 +188,7 @@ public final class MCAFabric implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             AdminCommand.register(dispatcher);
             Command.register(dispatcher);
+            WorkOrderCommand.register(dispatcher, registryAccess);
         });
     }
 

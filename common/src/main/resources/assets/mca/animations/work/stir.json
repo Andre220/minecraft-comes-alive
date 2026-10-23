@@ -1,0 +1,35 @@
+{
+  "loop": true,
+  "animation_length": 1.6,
+  "mca:tool": "minecraft:blaze_rod",
+  "mca:impact": {"sound": "none", "particle": "minecraft:bubble_pop", "particle_count": 2},
+  "mca:events": {"0.8": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": {"post": [-55, -10, 0], "lerp_mode": "catmullrom"},
+        "0.4": {"post": [-62, 5, 0], "lerp_mode": "catmullrom"},
+        "0.8": {"post": [-69, -10, 0], "lerp_mode": "catmullrom"},
+        "1.2": {"post": [-62, -25, 0], "lerp_mode": "catmullrom"},
+        "1.6": {"post": [-55, -10, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "left_arm": {
+      "rotation": [5, 0, -12]
+    },
+    "body": {
+      "rotation": {
+        "0.0": {"post": [12, -3, 0], "lerp_mode": "catmullrom"},
+        "0.8": {"post": [12, 3, 0], "lerp_mode": "catmullrom"},
+        "1.6": {"post": [12, -3, 0], "lerp_mode": "catmullrom"}
+      }
+    },
+    "head": {
+      "rotation": {
+        "0.0": {"post": [4, -4, 0], "lerp_mode": "catmullrom"},
+        "0.8": {"post": [4, 4, 0], "lerp_mode": "catmullrom"},
+        "1.6": {"post": [4, -4, 0], "lerp_mode": "catmullrom"}
+      }
+    }
+  }
+}

@@ -1,0 +1,129 @@
+[
+  {
+    "identifier": "gui.button.backarrow",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.gift",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.trade",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "trader,adult",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.inventory",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "family",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.inventory",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "mercenary",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.work",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": "family,!baby",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.work",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": "!family,mercenary",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.familyTree",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.commands",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.orders",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.locations",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.pick_up",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "!adult,!teen",
+    "isInteraction": true
+  },
+  {
+    "identifier": "gui.button.armor",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "",
+    "hideOnFail": false
+  },
+  {
+    "identifier": "gui.button.execute",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "!outlawed,mayor",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.negotiate",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "barter,adult",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.peek_inventory",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "barter,!family,!mercenary",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.request",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "requests",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.pardon",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "outlawed,mayor",
+    "hideOnFail": true
+  },
+  {
+    "identifier": "gui.button.professions",
+    "notifyServer": true,
+    "targetServer": false,
+    "constraints": "adult,monarch",
+    "hideOnFail": true
+  }
+]

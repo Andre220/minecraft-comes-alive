@@ -1,0 +1,30 @@
+{
+  "profession": "minecraft:butcher",
+  "building": "inn",
+  "ticks": 1200,
+  "inputs": [
+    {
+      "item": "minecraft:mutton",
+      "count": 2
+    },
+    {
+      "item": "minecraft:baked_potato",
+      "count": 2
+    },
+    {
+      "item": "farmersdelight:onion",
+      "count": 1
+    },
+    {
+      "item": "minecraft:bowl",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "farmersdelight:shepherds_pie_block",
+      "count": 1
+    }
+  ],
+  "optional": true
+}

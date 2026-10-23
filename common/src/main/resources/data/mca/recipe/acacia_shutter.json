@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:acacia_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:acacia_shutter",
+    "count": 2
+  }
+}

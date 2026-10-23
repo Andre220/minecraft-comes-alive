@@ -1,0 +1,20 @@
+{
+  "order": 3,
+  "requirements": [
+    {
+      "kind": "building",
+      "building": "inn",
+      "count": 1
+    },
+    {
+      "kind": "workshops",
+      "count": 2,
+      "level": 1
+    },
+    {
+      "kind": "tier",
+      "tier": "common_house",
+      "count": 2
+    }
+  ]
+}

@@ -1,11 +1,19 @@
 package net.conczin.mca.entity;
 
+import net.conczin.mca.expansion.minds.ActionLabels;
+import net.conczin.mca.expansion.looks.Beards;
+import net.conczin.mca.expansion.requests.Requests;
+import net.conczin.mca.expansion.minds.Diet;
+import net.conczin.mca.expansion.minds.Skills;
 import com.mojang.serialization.MapCodec;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.MCAClient;
 import net.conczin.mca.datafix.McaDataFixers;
 import net.conczin.mca.entity.ai.*;
+import net.conczin.mca.entity.ai.queue.ActionQueue;
+import net.conczin.mca.entity.ai.queue.ActionType;
+import net.conczin.mca.server.property.PropertyCrimes;
 import net.conczin.mca.entity.ai.brain.VillagerBrain;
 import net.conczin.mca.entity.ai.brain.VillagerTasksMCA;
 import net.conczin.mca.entity.ai.chatAI.ChatAI;
@@ -82,6 +90,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
+import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
@@ -140,6 +149,8 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     private final Genetics genetics = new Genetics(this);
     private final Traits traits = new Traits(this);
     private final Residency residency = new Residency(this);
+    private final Needs needs = new Needs(this);
+    private final ActionQueue actionQueue = new ActionQueue(this);
     private final BreedableRelationship relations = new BreedableRelationship(this);
     private final VillagerCommandHandler interactions = new VillagerCommandHandler(this);
     private final UpdatableInventory inventory = new UpdatableInventory(27);
@@ -224,6 +235,13 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     public static <E extends Entity> CDataManager.Builder<E> createTrackedData(CDataManager.Builder<E> builder) {
         return VillagerLike.createTrackedData(builder).addAll(INFECTION_PROGRESS)
                 .add(Residency::createTrackedData)
+                .add(Needs::createTrackedData)
+                .add(Skills::createTrackedData) // expansion: minds
+                .add(Beards::createTrackedData) // expansion: looks
+                .add(ActionLabels::createTrackedData) // expansion: minds
+                .add(Diet::createTrackedData) // expansion: minds
+                .add(Requests::createTrackedData) // expansion: requests
+                .add(ActionQueue::createTrackedData)
                 .add(BreedableRelationship::createTrackedData);
     }
 
@@ -386,6 +404,19 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
 
     public Residency getResidency() {
         return residency;
+    }
+
+    public Needs getNeeds() {
+        return needs;
+    }
+
+    public ActionQueue getActionQueue() {
+        return actionQueue;
+    }
+
+    /** Whether the villager can eat this, like it does to recover health. */
+    public static boolean isEdible(ItemStack stack) {
+        return canEat(stack);
     }
 
     @Override
@@ -757,6 +788,10 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             damageAmount *= 0.75f;
         }
 
+        if (source.getEntity() instanceof Enemy) {
+            needs.onHurtByMob();
+        }
+
         if (!level().isClientSide()) {
             //scream and loose hearts
             if (source.getEntity() instanceof Player player) {
@@ -858,6 +893,24 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         return getVillagerBrain().getMemoriesForPlayer(attacker).getHearts() / Math.max(1, Config.getInstance().heartsForPardonHit);
     }
 
+    /**
+     * A guard learns that a player committed a crime (see PropertyCrimes): like a villager being
+     * hit, it warns the player first and attacks once the bounty exceeds its patience.
+     */
+    public void reportCrime(Player criminal) {
+        if (!isGuard()) {
+            return;
+        }
+        int bounty = getSmallBounty();
+        int maxWarning = getMaxWarnings(criminal);
+        if (bounty > maxWarning) {
+            getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, criminal);
+        } else if (bounty == 0 || bounty == maxWarning) {
+            sendChatMessage(criminal, "villager.warning");
+        }
+        getBrain().setMemory(MemoryModuleTypeMCA.SMALL_BOUNTY, bounty + 1);
+    }
+
     @Override
     public void aiStep() {
         updateSwingTime();
@@ -875,17 +928,23 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         if (!level().isClientSide()) {
             tickRecoveryFoodUse();
 
-            if (tickCount % 200 == 0
-                    && getHealth() < getMaxHealth()
+            // Eat now when eating heads the action queue, else now and then when hurt or hungry.
+            boolean eatNow = tickCount % 20 == 0 && actionQueue.isCurrent(ActionType.EAT);
+            if ((eatNow || tickCount % 200 == 0 && (getHealth() < getMaxHealth() || needs.isHungry()))
                     && canRecoverHealthNow()) {
-                if (!startRecoveryFoodUse()) {
+                if (!startRecoveryFoodUse() && getHealth() < getMaxHealth()) {
                     heal(1); // natural regeneration
                 }
             }
 
+            needs.tick();
+            actionQueue.tick();
+            PropertyCrimes.tickInvestigation(this);
+
             tickDespawnDelay();
 
             residency.tick();
+            ActionLabels.update(this); // expansion: minds
 
             relations.tick(tickCount);
 
@@ -977,7 +1036,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             return startRecoveryFoodUse(mainHandFoodProperties, false, ItemStack.EMPTY);
         }
 
-        int slot = InventoryUtils.getFirstSlotContainingItem(getInventory(), VillagerEntityMCA::canEat);
+        int slot = Diet.pickFood(this, getInventory(), VillagerEntityMCA::canEat); // expansion: minds
         if (slot < 0) {
             return false;
         }
@@ -1040,6 +1099,9 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     public void tick() {
         super.tick();
         mcaBrain.tickPanicAnimation();
+        if (level().isClientSide()) {
+            mcaBrain.tickWorkAnimation();
+        }
 
         int visualAge = getVisualAge();
         if (visualAge < 0
@@ -1211,6 +1273,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         completingRecoveryFoodUse = completedRecoveryFoodUse;
         if (recoveryFoodProperties != null) {
             heal(recoveryFoodProperties.nutrition());
+            needs.onAte(Math.round(recoveryFoodProperties.nutrition() * Diet.onAte(this, getUseItem()))); // expansion: minds
         }
         super.completeUsingItem();
         completingRecoveryFoodUse = false;

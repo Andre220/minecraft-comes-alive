@@ -1,0 +1,11 @@
+{
+  "kind": "warm",
+  "blocks": [
+    "minecraft:campfire",
+    "minecraft:soul_campfire"
+  ],
+  "properties": {
+    "lit": "true"
+  },
+  "appeal": 1.0
+}

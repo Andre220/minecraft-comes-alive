@@ -1,0 +1,20 @@
+{
+  "kind": "sit",
+  "entities": [
+    {
+      "type": "minecraft:item_display",
+      "tags": [
+        "tac",
+        "chair"
+      ]
+    },
+    {
+      "type": "minecraft:item_display",
+      "tags": [
+        "tac",
+        "bench"
+      ]
+    }
+  ],
+  "appeal": 1.6
+}

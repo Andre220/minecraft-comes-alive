@@ -1,0 +1,15 @@
+{
+  "kind": "read",
+  "blocks": [
+    "beautify:bookstack"
+  ],
+  "appeal": 1.0,
+  "rooms": {
+    "library": 1.8,
+    "school": 1.8
+  },
+  "professions": {
+    "minecraft:librarian": 1.5
+  },
+  "hold": "minecraft:book"
+}

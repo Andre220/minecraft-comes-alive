@@ -1,0 +1,39 @@
+{
+  "order": 5,
+  "requirements": [
+    {
+      "kind": "tier",
+      "tier": "big_house",
+      "count": 2
+    },
+    {
+      "kind": "any",
+      "of": [
+        {
+          "kind": "building",
+          "building": "armory",
+          "count": 1
+        },
+        {
+          "kind": "building",
+          "building": "blacksmith",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "kind": "building",
+      "building": "music_store",
+      "count": 1
+    },
+    {
+      "kind": "workshops",
+      "count": 2,
+      "level": 2
+    },
+    {
+      "kind": "population",
+      "count": 20
+    }
+  ]
+}

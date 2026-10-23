@@ -184,9 +184,7 @@ public final class Mourning {
                 || isInterrupted(villager)
                 || villager.isSleeping()
                 // GRIEVE has no schedule updater, so check the scheduled activity itself.
-                || villager.getBrain().schedule != null
-                        && villager.level().environmentAttributes().getValue(
-                        villager.getBrain().schedule, villager.position()) == Activity.REST
+                || SchedulesMCA.scheduledActivity(villager) == Activity.REST
                 || villager.getBrain().getMemoryInternal(MemoryModuleTypeMCA.PLAYER_FOLLOWING).isPresent()
                 || villager.getBrain().getMemoryInternal(MemoryModuleTypeMCA.STAYING).isPresent();
     }

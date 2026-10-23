@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:bamboo_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:bamboo_shutter",
+    "count": 2
+  }
+}

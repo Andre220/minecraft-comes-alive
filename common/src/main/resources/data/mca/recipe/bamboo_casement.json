@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:bamboo_trapdoor",
+    "minecraft:bamboo_trapdoor"
+  ],
+  "result": {
+    "id": "mca:bamboo_casement",
+    "count": 1
+  }
+}

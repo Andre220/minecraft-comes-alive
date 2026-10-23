@@ -1,0 +1,46 @@
+{
+  "loop": true,
+  "animation_length": 3.0,
+  "mca:tool": "minecraft:feather",
+  "mca:impact": {"sound": "minecraft:item.book.page_turn", "volume": 0.4, "pitch": 1.0, "particle": "none"},
+  "mca:events": {"2.1": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-48, -8, 0],
+        "0.2": [-50, -2, 0],
+        "0.4": [-47, -10, 0],
+        "0.6": [-50, -3, 0],
+        "0.8": [-47, -11, 0],
+        "1.0": [-50, -4, 0],
+        "1.2": [-48, -9, 0],
+        "1.4": [-49, -2, 0],
+        "1.6": [-48, -8, 0],
+        "1.8": {"post": [-42, -8, 0], "lerp_mode": "ease_out"},
+        "2.5": {"post": [-42, -8, 0], "lerp_mode": "linear"},
+        "3.0": {"post": [-48, -8, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": {
+        "0.0": [-40, 15, 0],
+        "1.8": [-40, 15, 0],
+        "2.1": {"post": [-55, -15, 0], "lerp_mode": "ease_in_out"},
+        "2.4": {"post": [-45, 10, 0], "lerp_mode": "ease_out"},
+        "3.0": {"post": [-40, 15, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "body": {
+      "rotation": [10, 0, 0]
+    },
+    "head": {
+      "rotation": {
+        "0.0": [6, 0, 0],
+        "1.8": [6, 0, 0],
+        "2.1": {"post": [6, -8, 0], "lerp_mode": "ease_in_out"},
+        "2.6": {"post": [6, 0, 0], "lerp_mode": "ease_in_out"},
+        "3.0": [6, 0, 0]
+      }
+    }
+  }
+}

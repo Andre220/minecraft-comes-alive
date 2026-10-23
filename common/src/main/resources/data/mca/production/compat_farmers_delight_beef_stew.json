@@ -1,0 +1,30 @@
+{
+  "profession": "minecraft:butcher",
+  "building": "inn",
+  "ticks": 600,
+  "inputs": [
+    {
+      "item": "minecraft:beef",
+      "count": 1
+    },
+    {
+      "item": "minecraft:carrot",
+      "count": 1
+    },
+    {
+      "item": "minecraft:potato",
+      "count": 1
+    },
+    {
+      "item": "minecraft:bowl",
+      "count": 1
+    }
+  ],
+  "outputs": [
+    {
+      "item": "farmersdelight:beef_stew",
+      "count": 1
+    }
+  ],
+  "optional": true
+}

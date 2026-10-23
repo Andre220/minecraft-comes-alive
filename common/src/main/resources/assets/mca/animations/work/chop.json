@@ -1,0 +1,36 @@
+{
+  "loop": true,
+  "animation_length": 0.7,
+  "mca:tool": "minecraft:iron_axe",
+  "mca:impact": {"sound": "minecraft:entity.player.attack.weak", "volume": 0.3, "pitch": 0.9, "particle": "block", "particle_count": 3},
+  "mca:events": {"0.42": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-50, -15, 5],
+        "0.3": {"post": [-115, -15, 15], "lerp_mode": "ease_out"},
+        "0.42": {"post": [-40, -10, 0], "lerp_mode": "ease_in"},
+        "0.5": {"post": [-48, -12, 0], "lerp_mode": "ease_out"},
+        "0.7": {"post": [-50, -15, 5], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": [-35, 20, -5]
+    },
+    "body": {
+      "rotation": {
+        "0.0": [10, 0, 0],
+        "0.3": {"post": [6, -6, 0], "lerp_mode": "ease_out"},
+        "0.42": {"post": [14, 4, 0], "lerp_mode": "ease_in"},
+        "0.7": {"post": [10, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "head": {
+      "rotation": {
+        "0.0": [4, 0, 0],
+        "0.45": {"post": [8, 0, 0], "lerp_mode": "ease_out"},
+        "0.7": {"post": [4, 0, 0], "lerp_mode": "ease_in_out"}
+      }
+    }
+  }
+}

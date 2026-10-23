@@ -1,0 +1,16 @@
+{
+  "profession": "minecraft:leatherworker",
+  "ticks": 600,
+  "inputs": [
+    {
+      "item": "minecraft:rabbit_hide",
+      "count": 4
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:leather",
+      "count": 1
+    }
+  ]
+}

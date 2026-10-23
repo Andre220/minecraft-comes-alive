@@ -1,0 +1,13 @@
+{
+  "kind": "warm",
+  "blocks": [
+    "farmersdelight:stove"
+  ],
+  "properties": {
+    "lit": "true"
+  },
+  "appeal": 0.8,
+  "professions": {
+    "minecraft:butcher": 1.5
+  }
+}

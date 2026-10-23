@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PSP",
+    "P P"
+  ],
+  "key": {
+    "S": "minecraft:string",
+    "P": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mca:sifting_sieve"
+  }
+}

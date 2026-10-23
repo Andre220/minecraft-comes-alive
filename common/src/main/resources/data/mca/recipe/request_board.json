@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "WWW"
+  ],
+  "key": {
+    "P": "minecraft:paper",
+    "W": "#minecraft:planks"
+  },
+  "result": {
+    "id": "mca:request_board"
+  }
+}

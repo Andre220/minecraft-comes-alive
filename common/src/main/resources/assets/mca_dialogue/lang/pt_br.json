@@ -11,6 +11,15 @@
   "villager.warning/2": "Último aviso!",
   "villager.warning/3": "Já chega!",
   "villager.warning/4": "Você foi avisado(a)!",
+  "villager.crime.witness/0": "Ladrão! Pare aí mesmo, %1$s!",
+  "villager.crime.witness/1": "Ei! Isso não é seu!",
+  "villager.crime.witness/2": "Guardas! Temos um ladrão!",
+  "villager.crime.owner/0": "São as minhas coisas, %1$s! Saia daí!",
+  "villager.crime.owner/1": "Ladrão! Na minha própria casa!",
+  "villager.crime.owner/2": "Eu confiava em você, %1$s. Não vou esquecer disso.",
+  "villager.crime.heard/0": "Quem está aí?!",
+  "villager.crime.heard/1": "Que barulho foi esse?",
+  "villager.crime.heard/2": "Você ouviu isso?",
   "villager.cant_find_bed/0": "Hmm, não consigo encontrar o caminho de casa...",
   "villager.cant_find_bed/1": "Acho que me perdi, não consigo encontrar o caminho de casa.",
   "villager.cant_find_bed/2": "De novo não. Eu preciso de uma nova casa, não consigo encontrar a minha atual.",
@@ -1479,5 +1488,8 @@
   "dialogue.rock_paper_scissor.loose.scissor/1": "Pedra esmaga tesoura, eu ganhei!",
   "dialogue.rock_paper_scissor.win.rock/1": "Ahh, pedra esmaga tesoura, eu perdi.",
   "dialogue.rock_paper_scissor.win.paper/1": "Parece que eu nunca ganho com pedra.",
-  "dialogue.rock_paper_scissor.win.scissor/1": "Tesoura corta papel, você me pegou desta vez."
+  "dialogue.rock_paper_scissor.win.scissor/1": "Tesoura corta papel, você me pegou desta vez.",
+  "profession.set.builder": "Vou construir tudo o que esta vila precisar!",
+  "profession.set.miner": "Picareta pronta. Me mostre onde cavar.",
+  "workorder.no_material": "Acabou o %2$s da obra. Alguém pode colocar mais no depósito da vila?"
 }

@@ -1,7 +1,11 @@
 package net.conczin.mca.client.gui;
 
+import net.conczin.mca.expansion.progression.ProgressPage;
 import net.conczin.mca.MCA;
+import net.conczin.mca.client.gui.widget.IconButtonWidget;
 import net.conczin.mca.client.gui.widget.LegacyImageButton;
+import net.conczin.mca.client.gui.workorder.WorkPlanningScreen;
+import net.conczin.mca.server.world.data.workorder.WorkOrderPermissions;
 import net.conczin.mca.client.gui.widget.TooltipButtonWidget;
 import net.conczin.mca.client.gui.widget.WidgetUtils;
 import net.conczin.mca.network.Network;
@@ -241,7 +245,7 @@ public class BlueprintScreen extends ExtendedScreen {
         int bx = width / 2 - MAP_NAVIGATION_OFFSET;
         int by = height / 2 - 56;
         if (!page.equals("rename") && (!page.equals("empty") && !page.equals("waiting"))) {
-            for (String p : new String[]{"map", "rank", "catalog", "villagers", "rules"}) {
+            for (String p : ProgressPage.pages(new String[]{"map", "rank", "catalog", "villagers", "rules"})) { // expansion: progression
                 ButtonWidget widget = new ButtonWidget(bx, by, NAVIGATION_WIDTH, 20, Component.translatable("gui.blueprint." + p), b -> setPage(p));
                 addRenderableWidget(widget);
                 if (page.equals(p) || ("advanced".equals(page) && "map".equals(p))) {
@@ -249,9 +253,17 @@ public class BlueprintScreen extends ExtendedScreen {
                 }
                 by += 22;
             }
+            // not a page: leaves the book for the free camera planning view
+            if (WorkOrderPermissions.enabled()) {
+                addRenderableWidget(new IconButtonWidget(bx, by + 6, NAVIGATION_WIDTH, 20, new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.SCAFFOLDING), Component.translatable("gui.blueprint.plan"),
+                        b -> minecraft.gui.setScreen(new WorkPlanningScreen()), Component.translatable("gui.blueprint.plan.tooltip")));
+            }
         }
 
         switch (page) {
+            case ProgressPage.PAGE: // expansion: progression
+                ProgressPage.open(village.getId());
+                break;
             case "empty":
                 bx = width / 2 - 48;
                 by = layoutY;
@@ -509,6 +521,7 @@ public class BlueprintScreen extends ExtendedScreen {
             case "catalog" -> renderCatalog(context);
             case "villagers" -> renderVillagers(context);
             case "rules" -> renderRules(context);
+            case ProgressPage.PAGE -> ProgressPage.render(context, font, width, layoutBaseY() - 70); // expansion: progression
         }
 
     }
@@ -1378,6 +1391,10 @@ public class BlueprintScreen extends ExtendedScreen {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (ProgressPage.PAGE.equals(page)) { // expansion: progression
+            ProgressPage.scroll(scrollY);
+            return true;
+        }
         if (scrollY != 0.0D && isMouseOverMap(mouseX, mouseY) && ("map".equals(page) || "advanced".equals(page))) {
             BlueprintMapViewport currentViewport = currentViewport();
             float currentScale = currentViewport.scale();

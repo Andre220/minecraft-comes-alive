@@ -1,0 +1,12 @@
+{
+  "kind": "inspect",
+  "blocks": [
+    "beautify:botanist_workbench"
+  ],
+  "appeal": 0.8,
+  "professions": {
+    "mca:forager": 2.0,
+    "minecraft:farmer": 1.5
+  },
+  "hold": "minecraft:bone_meal"
+}

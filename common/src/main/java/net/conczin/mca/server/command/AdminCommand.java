@@ -9,6 +9,7 @@ import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import net.conczin.mca.Config;
 import net.conczin.mca.entity.VillagerEntityMCA;
+import net.conczin.mca.entity.ai.WorkAnimation;
 import net.conczin.mca.entity.ai.relationship.RelationshipState;
 import net.conczin.mca.item.BabyItem;
 import net.conczin.mca.registry.DataComponentsMCA;
@@ -68,6 +69,14 @@ public class AdminCommand {
                 .then(register("convertVanillaVillagers").then(Commands.argument("radius", IntegerArgumentType.integer()).executes(AdminCommand::convertVanillaVillagers)))
                 .then(register("removeVillage").then(Commands.argument("name", StringArgumentType.string()).executes(AdminCommand::removeVillage)))
                 .then(register("buildingProcessingRate").then(Commands.argument("cooldown", IntegerArgumentType.integer()).executes(AdminCommand::buildingProcessingRate)))
+                .then(register("workAnimation")
+                        .then(Commands.argument("targets", EntityArgument.entities())
+                                .then(Commands.argument("clip", StringArgumentType.word())
+                                        .suggests((ctx, builder) -> {
+                                            Arrays.stream(WorkAnimation.values()).forEach(a -> builder.suggest(a.clipName()));
+                                            return builder.buildFuture();
+                                        })
+                                        .executes(AdminCommand::workAnimation))))
                 .then(register("overrideVillageRequirements")
                         .then(Commands.argument("target", EntityArgument.player())
                                 .then(Commands.argument("value", BoolArgumentType.bool())
@@ -402,6 +411,24 @@ public class AdminCommand {
 
         success("overrideVillageRequirements for " + target.getGameProfile().name() + " set to " + value, ctx);
         return 0;
+    }
+
+    /** Plays a work animation on villagers for a few minutes, for tuning clips; "none" stops it. */
+    private static int workAnimation(CommandContext<CommandSourceStack> ctx) throws com.mojang.brigadier.exceptions.CommandSyntaxException {
+        WorkAnimation animation = WorkAnimation.byName(StringArgumentType.getString(ctx, "clip"));
+        int count = 0;
+        for (Entity entity : EntityArgument.getEntities(ctx, "targets")) {
+            if (entity instanceof VillagerEntityMCA villager) {
+                if (animation == WorkAnimation.NONE) {
+                    villager.getVillagerBrain().stopWorkAnimation();
+                } else {
+                    villager.getVillagerBrain().setWorkAnimation(animation, 20 * 60 * 5);
+                }
+                count++;
+            }
+        }
+        success("Work animation " + animation.clipName() + " on " + count + " villager(s)", ctx);
+        return count;
     }
 
     private static void sendMessage(Entity commandSender, String message) {

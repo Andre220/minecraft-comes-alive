@@ -1,5 +1,6 @@
 package net.conczin.mca.network.c2s;
 
+import net.conczin.mca.expansion.VillageFinder;
 import net.conczin.mca.MCA;
 import net.conczin.mca.network.HandleablePayload;
 import net.conczin.mca.network.Network;
@@ -29,7 +30,7 @@ public record GetVillageRequest() implements HandleablePayload {
     }
 
     static void sendResponse(ServerPlayer player) {
-        Optional<Village> village = Village.findNearest(player);
+        Optional<Village> village = VillageFinder.forPlayer(player); // expansion: village finding
         if (village.isPresent()) {
             GraveyardManager.get(player.level()).reportToVillageManager(player);
             village.get().updateMaxPopulation();

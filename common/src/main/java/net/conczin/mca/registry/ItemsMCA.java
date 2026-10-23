@@ -1,6 +1,7 @@
 package net.conczin.mca.registry;
 
 import net.conczin.mca.MCA;
+import net.conczin.mca.expansion.ExpansionContent;
 import net.conczin.mca.client.book.Book;
 import net.conczin.mca.client.book.CivilRegistryBook;
 import net.conczin.mca.client.book.pages.CenteredTextPage;
@@ -48,6 +49,12 @@ public interface ItemsMCA {
     Item VILLAGER_EDITOR = register("villager_editor", new VillagerEditorItem(baseProps("villager_editor")));
     Item STAFF_OF_LIFE = register("staff_of_life", new StaffOfLifeItem(baseProps("staff_of_life").durability(10).rarity(Rarity.EPIC)));
     Item WHISTLE = register("whistle", new WhistleItem(baseProps("whistle")));
+    /** Forces locks open at once, but loudly; worn down with each use. See PropertyCrimes. */
+    Item CROWBAR = register("crowbar", new Item(baseProps("crowbar").durability(120)));
+    /** Opens locks silently but slowly; used up on success. */
+    Item LOCKPICK = register("lockpick", new Item(baseProps("lockpick").stacksTo(16)));
+    /** Locks one's own chest, barrel, door or trapdoor (see PropertyRules); shown on the latch. */
+    Item PADLOCK = register("padlock", new Item(baseProps("padlock").stacksTo(16)));
     Item BLUEPRINT = register("blueprint", new BlueprintItem(baseProps("blueprint")));
     Item FAMILY_TREE = register("family_tree", new FamilyTreeItem(baseProps("family_tree")));
     Item VILLAGER_TRACKER = register("villager_tracker", new VillagerTrackerItem(unstackableProps("villager_tracker")));
@@ -215,6 +222,7 @@ public interface ItemsMCA {
     }
 
     static void registerItems(MCA.RegisterHelper<Item> helper) {
+        ExpansionContent.bootstrap(); // expansion: all
         ITEMS.forEach(helper::register);
     }
 }

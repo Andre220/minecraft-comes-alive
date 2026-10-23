@@ -12,6 +12,7 @@ import net.conczin.mca.client.render.VillagerVisuals;
 import net.conczin.mca.client.render.layer.ClothingLayer;
 import net.conczin.mca.client.render.layer.FaceLayer;
 import net.conczin.mca.client.render.layer.HairLayer;
+import net.conczin.mca.client.render.layer.Player3dLayer;
 import net.conczin.mca.client.render.layer.SkinLayer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -116,6 +117,7 @@ public abstract class MixinPlayerRenderer extends LivingEntityRenderer<LivingEnt
         mca$clothingLayer = new ClothingLayer((AvatarRenderer) (Object) this, mca$createModel(new CubeDeformation(0.0625F)), "normal");
         this.addLayer(mca$clothingLayer);
         this.addLayer(new HairLayer((AvatarRenderer) (Object) this, mca$createHairModel(new CubeDeformation(0.125F))));
+        this.addLayer(new Player3dLayer((AvatarRenderer) (Object) this));
 
         // Model-part submissions retain the ModelPart reference until the deferred feature pass.
         // Keep first-person geometry separate from the layer models, which are mutated by queued

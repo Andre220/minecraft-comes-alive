@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:mangrove_trapdoor",
+    "minecraft:stick"
+  ],
+  "result": {
+    "id": "mca:mangrove_shutter",
+    "count": 2
+  }
+}

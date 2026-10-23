@@ -1,0 +1,25 @@
+{
+  "loop": true,
+  "animation_length": 0.5,
+  "mca:tool": "minecraft:arrow",
+  "mca:impact": {"sound": "block", "volume": 0.1, "pitch": 1.6, "particle": "none"},
+  "mca:events": {"0.25": "impact"},
+  "bones": {
+    "right_arm": {
+      "rotation": {
+        "0.0": [-55, -25, 0],
+        "0.25": {"post": [-50, -5, 0], "lerp_mode": "ease_out"},
+        "0.5": {"post": [-55, -25, 0], "lerp_mode": "ease_in_out"}
+      }
+    },
+    "left_arm": {
+      "rotation": [-55, 25, 0]
+    },
+    "body": {
+      "rotation": [8, 0, 0]
+    },
+    "head": {
+      "rotation": [10, 0, 0]
+    }
+  }
+}

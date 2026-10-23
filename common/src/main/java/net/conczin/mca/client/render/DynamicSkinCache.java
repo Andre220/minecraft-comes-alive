@@ -43,9 +43,12 @@ public final class DynamicSkinCache {
         int eyeDye,
         int eyeLeftDye,
         String clothes,
-        int infectionProgressKey
+        int infectionProgressKey,
+        boolean freshAnimationsPupils,
+        boolean outerLayers,
+        String beard
     ) {
-        public static SkinKey from(VillagerVisuals visuals) {
+        public static SkinKey from(VillagerVisuals visuals, boolean freshAnimationsPupils, boolean outerLayers) {
             int infProgress = Math.round(visuals.infectionProgress() * 100.0f);
             return new SkinKey(
                 visuals.genderDataName(),
@@ -70,7 +73,10 @@ public final class DynamicSkinCache {
                 visuals.eyeDye(),
                 visuals.eyeLeftDye(),
                 visuals.clothes(),
-                infProgress
+                infProgress,
+                freshAnimationsPupils,
+                outerLayers,
+                visuals.beard()
             );
         }
 
@@ -97,11 +103,14 @@ public final class DynamicSkinCache {
                    eyeDye + "_" +
                    eyeLeftDye + "_" +
                    clothes + "_" +
-                   String.format(java.util.Locale.ROOT, "%05d", infectionProgressKey);
+                   String.format(java.util.Locale.ROOT, "%05d", infectionProgressKey) + "_" +
+                   freshAnimationsPupils + "_" +
+                   outerLayers + "_v2_" + beard; // expansion: looks - layout version (6x6 eye slots), beard
         }
 
         boolean references(String identifier) {
             return identifier.equals(skin)
+                   || identifier.equals(beard)
                    || identifier.equals(hairBase)
                    || identifier.equals(hairBangs)
                    || identifier.equals(hairBack)
@@ -149,6 +158,7 @@ public final class DynamicSkinCache {
         CACHE.values().forEach(DynamicSkinCache::releaseDynamicTexture);
         CACHE.clear();
         INCOMPLETE_CACHE.clear();
+        McaVillagerFeatureSlots.clearFaceMatches();
     }
 
     /** Evict stitched skins when a source texture changes under the same identifier. */
@@ -167,7 +177,23 @@ public final class DynamicSkinCache {
     }
 
     public static Identifier getOrCreateStitchedSkin(VillagerVisuals visuals) {
-        SkinKey key = SkinKey.from(visuals);
+        return getOrCreateStitchedSkin(visuals, true);
+    }
+
+    /**
+     * @param freshAnimationsPupils whether the model's own moving pupils (Fresh Animations) take the
+     *                              iris's role, on faces whose eyes sit where those pupils move
+     */
+    public static Identifier getOrCreateStitchedSkin(VillagerVisuals visuals, boolean freshAnimationsPupils) {
+        return getOrCreateStitchedSkin(visuals, freshAnimationsPupils, true);
+    }
+
+    /**
+     * @param outerLayers false leaves the outer layer regions (hat, jacket, sleeves, pants) empty, for
+     *                    models whose outer layers are drawn separately as cubes
+     */
+    public static Identifier getOrCreateStitchedSkin(VillagerVisuals visuals, boolean freshAnimationsPupils, boolean outerLayers) {
+        SkinKey key = SkinKey.from(visuals, freshAnimationsPupils, outerLayers);
         boolean missingAssets = isMissingImmersiveLibraryAssets(visuals);
         Identifier cachedId = CACHE.get(key);
         if (cachedId != null) {
@@ -191,15 +217,8 @@ public final class DynamicSkinCache {
 
     private static Identifier generateStitchedSkin(VillagerVisuals visuals, SkinKey key) {
         try {
-            NativeImage base = new NativeImage(64, 64, true);
-
             Identifier skinId = SkinExporter.getSkin(visuals);
-            int skinColor = SkinExporter.getSkinColor(visuals);
-            SkinExporter.composite(base, skinId, skinColor);
-
             Identifier faceId = SkinExporter.getFace(visuals);
-            SkinExporter.compositeFace(base, faceId, visuals);
-
             String variant = "normal";
             if (Minecraft.getInstance().level != null) {
                 Entity entity = Minecraft.getInstance().level.getEntity(visuals.entityId());
@@ -207,8 +226,42 @@ public final class DynamicSkinCache {
                     variant = "zombie";
                 }
             }
-
             Identifier clothesId = SkinExporter.getClothes(visuals, variant);
+
+            // The composite takes the largest layer resolution, so detailed textures keep their detail.
+            int size = Math.max(64, Math.max(SkinExporter.textureWidth(skinId), SkinExporter.textureWidth(faceId)));
+            if (clothesId != null) {
+                size = Math.max(size, SkinExporter.textureWidth(clothesId));
+            }
+            for (LayeredHair.Category category : LayeredHair.Category.RENDER_ORDER) {
+                String hair = visuals.layeredHair(category);
+                if (!MCA.isBlankString(hair)) {
+                    size = Math.max(size, SkinExporter.textureWidth(SkinExporter.getLibraryOrResourceIdentifier(hair)));
+                }
+            }
+            NativeImage base = new NativeImage(size, size, true);
+
+            int skinColor = SkinExporter.getSkinColor(visuals);
+            SkinExporter.composite(base, skinId, skinColor);
+            McaVillagerFeatureSlots.clearSlots(base);
+
+            // Faces whose eyes sit where Fresh Animations' eyes move hand them to its planes: the eye
+            // shapes go to the eye white slots and the moving pupil takes the iris's role. Other faces
+            // keep their own eyes and iris; the slots stay empty.
+            boolean movingPupils = key.freshAnimationsPupils() && McaVillagerFeatureSlots.eyesMatchFreshAnimations(faceId);
+            if (movingPupils) {
+                McaVillagerFeatureSlots.compositeMovingEyes(base, faceId, visuals);
+            } else {
+                SkinExporter.compositeFace(base, faceId, visuals, true);
+            }
+
+            // expansion: looks - the beard over the face, in the hair colour
+            if (!MCA.isBlankString(key.beard())) {
+                SkinExporter.composite(base, Identifier.parse(key.beard()), SkinExporter.getHairColor(visuals));
+            }
+
+            // The feature slots belong to the face: clothes and hair may have stray pixels there.
+            int[] slots = McaVillagerFeatureSlots.saveSlots(base);
             if (clothesId != null) {
                 SkinExporter.composite(base, clothesId, 0xFFFFFFFF);
             }
@@ -223,6 +276,14 @@ public final class DynamicSkinCache {
                         SkinExporter.composite(base, overlay, 0xFFFFFFFF);
                     }
                 }
+            }
+
+            McaVillagerFeatureSlots.restoreSlots(base, slots);
+            if (!key.outerLayers()) {
+                McaVillagerFeatureSlots.clearOuterLayers(base);
+            }
+            if (movingPupils) {
+                McaVillagerFeatureSlots.paintDefaults(base, visuals);
             }
 
             Identifier newId = Identifier.fromNamespaceAndPath("mca", "dynamic/stitched/" + keyId(key.getUniqueId()));

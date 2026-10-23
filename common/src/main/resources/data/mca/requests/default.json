@@ -1,0 +1,144 @@
+{
+  "values": {
+    "minecraft:diamond": 64,
+    "minecraft:emerald": 16,
+    "minecraft:gold_ingot": 8,
+    "minecraft:iron_ingot": 4,
+    "minecraft:enchanted_book": 32,
+    "minecraft:ender_pearl": 12,
+    "minecraft:golden_apple": 32,
+    "minecraft:book": 4,
+    "minecraft:lapis_lazuli": 3,
+    "minecraft:redstone": 2,
+    "minecraft:coal": 1,
+    "minecraft:bread": 1,
+    "minecraft:cooked_beef": 1,
+    "minecraft:cooked_porkchop": 1,
+    "minecraft:experience_bottle": 10,
+    "minecraft:name_tag": 24,
+    "minecraft:saddle": 20,
+    "minecraft:amethyst_shard": 3
+  },
+  "objectives": [
+    {
+      "item": "minecraft:wheat",
+      "count": 16,
+      "worth": 2
+    },
+    {
+      "item": "minecraft:cobblestone",
+      "count": 32,
+      "worth": 2
+    },
+    {
+      "item": "minecraft:bread",
+      "count": 8,
+      "worth": 3
+    },
+    {
+      "item": "minecraft:oak_log",
+      "count": 16,
+      "worth": 3
+    },
+    {
+      "item": "minecraft:sweet_berries",
+      "count": 16,
+      "worth": 3
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 8,
+      "worth": 4
+    },
+    {
+      "item": "minecraft:cod",
+      "count": 8,
+      "worth": 5
+    },
+    {
+      "item": "minecraft:bone",
+      "count": 16,
+      "worth": 6
+    },
+    {
+      "item": "minecraft:leather",
+      "count": 6,
+      "worth": 8
+    },
+    {
+      "item": "minecraft:string",
+      "count": 12,
+      "worth": 8
+    },
+    {
+      "item": "minecraft:iron_ingot",
+      "count": 8,
+      "worth": 16
+    },
+    {
+      "item": "minecraft:gunpowder",
+      "count": 8,
+      "worth": 16
+    },
+    {
+      "item": "minecraft:slime_ball",
+      "count": 6,
+      "worth": 20
+    },
+    {
+      "item": "minecraft:gold_ingot",
+      "count": 6,
+      "worth": 24
+    },
+    {
+      "item": "minecraft:ender_pearl",
+      "count": 2,
+      "worth": 24
+    },
+    {
+      "item": "minecraft:blaze_rod",
+      "count": 4,
+      "worth": 40
+    },
+    {
+      "item": "minecraft:diamond",
+      "count": 1,
+      "worth": 48
+    },
+    {
+      "entity": "minecraft:zombie",
+      "count": 5,
+      "worth": 6
+    },
+    {
+      "entity": "minecraft:spider",
+      "count": 4,
+      "worth": 6
+    },
+    {
+      "entity": "minecraft:skeleton",
+      "count": 5,
+      "worth": 8
+    },
+    {
+      "entity": "minecraft:creeper",
+      "count": 3,
+      "worth": 12
+    },
+    {
+      "entity": "minecraft:pillager",
+      "count": 3,
+      "worth": 14
+    },
+    {
+      "entity": "minecraft:witch",
+      "count": 1,
+      "worth": 16
+    },
+    {
+      "entity": "minecraft:enderman",
+      "count": 2,
+      "worth": 24
+    }
+  ]
+}

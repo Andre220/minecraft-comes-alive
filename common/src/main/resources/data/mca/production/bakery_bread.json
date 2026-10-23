@@ -1,0 +1,17 @@
+{
+  "profession": "minecraft:butcher",
+  "building": "bakery",
+  "ticks": 400,
+  "inputs": [
+    {
+      "item": "minecraft:wheat",
+      "count": 3
+    }
+  ],
+  "outputs": [
+    {
+      "item": "minecraft:bread",
+      "count": 1
+    }
+  ]
+}

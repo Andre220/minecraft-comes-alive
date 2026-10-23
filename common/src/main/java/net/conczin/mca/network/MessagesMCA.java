@@ -1,5 +1,6 @@
 package net.conczin.mca.network;
 
+import net.conczin.mca.expansion.progression.ProgressMessages;
 import net.conczin.mca.network.c2s.*;
 import net.conczin.mca.network.s2c.*;
 
@@ -27,6 +28,7 @@ public interface MessagesMCA {
         c.register(PlayerDataRequest.TYPE, PlayerDataRequest.STREAM_CODEC, true);
         c.register(RemoveCustomClothingMessage.TYPE, RemoveCustomClothingMessage.STREAM_CODEC, true);
         c.register(RenameVillageMessage.TYPE, RenameVillageMessage.STREAM_CODEC, true);
+        c.register(QueueActionMessage.TYPE, QueueActionMessage.STREAM_CODEC, true);
         c.register(ReportBuildingMessage.TYPE, ReportBuildingMessage.STREAM_CODEC, true);
         c.register(SaveVillageMessage.TYPE, SaveVillageMessage.STREAM_CODEC, true);
         c.register(SetTargetMessage.TYPE, SetTargetMessage.STREAM_CODEC, true);
@@ -34,6 +36,13 @@ public interface MessagesMCA {
         c.register(VillagerEditorSyncRequest.TYPE, VillagerEditorSyncRequest.STREAM_CODEC, true);
         c.register(VillagerNameRequest.TYPE, VillagerNameRequest.STREAM_CODEC, true);
         c.register(ConfirmBuildingPolymorphMessage.TYPE, ConfirmBuildingPolymorphMessage.STREAM_CODEC, true);
+        c.register(WorkOrdersRequest.TYPE, WorkOrdersRequest.STREAM_CODEC, true);
+        c.register(CreateWorkOrderMessage.TYPE, CreateWorkOrderMessage.STREAM_CODEC, true);
+        c.register(ManageWorkOrderMessage.TYPE, ManageWorkOrderMessage.STREAM_CODEC, true);
+        c.register(ProgressMessages.Request.TYPE, ProgressMessages.Request.STREAM_CODEC, true); // expansion: progression
+        c.register(BlueprintRequest.TYPE, BlueprintRequest.STREAM_CODEC, true);
+        c.register(CaptureBlueprintMessage.TYPE, CaptureBlueprintMessage.STREAM_CODEC, true);
+        c.register(PlaceBlueprintMessage.TYPE, PlaceBlueprintMessage.STREAM_CODEC, true);
 
         c.register(AnalysisResults.TYPE, AnalysisResults.STREAM_CODEC, false);
         c.register(BabyNameResponse.TYPE, BabyNameResponse.STREAM_CODEC, false);
@@ -58,5 +67,8 @@ public interface MessagesMCA {
         c.register(VillagerMessage.TYPE, VillagerMessage.STREAM_CODEC, false);
         c.register(VillagerNameResponse.TYPE, VillagerNameResponse.STREAM_CODEC, false);
         c.register(BuildingPolymorphMessage.TYPE, BuildingPolymorphMessage.STREAM_CODEC, false);
+        c.register(WorkOrdersResponse.TYPE, WorkOrdersResponse.STREAM_CODEC, false);
+        c.register(BlueprintResponse.TYPE, BlueprintResponse.STREAM_CODEC, false);
+        c.register(ProgressMessages.Response.TYPE, ProgressMessages.Response.STREAM_CODEC, false); // expansion: progression
     }
 }
