@@ -24,7 +24,7 @@ too (suggested: `~/dev/other/`). Below, `$OTHER` means that folder.
 | Folder | Remote | Branch | Notes |
 |---|---|---|---|
 | `minecraft-comes-alive` | `fork` = https://github.com/Andre220/minecraft-comes-alive.git, `origin` = https://github.com/Luke100000/minecraft-comes-alive.git (upstream, read only) | `feature/skidward-villager-layers` | The main work; the PR base is `1.21.1` upstream |
-| `mca-workorders` | (a git **worktree** of the same repo) | `feature/villager-work-orders` | Village planning screen, builders and miners. 5 commits not merged into the main branch |
+| (optional) `mca-workorders` | a git **worktree** of the MCA repo, only when working on it | `feature/villager-work-orders` (on the fork) | Village planning screen, builders and miners. 5 commits not merged into the main branch |
 | `grounded-villages` | https://github.com/Andre220/grounded-villages.git (private) | `main` | Separate mod: terrain-fitted villages |
 | `tabletop` | https://github.com/Andre220/tabletop.git (private) | `main` | Separate mod: place items on blocks |
 | `village-furnishings` | **none yet**: comes as a git bundle (see 3) | `master` | Separate mod: shutters, casements, sinks |
@@ -37,7 +37,7 @@ git remote rename origin fork
 git remote add origin https://github.com/Luke100000/minecraft-comes-alive.git
 git fetch fork
 git checkout feature/skidward-villager-layers
-git worktree add ../mca-workorders feature/villager-work-orders
+# only to work on the planning screen: git worktree add ../mca-workorders feature/villager-work-orders
 cd "$OTHER"
 gh repo clone Andre220/grounded-villages
 gh repo clone Andre220/tabletop
