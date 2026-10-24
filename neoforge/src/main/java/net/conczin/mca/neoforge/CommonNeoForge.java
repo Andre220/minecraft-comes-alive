@@ -1,5 +1,7 @@
 package net.conczin.mca.neoforge;
 
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.expansion.wardrobe.OutfitTab;
 import net.conczin.mca.expansion.minds.routine.DailyToggles;
 import net.conczin.mca.expansion.minds.routine.OpportunityTypes;
 import net.conczin.mca.expansion.progression.VillageStages;
@@ -125,6 +127,14 @@ public final class CommonNeoForge {
                     })
                     .build();
             event.register(Registries.CREATIVE_MODE_TAB, helper -> helper.register(MCA.locate("mca_tab"), tab));
+            // expansion: looks - every clothing texture as an outfit
+            CreativeModeTab clothing = CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.mca.clothing_tab"))
+                    .icon(() -> new ItemStack(Wardrobes.OUTFIT))
+                    .withTabsBefore(net.minecraft.resources.ResourceKey.create(Registries.CREATIVE_MODE_TAB, MCA.locate("mca_tab")))
+                    .displayItems((params, output) -> OutfitTab.items().forEach(output::accept))
+                    .build();
+            event.register(Registries.CREATIVE_MODE_TAB, helper -> helper.register(MCA.locate("clothing_tab"), clothing));
         }
     }
 

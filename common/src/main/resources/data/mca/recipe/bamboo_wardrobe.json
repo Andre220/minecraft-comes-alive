@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PCP",
+    "PPP"
+  ],
+  "key": {
+    "P": "minecraft:bamboo_planks",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mca:bamboo_wardrobe",
+    "count": 1
+  }
+}

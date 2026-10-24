@@ -19,18 +19,23 @@ import java.util.function.Supplier;
 /**
  * How open a speaking villager's mouth is (client): wide on vowels, a little on consonants, closed between
  * words, eased so it moves like talking. Fed to Fresh Animations' villager model as the animation variable
- * {@code mca_talk} through Entity Model Features' API, looked up by reflection so EMF stays optional. Also gives
- * the model {@code mca_sleeping}, so a sleeping villager closes its eyes.
+ * {@code mca_talk} through Entity Model Features' API, looked up by reflection so EMF stays optional. With it goes
+ * {@code mca_talk_wide}, 0 to 1: whether this syllable opens the mouth wide (and less tall, the same area) or tall,
+ * drawn at random syllable by syllable. Also gives the model {@code mca_sleeping}, so a sleeping villager closes
+ * its eyes.
  */
 public final class MouthMotion {
     private static final String VOWELS = "aeiouáàâãéêíóôõúAEIOUÁÀÂÃÉÊÍÓÔÕÚyY";
     /** How quickly the mouth follows the letters, per ms. */
     private static final float EASE = 0.02F;
+    /** About how long a syllable lasts, in ms: each gets its own mouth shape. */
+    private static final long SYLLABLE = 220;
 
     private record State(float openness, long time) {
     }
 
     private static final Map<UUID, State> STATES = new ConcurrentHashMap<>();
+    private static final Map<UUID, State> SHAPES = new ConcurrentHashMap<>();
     /** Villagers asleep right now, refreshed every client tick, for when EMF hands over a render state. */
     private static final Set<UUID> SLEEPING = ConcurrentHashMap.newKeySet();
     /** Villagers chatting with each other right now (from their action label), refreshed every client tick. */
@@ -97,6 +102,29 @@ public final class MouthMotion {
         return value;
     }
 
+    /** Wide (1) or tall (0) for this syllable: a coin flipped per speaker and syllable. */
+    static float wideTarget(UUID speaker, long now) {
+        long h = (now / SYLLABLE) * 0x9E3779B97F4A7C15L ^ speaker.getLeastSignificantBits();
+        h ^= h >>> 31;
+        h *= 0xBF58476D1CE4E5B9L;
+        h ^= h >>> 29;
+        return (h & 1) == 0 ? 0.0F : 1.0F;
+    }
+
+    /** How wide rather than tall the mouth opens now, eased between syllables. */
+    public static float wideness(UUID speaker) {
+        long now = Util.getMillis();
+        if (!STATES.containsKey(speaker)) {
+            SHAPES.remove(speaker);
+            return 0.0F;
+        }
+        State previous = SHAPES.getOrDefault(speaker, new State(0.0F, now));
+        float step = Math.min(1.0F, (now - previous.time()) * EASE);
+        float value = previous.openness() + (wideTarget(speaker, now) - previous.openness()) * step;
+        SHAPES.put(speaker, new State(value, now));
+        return value;
+    }
+
     /** Registers {@code mca_talk} with Entity Model Features, if it is installed. */
     public static void registerWithEntityModelFeatures() {
         if (!MCA.platformHelper.isModLoaded("entity_model_features")) {
@@ -116,6 +144,15 @@ public final class MouthMotion {
                 }
             };
             register.invoke(null, MCA.MOD_ID, "mca_talk", "How open an MCA villager's mouth is while it speaks, 0 to 1", talk);
+            Supplier<Float> wide = () -> {
+                try {
+                    Object entity = current.invoke(null);
+                    return entity == null ? 0.0F : wideness((UUID) uuid.invoke(entity));
+                } catch (ReflectiveOperationException | ClassCastException e) {
+                    return 0.0F;
+                }
+            };
+            register.invoke(null, MCA.MOD_ID, "mca_talk_wide", "1 when this syllable opens an MCA villager's mouth wide, 0 when tall", wide);
             // the entity being animated is the entity itself (EMF mixes its interface into Entity)
             Supplier<Float> sleeping = () -> {
                 try {

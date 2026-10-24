@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PCP",
+    "PPP"
+  ],
+  "key": {
+    "P": "minecraft:spruce_planks",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mca:spruce_wardrobe",
+    "count": 1
+  }
+}

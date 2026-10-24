@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain;
 
+import net.conczin.mca.expansion.wardrobe.ChangeClothesTask;
 import net.conczin.mca.expansion.minds.ArcheryPracticeTask;
 import net.conczin.mca.expansion.minds.routine.DailyTogglesTask;
 import net.conczin.mca.expansion.minds.routine.IdleRoutineTask;
@@ -310,6 +311,7 @@ public class VillagerTasksMCA {
                 Pair.of(6, new NeedsSocializeTask()),
                 Pair.of(6, new GoHomeTask()),
                 Pair.of(7, new DailyTogglesTask()), // expansion: minds - shutters open in the morning, lamps lit at dusk
+                Pair.of(7, new ChangeClothesTask()), // expansion: looks - new clothes are put on at the wardrobe
                 Pair.of(10, new ExtendedFindPointOfInterestTask(registryEntry -> registryEntry.is(PoiTypes.MEETING), MemoryModuleType.MEETING_POINT, true, Optional.of((byte) 14), (villager) -> {
                     //report a town bell, the only building always added
                     villager.getBrain().getMemoryInternal(MemoryModuleType.MEETING_POINT).ifPresent(p -> {

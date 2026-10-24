@@ -1,6 +1,6 @@
 package net.conczin.mca.expansion;
 
-import net.conczin.mca.expansion.building.Shutters;
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.economy.EconomyRegistry;
 import net.conczin.mca.expansion.requests.RequestBoardBlock;
 import net.conczin.mca.registry.BlocksMCA;
@@ -27,7 +27,7 @@ public final class ExpansionContent {
     /** Loads every expansion's blocks, items and professions into MCA's registration maps. */
     public static void bootstrap() {
         EconomyRegistry.bootstrap();
-        Shutters.bootstrap();
         ExpansionGuide.bootstrap();
+        Wardrobes.bootstrap();
     }
 }

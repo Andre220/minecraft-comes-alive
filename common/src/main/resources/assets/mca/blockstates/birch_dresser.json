@@ -1,0 +1,64 @@
+{
+  "variants": {
+    "facing=south,part=bottom_left,piece=body": {
+      "model": "mca:block/birch_dresser_body"
+    },
+    "facing=south,part=bottom_left,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer"
+    },
+    "facing=south,part=bottom_right,piece=body": {
+      "model": "mca:block/birch_dresser_body"
+    },
+    "facing=south,part=bottom_right,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer"
+    },
+    "facing=west,part=bottom_left,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 90
+    },
+    "facing=west,part=bottom_left,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 90
+    },
+    "facing=west,part=bottom_right,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 90
+    },
+    "facing=west,part=bottom_right,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 90
+    },
+    "facing=north,part=bottom_left,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 180
+    },
+    "facing=north,part=bottom_left,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 180
+    },
+    "facing=north,part=bottom_right,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 180
+    },
+    "facing=north,part=bottom_right,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 180
+    },
+    "facing=east,part=bottom_left,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 270
+    },
+    "facing=east,part=bottom_left,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 270
+    },
+    "facing=east,part=bottom_right,piece=body": {
+      "model": "mca:block/birch_dresser_body",
+      "y": 270
+    },
+    "facing=east,part=bottom_right,piece=drawer": {
+      "model": "mca:block/birch_dresser_drawer",
+      "y": 270
+    }
+  }
+}

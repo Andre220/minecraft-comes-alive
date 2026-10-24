@@ -13,11 +13,10 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.MemoryStatus;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.schedule.Activity;
-import net.minecraft.world.level.block.Blocks;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A thirsty villager walks to the nearest cauldron with water and stays next to it until its
+ * A thirsty villager walks to the nearest cauldron (or sink) with water and stays next to it until its
  * thirst is quenched (Needs refills thirst while it is within reach of one).
  */
 public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
@@ -52,7 +51,7 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
             return false;
         }
         cauldron = BlockPos.findClosestMatch(villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT,
-                pos -> level.getBlockState(pos).is(Blocks.WATER_CAULDRON)).map(BlockPos::immutable).orElse(null);
+                pos -> Needs.isDrinkingWater(level.getBlockState(pos))).map(BlockPos::immutable).orElse(null);
         if (cauldron == null) {
             nextAttempt = level.getGameTime() + RETRY_COOLDOWN;
             return false;
@@ -70,7 +69,7 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
         return cauldron != null
                && villager.getNeeds().get(Needs.Need.THIRST) < QUENCHED
                && (!ActionQueue.isEnabled() || villager.getActionQueue().isCurrent(ActionType.DRINK))
-               && level.getBlockState(cauldron).is(Blocks.WATER_CAULDRON)
+               && Needs.isDrinkingWater(level.getBlockState(cauldron))
                && villager.getBrain().getMemoryInternal(MemoryModuleType.ATTACK_TARGET).isEmpty()
                && !villager.getVillagerBrain().isPanicking();
     }

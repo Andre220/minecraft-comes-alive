@@ -1,5 +1,6 @@
 package net.conczin.mca.entity;
 
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.minds.ActionLabels;
 import net.conczin.mca.expansion.looks.Beards;
 import net.conczin.mca.expansion.requests.Requests;
@@ -238,6 +239,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                 .add(Needs::createTrackedData)
                 .add(Skills::createTrackedData) // expansion: minds
                 .add(Beards::createTrackedData) // expansion: looks
+                .add(Wardrobes::createTrackedData) // expansion: looks
                 .add(ActionLabels::createTrackedData) // expansion: minds
                 .add(Diet::createTrackedData) // expansion: minds
                 .add(Requests::createTrackedData) // expansion: requests
@@ -496,7 +498,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         boolean hasChanged = !level().isClientSide() && getProfession() != data.profession().value() && data.profession().value() != ProfessionsMCA.OUTLAW;
         super.setVillagerData(data);
         if (hasChanged) {
-            randomizeClothes();
+            Wardrobes.newClothes(this); // expansion: looks - put on at the wardrobe
             getRelationships().getFamilyEntry().setProfession(data.profession().value());
         }
     }
@@ -1735,7 +1737,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
 
         refreshBrain((ServerLevel) level());
         getVillagerBrain().randomize(state);
-        randomizeClothes();
+        Wardrobes.newClothes(this); // expansion: looks - put on at the wardrobe
     }
 
     @Override

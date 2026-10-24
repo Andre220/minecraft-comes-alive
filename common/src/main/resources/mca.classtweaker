@@ -73,3 +73,6 @@ accessible class net/minecraft/world/entity/ai/behavior/CrossbowAttack$CrossbowS
 accessible method net/minecraft/world/entity/ai/village/poi/PoiTypes registerBlockStates (Lnet/minecraft/core/Holder;Ljava/util/Set;)V
 accessible field net/minecraft/world/entity/ai/village/poi/PoiType matchingStates Ljava/util/Set;
 mutable field net/minecraft/world/entity/ai/village/poi/PoiType matchingStates Ljava/util/Set;
+
+# Register the outfit item's renderer (NeoForge has an event for it, Fabric does not). // expansion: looks
+accessible field net/minecraft/client/renderer/special/SpecialModelRenderers ID_MAPPER Lnet/minecraft/util/ExtraCodecs$LateBoundIdMapper;

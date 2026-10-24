@@ -1,0 +1,244 @@
+{
+  "variants": {
+    "facing=south,left=false,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_00"
+    },
+    "facing=south,left=false,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00"
+    },
+    "facing=south,left=true,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_10"
+    },
+    "facing=south,left=true,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10"
+    },
+    "facing=south,left=false,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_01"
+    },
+    "facing=south,left=false,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01"
+    },
+    "facing=south,left=true,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_11"
+    },
+    "facing=south,left=true,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11"
+    },
+    "facing=south,left=false,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_00"
+    },
+    "facing=south,left=false,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00"
+    },
+    "facing=south,left=true,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_10"
+    },
+    "facing=south,left=true,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10"
+    },
+    "facing=south,left=false,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_01"
+    },
+    "facing=south,left=false,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01"
+    },
+    "facing=south,left=true,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_11"
+    },
+    "facing=south,left=true,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11"
+    },
+    "facing=west,left=false,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_00",
+      "y": 90
+    },
+    "facing=west,left=false,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 90
+    },
+    "facing=west,left=true,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_10",
+      "y": 90
+    },
+    "facing=west,left=true,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 90
+    },
+    "facing=west,left=false,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_01",
+      "y": 90
+    },
+    "facing=west,left=false,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 90
+    },
+    "facing=west,left=true,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_11",
+      "y": 90
+    },
+    "facing=west,left=true,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 90
+    },
+    "facing=west,left=false,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_00",
+      "y": 90
+    },
+    "facing=west,left=false,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 90
+    },
+    "facing=west,left=true,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_10",
+      "y": 90
+    },
+    "facing=west,left=true,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 90
+    },
+    "facing=west,left=false,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_01",
+      "y": 90
+    },
+    "facing=west,left=false,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 90
+    },
+    "facing=west,left=true,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_11",
+      "y": 90
+    },
+    "facing=west,left=true,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 90
+    },
+    "facing=north,left=false,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_00",
+      "y": 180
+    },
+    "facing=north,left=false,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 180
+    },
+    "facing=north,left=true,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_10",
+      "y": 180
+    },
+    "facing=north,left=true,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 180
+    },
+    "facing=north,left=false,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_01",
+      "y": 180
+    },
+    "facing=north,left=false,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 180
+    },
+    "facing=north,left=true,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_11",
+      "y": 180
+    },
+    "facing=north,left=true,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 180
+    },
+    "facing=north,left=false,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_00",
+      "y": 180
+    },
+    "facing=north,left=false,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 180
+    },
+    "facing=north,left=true,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_10",
+      "y": 180
+    },
+    "facing=north,left=true,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 180
+    },
+    "facing=north,left=false,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_01",
+      "y": 180
+    },
+    "facing=north,left=false,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 180
+    },
+    "facing=north,left=true,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_11",
+      "y": 180
+    },
+    "facing=north,left=true,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 180
+    },
+    "facing=east,left=false,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_00",
+      "y": 270
+    },
+    "facing=east,left=false,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 270
+    },
+    "facing=east,left=true,part=bottom_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_bottom_10",
+      "y": 270
+    },
+    "facing=east,left=true,part=bottom_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 270
+    },
+    "facing=east,left=false,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_01",
+      "y": 270
+    },
+    "facing=east,left=false,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 270
+    },
+    "facing=east,left=true,part=bottom_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_bottom_11",
+      "y": 270
+    },
+    "facing=east,left=true,part=bottom_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 270
+    },
+    "facing=east,left=false,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_00",
+      "y": 270
+    },
+    "facing=east,left=false,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_00",
+      "y": 270
+    },
+    "facing=east,left=true,part=top_left,piece=body,right=false": {
+      "model": "mca:block/oak_wardrobe_top_10",
+      "y": 270
+    },
+    "facing=east,left=true,part=top_left,piece=door,right=false": {
+      "model": "mca:block/oak_wardrobe_door_10",
+      "y": 270
+    },
+    "facing=east,left=false,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_01",
+      "y": 270
+    },
+    "facing=east,left=false,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_01",
+      "y": 270
+    },
+    "facing=east,left=true,part=top_left,piece=body,right=true": {
+      "model": "mca:block/oak_wardrobe_top_11",
+      "y": 270
+    },
+    "facing=east,left=true,part=top_left,piece=door,right=true": {
+      "model": "mca:block/oak_wardrobe_door_11",
+      "y": 270
+    }
+  }
+}

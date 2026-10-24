@@ -1,0 +1,8 @@
+{
+  "parent": "mca:block/template_wardrobe_top_11",
+  "textures": {
+    "body": "minecraft:block/stripped_birch_log",
+    "front": "minecraft:block/birch_planks",
+    "handle": "minecraft:block/iron_block"
+  }
+}

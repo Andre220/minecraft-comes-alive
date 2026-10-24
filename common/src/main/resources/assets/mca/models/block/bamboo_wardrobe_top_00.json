@@ -1,0 +1,8 @@
+{
+  "parent": "mca:block/template_wardrobe_top_00",
+  "textures": {
+    "body": "minecraft:block/stripped_bamboo_block",
+    "front": "minecraft:block/bamboo_planks",
+    "handle": "minecraft:block/iron_block"
+  }
+}

@@ -1,6 +1,0 @@
-{
-  "parent": "mca:block/template_casement_closed_center",
-  "textures": {
-    "panel": "minecraft:block/warped_trapdoor"
-  }
-}

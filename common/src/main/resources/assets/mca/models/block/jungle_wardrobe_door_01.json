@@ -1,0 +1,8 @@
+{
+  "parent": "mca:block/template_wardrobe_door_01",
+  "textures": {
+    "body": "minecraft:block/stripped_jungle_log",
+    "front": "minecraft:block/jungle_planks",
+    "handle": "minecraft:block/iron_block"
+  }
+}

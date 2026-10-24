@@ -285,10 +285,10 @@
                   "boxes": [
                     {
                       "coordinates": [
-                        -2,
+                        -1,
                         -2,
                         -0.003,
-                        4,
+                        2,
                         1,
                         0
                       ],
@@ -312,10 +312,10 @@
                   "boxes": [
                     {
                       "coordinates": [
-                        -1,
+                        -0.5,
                         -2,
                         -0.004,
-                        2,
+                        1,
                         1,
                         0
                       ],
@@ -571,12 +571,14 @@
           "r_pupil.visible": "mca_sleeping < 0.5",
           "l_pupil.visible": "mca_sleeping < 0.5",
           "mca_mouth_inside.visible": "mca_talk > 0.05",
-          "mca_mouth_inside.sx": "0.75*(1 +0.5*mca_talk)",
+          "mca_mouth_inside.sx": "(1 +0.5*mca_talk_wide*mca_talk)/max(mouth.sx, 0.1)",
           "mca_tongue.visible": "mca_talk > 0.4",
-          "mca_tongue.tx": "sin(age*0.37 +random(id)*6)*0.375*mca_talk",
-          "mca_mouth_inside.sy": "0.75",
-          "mca_tongue.sx": "0.75",
-          "mca_tongue.sy": "0.75"
+          "mca_tongue.tx": "sin(age*0.37 +random(id)*6)*0.25*mca_talk",
+          "mca_mouth_inside.sy": "(1 +mca_talk)/(1 +0.5*mca_talk_wide*mca_talk)/max(mouth.sy, 0.1)",
+          "mca_tongue.sx": "1/max(mouth.sx, 0.1)",
+          "mca_tongue.sy": "0.75/max(mouth.sy, 0.1)",
+          "mca_mouth_inside.rz": "-mouth.rz",
+          "mca_tongue.rz": "-mouth.rz"
         }
       ]
     },

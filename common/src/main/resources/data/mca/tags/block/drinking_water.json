@@ -1,0 +1,18 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:water_cauldron",
+    {
+      "id": "village_furnishings:iron_sink",
+      "required": false
+    },
+    {
+      "id": "village_furnishings:copper_sink",
+      "required": false
+    },
+    {
+      "id": "village_furnishings:gold_sink",
+      "required": false
+    }
+  ]
+}

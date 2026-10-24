@@ -383,6 +383,9 @@ public final class Config extends CommonConfig {
     /** Archers practise at target blocks in the daytime, between patrols. // expansion: minds */
     public boolean villagerArcheryPractice = false;
 
+    /** A villager's new clothes (new job, grown up) wait until it passes by the wardrobe or dresser at home. // expansion: looks */
+    public boolean villagerWardrobes = false;
+
     /**
      * With human-like squidward villagers, turns the outer layers (hat, jacket, sleeves, pants) into
      * small cubes per pixel when the villager is close, similar to 3D skin layer mods.

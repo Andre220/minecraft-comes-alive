@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PCP",
+    "PPP"
+  ],
+  "key": {
+    "P": "minecraft:mangrove_planks",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mca:mangrove_wardrobe",
+    "count": 1
+  }
+}

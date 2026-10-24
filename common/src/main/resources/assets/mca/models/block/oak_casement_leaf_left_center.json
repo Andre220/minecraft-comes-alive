@@ -1,6 +1,0 @@
-{
-  "parent": "mca:block/template_casement_leaf_left_center",
-  "textures": {
-    "panel": "minecraft:block/oak_trapdoor"
-  }
-}

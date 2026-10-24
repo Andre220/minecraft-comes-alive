@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    "mca:oak_wardrobe",
+    "mca:spruce_wardrobe",
+    "mca:birch_wardrobe",
+    "mca:jungle_wardrobe",
+    "mca:acacia_wardrobe",
+    "mca:dark_oak_wardrobe",
+    "mca:mangrove_wardrobe",
+    "mca:cherry_wardrobe",
+    "mca:pale_oak_wardrobe",
+    "mca:bamboo_wardrobe",
+    "mca:crimson_wardrobe",
+    "mca:warped_wardrobe",
+    "mca:oak_dresser",
+    "mca:spruce_dresser",
+    "mca:birch_dresser",
+    "mca:jungle_dresser",
+    "mca:acacia_dresser",
+    "mca:dark_oak_dresser",
+    "mca:mangrove_dresser",
+    "mca:cherry_dresser",
+    "mca:pale_oak_dresser",
+    "mca:bamboo_dresser",
+    "mca:crimson_dresser",
+    "mca:warped_dresser"
+  ]
+}

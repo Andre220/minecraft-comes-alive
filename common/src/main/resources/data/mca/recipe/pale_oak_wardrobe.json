@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PCP",
+    "PPP"
+  ],
+  "key": {
+    "P": "minecraft:pale_oak_planks",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mca:pale_oak_wardrobe",
+    "count": 1
+  }
+}

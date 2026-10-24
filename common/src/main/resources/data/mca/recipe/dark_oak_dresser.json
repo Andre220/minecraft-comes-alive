@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PPP",
+    "PCP"
+  ],
+  "key": {
+    "P": "minecraft:dark_oak_planks",
+    "C": "minecraft:chest"
+  },
+  "result": {
+    "id": "mca:dark_oak_dresser",
+    "count": 1
+  }
+}

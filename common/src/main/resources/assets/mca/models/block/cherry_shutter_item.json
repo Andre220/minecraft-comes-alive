@@ -1,6 +1,0 @@
-{
-  "parent": "mca:block/template_shutter_item",
-  "textures": {
-    "panel": "minecraft:block/cherry_trapdoor"
-  }
-}

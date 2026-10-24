@@ -1,5 +1,7 @@
 package net.conczin.mca.fabric;
 
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.expansion.wardrobe.OutfitTab;
 import net.conczin.mca.expansion.minds.routine.DailyToggles;
 import net.conczin.mca.expansion.minds.routine.OpportunityTypes;
 import net.conczin.mca.expansion.progression.VillageStages;
@@ -158,6 +160,12 @@ public final class MCAFabric implements ModInitializer {
                 })
                 .build();
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, mcaTab, build);
+        // expansion: looks - every clothing texture as an outfit
+        Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, MCA.locate("clothing_tab"), FabricCreativeModeTab.builder()
+                .title(Component.translatable("itemGroup.mca.clothing_tab"))
+                .icon(() -> new ItemStack(Wardrobes.OUTFIT))
+                .displayItems((params, output) -> OutfitTab.items().forEach(output::accept))
+                .build());
 
         // Register events
         ServerLifecycleEvents.SERVER_STARTING.register(MCA::startServer);

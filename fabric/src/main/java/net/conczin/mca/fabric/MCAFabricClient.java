@@ -1,7 +1,9 @@
 package net.conczin.mca.fabric;
 
-import net.conczin.mca.expansion.building.SwingRenderer;
-import net.conczin.mca.expansion.building.Shutters;
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.expansion.wardrobe.ClosetRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderers;
+import net.conczin.mca.expansion.wardrobe.OutfitRenderer;
 import net.conczin.mca.expansion.speech.MouthMotion;
 import net.conczin.mca.ClientProxyAbstractImpl;
 import net.conczin.mca.Config;
@@ -72,7 +74,8 @@ public final class MCAFabricClient extends ClientProxyAbstractImpl implements Cl
         ParticleProviderRegistry.getInstance().register(ParticleTypesMCA.POS_INTERACTION, InteractionParticle.Factory::new);
 
         BlockEntityRenderers.register(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
-        BlockEntityRenderers.register(Shutters.SWING, SwingRenderer::new); // expansion: building
+        SpecialModelRenderers.ID_MAPPER.put(OutfitRenderer.ID, OutfitRenderer.Unbaked.MAP_CODEC); // expansion: looks
+        BlockEntityRenderers.register(Wardrobes.CLOSET, ClosetRenderer::new); // expansion: looks
 
         // Register resource reload listeners
         ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);

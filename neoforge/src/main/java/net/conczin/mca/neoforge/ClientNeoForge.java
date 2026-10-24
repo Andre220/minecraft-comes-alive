@@ -1,7 +1,9 @@
 package net.conczin.mca.neoforge;
 
-import net.conczin.mca.expansion.building.SwingRenderer;
-import net.conczin.mca.expansion.building.Shutters;
+import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.expansion.wardrobe.ClosetRenderer;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
+import net.conczin.mca.expansion.wardrobe.OutfitRenderer;
 import net.conczin.mca.expansion.speech.MouthMotion;
 import com.google.common.reflect.TypeToken;
 import net.conczin.mca.ClientProxyAbstractImpl;
@@ -49,7 +51,7 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         // Block entity renderers
         event.registerBlockEntityRenderer(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
-        event.registerBlockEntityRenderer(Shutters.SWING, SwingRenderer::new); // expansion: building
+        event.registerBlockEntityRenderer(Wardrobes.CLOSET, ClosetRenderer::new); // expansion: looks
 
         // Entity renderers
         if (Config.getInstance().useSquidwardModels) {
@@ -66,6 +68,11 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
         event.registerEntityRenderer(EntitiesMCA.GRIM_REAPER, GrimReaperRenderer::new);
         event.registerEntityRenderer(EntitiesMCA.CRIB, CribEntityRenderer::new);
         event.registerEntityRenderer(EntitiesMCA.FISHING_BOBBER, MCAFishingBobberRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterSpecialModels(RegisterSpecialModelRendererEvent event) {
+        event.register(OutfitRenderer.ID, OutfitRenderer.Unbaked.MAP_CODEC); // expansion: looks
     }
 
     @SubscribeEvent

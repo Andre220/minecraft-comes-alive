@@ -1,5 +1,10 @@
 package net.conczin.mca.entity.ai;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.conczin.mca.expansion.minds.Diet;
 import net.conczin.mca.expansion.minds.HomeQuality;
 import net.conczin.mca.Config;
@@ -54,6 +59,7 @@ import java.util.UUID;
  * when exhausted, hide when scared). The meters are tracked data, so clients can show them.
  */
 public class Needs {
+    private static final TagKey<Block> DRINKING_WATER = TagKey.create(Registries.BLOCK, MCA.locate("drinking_water"));
     public enum Need {
         HUNGER, THIRST, ENERGY, SOCIAL, FUN, SAFETY;
 
@@ -460,11 +466,20 @@ public class Needs {
     public boolean isNextToWater(ServerLevel level) {
         BlockPos feet = entity.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(feet.offset(-2, -1, -2), feet.offset(2, 1, 2))) {
-            if (level.getBlockState(pos).is(Blocks.WATER_CAULDRON)) {
+            if (isDrinkingWater(level.getBlockState(pos))) {
                 return true;
             }
         }
         return false;
+    }
+
+    /** A cauldron with water, or anything else in the {@code mca:drinking_water} tag with water in it (its "level" above 0). */
+    public static boolean isDrinkingWater(BlockState state) {
+        if (!state.is(DRINKING_WATER)) {
+            return false;
+        }
+        Property<?> level = state.getBlock().getStateDefinition().getProperty("level");
+        return !(level instanceof IntegerProperty water) || state.getValue(water) > 0;
     }
 
     private static void setModifier(AttributeInstance attribute, Identifier id, boolean active, double amount) {
