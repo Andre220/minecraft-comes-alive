@@ -27,10 +27,13 @@ public final class Seats {
     public static final String TAG = "mca_seat";
     /** Height of the seat surface above the block's bottom for stairs and bottom slabs. */
     private static final double SEAT_HEIGHT = 0.5;
-    /** Lowers the rider so it sits on the surface rather than above it. */
-    private static final double SIT_OFFSET = -0.35;
-    /** How far onto the low half of a stair a villager sits. */
-    private static final double STAIR_FORWARD = 0.2;
+    /** Puts the bottom of the rider's torso on the seat surface (measured in game). */
+    private static final double SIT_OFFSET = 0.4;
+    /**
+     * How far onto the low half of a stair a villager sits: the back of its torso (4 pixels deep) against the step,
+     * so the bottom of the torso sits in the stair's corner.
+     */
+    private static final double STAIR_FORWARD = 0.125;
     private static final double CLEANUP_RANGE = 32.0;
 
     private Seats() {

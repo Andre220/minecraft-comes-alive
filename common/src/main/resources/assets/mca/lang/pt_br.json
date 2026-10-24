@@ -1421,5 +1421,7 @@
   "block.mca.pale_oak_casement": "Janela de Batente de Carvalho Pálido",
   "block.mca.bamboo_casement": "Janela de Batente de Bambu",
   "block.mca.crimson_casement": "Janela de Batente de Carmesim",
-  "block.mca.warped_casement": "Janela de Batente de Distorcida"
+  "block.mca.warped_casement": "Janela de Batente de Distorcida",
+  "action.mca.task.archerypracticetask": "Treinando tiro",
+  "action.mca.task.patrolvillagetask": "Patrulhando"
 }

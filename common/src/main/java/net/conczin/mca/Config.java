@@ -380,6 +380,9 @@ public final class Config extends CommonConfig {
     /** A short line above villagers saying what they are doing, shown when you are close. // expansion: minds */
     public boolean villagerActionLabels = false;
 
+    /** Archers practise at target blocks in the daytime, between patrols. // expansion: minds */
+    public boolean villagerArcheryPractice = false;
+
     /**
      * With human-like squidward villagers, turns the outer layers (hat, jacket, sleeves, pants) into
      * small cubes per pixel when the villager is close, similar to 3D skin layer mods.

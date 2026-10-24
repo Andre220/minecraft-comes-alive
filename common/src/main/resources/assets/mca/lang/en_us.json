@@ -1636,5 +1636,7 @@
   "block.mca.pale_oak_casement": "Pale Oak Casement Window",
   "block.mca.bamboo_casement": "Bamboo Casement Window",
   "block.mca.crimson_casement": "Crimson Casement Window",
-  "block.mca.warped_casement": "Warped Casement Window"
+  "block.mca.warped_casement": "Warped Casement Window",
+  "action.mca.task.archerypracticetask": "Archery practice",
+  "action.mca.task.patrolvillagetask": "On patrol"
 }

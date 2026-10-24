@@ -38,6 +38,8 @@ public class CasementBlock extends Block implements EntityBlock {
     public static final BooleanProperty OPEN = BlockStateProperties.OPEN;
     /** Only used to look up the model of one leaf for the renderer; always NONE in the world. */
     public static final EnumProperty<Leaf> LEAF = EnumProperty.create("leaf", Leaf.class);
+    /** In the middle of the block instead of flush with the outer face of the wall. */
+    public static final BooleanProperty CENTERED = BooleanProperty.create("centered");
 
     public enum Leaf implements StringRepresentable {
         NONE, LEFT, RIGHT;
@@ -48,20 +50,24 @@ public class CasementBlock extends Block implements EntityBlock {
         }
     }
 
-    private static final VoxelShape CLOSED_Z = Block.box(0, 0, 7, 16, 16, 9);
-    private static final VoxelShape CLOSED_X = Block.box(7, 0, 0, 9, 16, 16);
+    // flush with the outer face of the wall (facing points outwards)
+    private static final VoxelShape CLOSED_SOUTH = Block.box(0, 0, 14, 16, 16, 16);
+    private static final VoxelShape CLOSED_NORTH = Block.box(0, 0, 0, 16, 16, 2);
+    private static final VoxelShape CLOSED_EAST = Block.box(14, 0, 0, 16, 16, 16);
+    private static final VoxelShape CLOSED_WEST = Block.box(0, 0, 0, 2, 16, 16);
 
     private final WoodType wood;
 
     public CasementBlock(WoodType wood, Properties properties) {
         super(properties);
         this.wood = wood;
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.SOUTH).setValue(OPEN, false).setValue(LEAF, Leaf.NONE));
+        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.SOUTH).setValue(OPEN, false).setValue(LEAF, Leaf.NONE)
+                .setValue(CENTERED, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, OPEN, LEAF);
+        builder.add(FACING, OPEN, LEAF, CENTERED);
     }
 
     @Override
@@ -76,36 +82,58 @@ public class CasementBlock extends Block implements EntityBlock {
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        // opens away from whoever placed it: from inside, outwards
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection());
+        // placed from inside, looking out: that way is outside, where it opens to
+        Direction facing = context.getHorizontalDirection();
+        // clicked near the middle of the block (from inside to outside): in the middle; else flush with the outside
+        double along = facing.getAxis().choose(
+                context.getClickLocation().x - context.getClickedPos().getX(), 0.0,
+                context.getClickLocation().z - context.getClickedPos().getZ());
+        double outwards = facing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? along : 1.0 - along;
+        boolean centered = outwards > 0.25 && outwards < 0.75;
+        return defaultBlockState().setValue(FACING, facing).setValue(CENTERED, centered);
     }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         Direction facing = state.getValue(FACING);
-        if (!state.getValue(OPEN)) {
-            return facing.getAxis() == Direction.Axis.Z ? CLOSED_Z : CLOSED_X;
+        if (state.getValue(CENTERED)) {
+            boolean alongZ = facing.getAxis() == Direction.Axis.Z;
+            if (!state.getValue(OPEN)) {
+                return alongZ ? Block.box(0, 0, 7, 16, 16, 9) : Block.box(7, 0, 0, 9, 16, 16);
+            }
+            return alongZ ? Shapes.or(Block.box(0, 0, 7, 2, 16, 9), Block.box(14, 0, 7, 16, 16, 9))
+                    : Shapes.or(Block.box(7, 0, 0, 9, 16, 2), Block.box(7, 0, 14, 9, 16, 16));
         }
+        if (!state.getValue(OPEN)) {
+            return switch (facing) {
+                case NORTH -> CLOSED_NORTH;
+                case EAST -> CLOSED_EAST;
+                case WEST -> CLOSED_WEST;
+                default -> CLOSED_SOUTH;
+            };
+        }
+        // open, the leaves stand outside the wall; only their hinges are left in here
         return switch (facing) {
-            case NORTH -> Shapes.or(Block.box(0, 0, 0, 2, 16, 8), Block.box(14, 0, 0, 16, 16, 8));
-            case EAST -> Shapes.or(Block.box(8, 0, 0, 16, 16, 2), Block.box(8, 0, 14, 16, 16, 16));
-            case WEST -> Shapes.or(Block.box(0, 0, 0, 8, 16, 2), Block.box(0, 0, 14, 8, 16, 16));
-            default -> Shapes.or(Block.box(0, 0, 8, 2, 16, 16), Block.box(14, 0, 8, 16, 16, 16));
+            case NORTH -> Shapes.or(Block.box(0, 0, 0, 2, 16, 2), Block.box(14, 0, 0, 16, 16, 2));
+            case EAST -> Shapes.or(Block.box(14, 0, 0, 16, 16, 2), Block.box(14, 0, 14, 16, 16, 16));
+            case WEST -> Shapes.or(Block.box(0, 0, 0, 2, 16, 2), Block.box(0, 0, 14, 2, 16, 16));
+            default -> Shapes.or(Block.box(0, 0, 14, 2, 16, 16), Block.box(14, 0, 14, 16, 16, 16));
         };
     }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         boolean open = !state.getValue(OPEN);
-        BlockState next = state.setValue(OPEN, open);
-        // like a gate: it swings away from the one opening it
-        if (open && player.getDirection() == state.getValue(FACING).getOpposite()) {
-            next = next.setValue(FACING, player.getDirection());
-        }
-        level.setBlock(pos, next, Block.UPDATE_ALL);
+        level.setBlock(pos, state.setValue(OPEN, open), Block.UPDATE_ALL);
         level.playSound(player, pos, open ? wood.fenceGateOpen() : wood.fenceGateClose(), SoundSource.BLOCKS, 1.0F,
                 level.getRandom().nextFloat() * 0.1F + 0.9F);
         return InteractionResult.SUCCESS;
+    }
+
+    /** Never a solid face for others: glass panes, fences and walls don't join onto it. */
+    @Override
+    protected VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return Shapes.empty();
     }
 
     @Override

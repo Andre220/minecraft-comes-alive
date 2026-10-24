@@ -43,6 +43,7 @@ import net.conczin.mca.expansion.minds.RoutineGameTests;
 import net.conczin.mca.expansion.barter.BarterGameTests;
 import net.conczin.mca.expansion.speech.SpeechGameTests;
 import net.conczin.mca.expansion.minds.ActionLabelGameTests;
+import net.conczin.mca.expansion.minds.ArcheryGameTests;
 import net.conczin.mca.entity.ai.navigation.AutonomousPathfindingGameTests;
 import net.conczin.mca.entity.ai.navigation.FenceGateInteractionGameTests;
 import net.conczin.mca.entity.ai.navigation.HomeArrivalGameTests;
@@ -151,6 +152,7 @@ public final class McaGameTestRegistration {
             BarterGameTests.class,
             SpeechGameTests.class,
             ActionLabelGameTests.class,
+            ArcheryGameTests.class,
             VillagerDrinksGameTests.class
     );
 

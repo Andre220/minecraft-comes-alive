@@ -62,6 +62,12 @@ public class ShutterLeafBlock extends Block {
         return Shapes.empty();
     }
 
+    /** Never a solid face for others: glass panes, fences and walls don't join onto it. */
+    @Override
+    protected VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return Shapes.empty();
+    }
+
     /** The shutter this panel belongs to. */
     static BlockPos shutterOf(BlockState state, BlockPos pos) {
         return pos.relative(ShutterBlock.hingeDirection(state).getOpposite());

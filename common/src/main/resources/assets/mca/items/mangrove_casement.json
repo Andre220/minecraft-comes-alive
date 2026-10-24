@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mca:block/mangrove_casement_closed"
+    "model": "mca:block/mangrove_casement_item"
   }
 }

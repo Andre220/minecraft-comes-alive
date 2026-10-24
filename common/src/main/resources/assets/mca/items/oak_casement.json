@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mca:block/oak_casement_closed"
+    "model": "mca:block/oak_casement_item"
   }
 }

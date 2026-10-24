@@ -1,5 +1,6 @@
 package net.conczin.mca.expansion.building;
 
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.EntityBlock;
@@ -190,6 +191,12 @@ public class ShutterBlock extends Block implements EntityBlock {
     @Override
     protected VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return state.getValue(OPEN) ? AGAINST_WALL.get(state.getValue(FACING)) : net.minecraft.world.phys.shapes.Shapes.empty();
+    }
+
+    /** Never a solid face for others: glass panes, fences and walls don't join onto it. */
+    @Override
+    protected VoxelShape getBlockSupportShape(BlockState state, BlockGetter level, BlockPos pos) {
+        return Shapes.empty();
     }
 
     @Override

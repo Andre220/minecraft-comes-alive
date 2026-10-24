@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain;
 
+import net.conczin.mca.expansion.minds.ArcheryPracticeTask;
 import net.conczin.mca.expansion.minds.routine.DailyTogglesTask;
 import net.conczin.mca.expansion.minds.routine.IdleRoutineTask;
 import com.google.common.collect.ImmutableList;
@@ -394,7 +395,8 @@ public class VillagerTasksMCA {
 
     public static ImmutableList<Pair<Integer, ? extends BehaviorControl<? super VillagerEntityMCA>>> getGuardWorkPackage() {
         return ImmutableList.of(
-                Pair.of(10, new PatrolVillageTask(4, 0.4f)),
+                Pair.of(9, new ArcheryPracticeTask()), // expansion: minds - archers practise at targets by day
+                Pair.of(10, new ConditionalTask<VillagerEntityMCA>(new PatrolVillageTask(4, 0.4f), v -> !ArcheryPracticeTask.isPractising(v))),
                 Pair.of(10, new ConditionalTask<>(
                         RandomStroll.stroll(0.4f),
                         VillagerTasksMCA::shouldUseHomelessGuardStroll

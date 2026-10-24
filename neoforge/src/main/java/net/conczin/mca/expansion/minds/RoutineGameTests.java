@@ -195,6 +195,36 @@ public final class RoutineGameTests {
         });
     }
 
+    @GameTest(batch = "mca_routine_casement", templateNamespace = "minecraft", template = "bastion/blocks/air", timeoutTicks = 200)
+    public static void casementOpensLikeAGate(GameTestHelper helper) {
+        BlockPos center = helper.absolutePos(new BlockPos(16436, 2, 400));
+        ServerLevel level = helper.getLevel();
+        prepare(helper, center);
+        net.minecraft.world.level.block.Block block = net.conczin.mca.expansion.building.Shutters.CASEMENTS.get("oak");
+        BlockPos window = center.offset(2, 0, 0);
+        set(level, window, block.defaultBlockState());
+
+        helper.runAfterDelay(2, () -> {
+            helper.assertTrue(level.getBlockEntity(window) instanceof net.conczin.mca.expansion.building.SwingBlockEntity,
+                    "a casement remembers its swing for the animation");
+            var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+            level.getBlockState(window).useWithoutItem(level, player,
+                    new net.minecraft.world.phys.BlockHitResult(Vec3.atCenterOf(window), net.minecraft.core.Direction.NORTH, window, false));
+            var opened = level.getBlockState(window);
+            helper.assertTrue(opened.getValue(net.conczin.mca.expansion.building.CasementBlock.OPEN), "using it opens it");
+            helper.assertTrue(opened.getValue(net.conczin.mca.expansion.building.CasementBlock.LEAF) == net.conczin.mca.expansion.building.CasementBlock.Leaf.NONE,
+                    "the leaf property only exists for the models");
+            var toggle = net.conczin.mca.expansion.minds.routine.DailyToggles.forBlock(opened);
+            helper.assertTrue(toggle != null && toggle.wanted(opened, 14000) != null, "villagers close it at night");
+            helper.succeed();
+        });
+    }
+
+    @AfterBatch(batch = "mca_routine_casement")
+    public static void cleanupCasement(ServerLevel level) {
+        cleanup(level);
+    }
+
     @AfterBatch(batch = "mca_routine_shutters")
     public static void cleanupShutters(ServerLevel level) {
         cleanup(level);

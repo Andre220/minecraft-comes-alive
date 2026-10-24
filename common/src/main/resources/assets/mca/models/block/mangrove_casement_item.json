@@ -1,0 +1,6 @@
+{
+  "parent": "mca:block/template_casement_item",
+  "textures": {
+    "panel": "minecraft:block/mangrove_trapdoor"
+  }
+}

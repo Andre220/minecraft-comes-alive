@@ -67,8 +67,10 @@ public class SwingRenderer implements BlockEntityRenderer<SwingBlockEntity, Swin
         } else if (block.getBlock() instanceof CasementBlock) {
             Direction facing = block.getValue(CasementBlock.FACING);
             float angle = state.open * 90.0F;
-            draw(block.setValue(CasementBlock.LEAF, CasementBlock.Leaf.LEFT), rotateForFacing(1.0 / 16.0, 0.5, facing), -angle, state, pose, collector);
-            draw(block.setValue(CasementBlock.LEAF, CasementBlock.Leaf.RIGHT), rotateForFacing(15.0 / 16.0, 0.5, facing), angle, state, pose, collector);
+            // hinged at the outer corners of the opening (or in the middle of the block), swinging out
+            double depth = block.getValue(CasementBlock.CENTERED) ? 0.5 : 15.0 / 16.0;
+            draw(block.setValue(CasementBlock.LEAF, CasementBlock.Leaf.LEFT), rotateForFacing(1.0 / 16.0, depth, facing), -angle, state, pose, collector);
+            draw(block.setValue(CasementBlock.LEAF, CasementBlock.Leaf.RIGHT), rotateForFacing(15.0 / 16.0, depth, facing), angle, state, pose, collector);
         }
     }
 

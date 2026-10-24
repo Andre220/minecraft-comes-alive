@@ -27,7 +27,8 @@ public final class ActionLabels {
     private static final Set<String> LABELLED_TASKS = Set.of(
             "lumberjacktask", "huntertask", "foragertask", "fishertask", "digsitetask", "haulertask", "workshopproductiontask",
             "stashtask", "workordertask", "choppingtask", "harvestingtask", "fishingtask", "huntingtask", "interacttask",
-            "workatjobsitetask", "schooltask", "needsfetchfoodtask", "needsdrinktask", "gohometask");
+            "workatjobsitetask", "schooltask", "needsfetchfoodtask", "needsdrinktask", "gohometask", "archerypracticetask",
+            "patrolvillagetask");
 
     private ActionLabels() {
     }
