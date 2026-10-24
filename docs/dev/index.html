@@ -1,34 +1,98 @@
 <!doctype html><html lang='pt-BR'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
 <title>MCA Dev Guide</title><style>
-:root{--bg:#f6f4ef;--fg:#1f2328;--muted:#5d6670;--card:#fff;--line:#d9d4c7;--accent:#2f7d4f;--warn:#a35a00}
-@media (prefers-color-scheme:dark){:root{--bg:#16181b;--fg:#e6e6e6;--muted:#9aa3ad;--card:#1f2226;--line:#30343a;--accent:#5fbf83;--warn:#e0a050}}
-*{box-sizing:border-box}body{margin:0;font:15px/1.55 system-ui,Segoe UI,sans-serif;background:var(--bg);color:var(--fg)}
-nav{position:fixed;top:0;left:0;bottom:0;width:230px;overflow:auto;padding:18px;border-right:1px solid var(--line);background:var(--card)}
-nav a{display:block;color:var(--fg);text-decoration:none;padding:3px 0}nav a:hover{color:var(--accent)}
-nav h1{font-size:17px;margin:0 0 12px}main{margin-left:230px;padding:24px 36px;max-width:1300px}
-h2{border-bottom:2px solid var(--line);padding-bottom:4px;margin-top:40px}h3{margin-top:26px}
-table{border-collapse:collapse;width:100%;margin:10px 0;background:var(--card)}th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
-th{background:rgba(127,127,127,.08)}td.y{color:var(--accent);font-weight:bold;text-align:center}td.n{color:var(--muted);text-align:center}
-code{background:rgba(127,127,127,.15);padding:1px 4px;border-radius:3px}.muted{color:var(--muted)}
-.chapter{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
-.chapter p{margin:6px 0}.tag{font-size:12px;padding:1px 6px;border-radius:9px;background:rgba(127,127,127,.15)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
-.cell{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:6px;text-align:center;font-size:11px;word-break:break-all}
-.cell img{width:48px;height:48px;image-rendering:pixelated;object-fit:contain;display:block;margin:0 auto 4px}
-#filter{width:100%;padding:8px;font-size:15px;margin:8px 0;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
-.tabs button{margin:2px;padding:4px 10px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--fg);cursor:pointer}
-.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
-@media (max-width:800px){nav{position:static;width:auto}main{margin:0;padding:16px}}
-</style></head><body>
-<nav><h1>MCA · guia do dev</h1>
-<a href='#mca'>MCA original</a>
-<a href='#features'>Features da expansão</a>
-<a href='#behavior'>Comportamento</a>
-<a href='#matrix'>Profissões × prédios × biomas</a>
-<a href='#buildings'>Tipos de prédio</a>
-<a href='#icons'>Ícones e balões</a>
-<p class='muted' style='font-size:12px;margin-top:20px'>Gerado por scripts/dev_docs.py</p></nav><main>
-<h2 id='mca'>MCA original</h2>
+:root{--bg:#f4f1ea;--bg2:#ebe5d8;--fg:#1d2126;--muted:#5d6670;--card:#fffdf8;--line:#ddd5c4;--accent:#2f9e5b;
+--grass:#3fa046;--sky:#2f86d0;--gold:#c98d0c;--rose:#d23f72;--violet:#7f51cf;--teal:#0f9898;--ember:#d6591f;
+--shadow:0 1px 2px rgba(40,30,10,.06),0 6px 20px rgba(40,30,10,.07);--c:var(--accent)}
+@media (prefers-color-scheme:dark){:root{--bg:#121417;--bg2:#181b20;--fg:#e8e6e1;--muted:#9aa3ad;--card:#1c2025;--line:#2d3239;
+--accent:#5fd08a;--grass:#6fd474;--sky:#62aef0;--gold:#f0bf4c;--rose:#f07099;--violet:#a98af0;--teal:#3fcaca;--ember:#f28a52;
+--shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35)}}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:16px}
+body{margin:0;font:15px/1.6 system-ui,Segoe UI,sans-serif;color:var(--fg);background:var(--bg);
+background-image:radial-gradient(circle at 1px 1px,rgba(127,127,127,.13) 1px,transparent 0);background-size:22px 22px}
+#progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:10;background:linear-gradient(90deg,var(--grass),var(--sky),var(--violet),var(--rose),var(--gold))}
+nav{position:fixed;top:0;left:0;bottom:0;width:250px;overflow:auto;padding:22px 14px;background:var(--card);border-right:1px solid var(--line)}
+nav h1{font-size:18px;margin:0 6px 4px;letter-spacing:-.01em}
+nav h1 span{background:linear-gradient(90deg,var(--grass),var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
+nav .sub{margin:0 6px 18px;font-size:12px;color:var(--muted)}
+nav a{display:flex;align-items:center;gap:10px;color:var(--fg);text-decoration:none;padding:7px 10px;margin:2px 0;border-radius:10px;
+border-left:3px solid transparent;transition:background .2s,border-color .2s,transform .2s}
+nav a .ic{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;font-size:15px;flex:none;
+background:color-mix(in srgb,var(--c) 16%,transparent)}
+nav a:hover{background:color-mix(in srgb,var(--c) 10%,transparent);transform:translateX(3px)}
+nav a.on{background:color-mix(in srgb,var(--c) 16%,transparent);border-left-color:var(--c);font-weight:600}
+main{margin-left:250px;padding:28px 40px 80px;max-width:1340px}
+.hero{position:relative;overflow:hidden;border-radius:20px;padding:34px 36px;margin-bottom:28px;color:#fff;box-shadow:var(--shadow);
+background:linear-gradient(120deg,#2b8a50,#1d6fa8,#6a43b8,#b8365f);background-size:300% 300%;animation:flow 16s ease infinite}
+.hero h1{margin:0 0 6px;font-size:34px;letter-spacing:-.02em}.hero p{margin:0;max-width:720px;opacity:.95;font-size:16px}
+.hero .chips{margin-top:16px;display:flex;flex-wrap:wrap;gap:8px}
+.hero .chips span{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:3px 12px;border-radius:99px;font-size:13px}
+.hero .cube{position:absolute;right:30px;top:50%;width:90px;height:90px;margin-top:-45px;border-radius:14px;opacity:.22;
+background:conic-gradient(#fff 25%,transparent 0 50%,#fff 0 75%,transparent 0) 0 0/30px 30px;animation:bob 7s ease-in-out infinite}
+@keyframes flow{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes bob{0%,100%{transform:rotate(12deg) translateY(-6px)}50%{transform:rotate(20deg) translateY(8px)}}
+section.sec{position:relative;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:6px 28px 24px;margin:0 0 28px;
+box-shadow:var(--shadow);border-top:5px solid var(--c)}
+.js section.sec{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.js section.sec.in{opacity:1;transform:none}
+h2{display:flex;align-items:center;gap:12px;font-size:25px;margin:22px 0 12px;letter-spacing:-.01em}
+h2 .ic{display:grid;place-items:center;width:44px;height:44px;border-radius:12px;font-size:22px;flex:none;
+background:color-mix(in srgb,var(--c) 18%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 35%,transparent)}
+h2:after{content:"";flex:1;height:3px;border-radius:3px;margin-left:6px;background:linear-gradient(90deg,var(--c),transparent)}
+h3{margin:28px 0 8px;font-size:18px;padding-left:12px;border-left:4px solid var(--c)}
+.tw{overflow-x:auto;margin:12px 0;border-radius:12px;border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;background:var(--card);font-size:14px}
+th,td{padding:8px 11px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{background:color-mix(in srgb,var(--c) 14%,var(--card));color:color-mix(in srgb,var(--c) 60%,var(--fg));
+font-size:12px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+tr:nth-child(even) td{background:color-mix(in srgb,var(--c) 4%,transparent)}
+tr:last-child td{border-bottom:0}
+tr:hover td{background:color-mix(in srgb,var(--c) 10%,transparent)}
+td:first-child{font-weight:600}
+td.y,td.n{text-align:center;color:var(--muted)}
+td.y span{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;color:#fff;background:var(--grass);font-size:13px}
+code{font:13px ui-monospace,Consolas,monospace;background:color-mix(in srgb,var(--c) 11%,transparent);color:color-mix(in srgb,var(--c) 60%,var(--fg));
+padding:1px 6px;border-radius:5px}
+.muted{color:var(--muted)}
+ul li{margin:6px 0}ul li::marker{color:var(--c)}
+.chapters{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-top:12px}
+.chapter{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 18px 10px;
+border-left:5px solid var(--k);transition:transform .2s,box-shadow .2s}
+.chapter:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.chapter>b{display:block;font-size:16px;color:var(--k)}.chapter .st{font-size:13px;color:var(--muted)}
+.chapter p{margin:7px 0;font-size:14px}
+.tag{font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;white-space:nowrap;background:rgba(127,127,127,.15)}
+.tag[data-g=vanilla]{background:color-mix(in srgb,var(--grass) 20%,transparent);color:color-mix(in srgb,var(--grass) 70%,var(--fg))}
+.tag[data-g=MCA]{background:color-mix(in srgb,var(--rose) 20%,transparent);color:color-mix(in srgb,var(--rose) 70%,var(--fg))}
+.tag[data-g=expansão]{background:color-mix(in srgb,var(--violet) 22%,transparent);color:color-mix(in srgb,var(--violet) 70%,var(--fg))}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;margin-top:14px}
+.cell{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:8px 6px;text-align:center;font-size:11px;word-break:break-all;
+transition:transform .15s,border-color .15s,box-shadow .15s}
+.cell:hover{transform:translateY(-3px) scale(1.04);border-color:var(--c);box-shadow:var(--shadow)}
+.cell img{width:48px;height:48px;image-rendering:pixelated;object-fit:contain;display:block;margin:0 auto 6px;transition:transform .2s}
+.cell:hover img{transform:scale(1.25) rotate(-4deg)}
+#filter{width:100%;padding:11px 14px;font:inherit;margin:10px 0;border:2px solid var(--line);border-radius:12px;background:var(--bg2);color:var(--fg);outline:none;transition:border-color .2s}
+#filter:focus{border-color:var(--c)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{padding:5px 13px;border:1px solid var(--line);border-radius:99px;background:var(--bg2);color:var(--fg);cursor:pointer;font:inherit;font-size:13px;transition:all .15s}
+.tabs button:hover{border-color:var(--c)}
+.tabs button.on{background:var(--c);color:#fff;border-color:var(--c);box-shadow:0 3px 10px color-mix(in srgb,var(--c) 40%,transparent)}
+@media (max-width:860px){nav{position:static;width:auto;border-right:0;border-bottom:1px solid var(--line)}main{margin:0;padding:16px}
+section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26px}.hero .cube{display:none}}
+@media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}html{scroll-behavior:auto}
+.js section.sec{opacity:1;transform:none}}
+</style></head><body><div id='progress'></div>
+<nav><h1><span>MCA</span> · guia do dev</h1><p class='sub'>Gerado por scripts/dev_docs.py</p>
+<a href='#mca' style='--c:var(--grass)'><span class='ic'>🏡</span>MCA original</a>
+<a href='#features' style='--c:var(--violet)'><span class='ic'>✨</span>Features da expansão</a>
+<a href='#behavior' style='--c:var(--sky)'><span class='ic'>🧠</span>Comportamento</a>
+<a href='#looks' style='--c:var(--teal)'><span class='ic'>🎭</span>Aparência, fala e blocos</a>
+<a href='#matrix' style='--c:var(--ember)'><span class='ic'>⚒️</span>Profissões × prédios × biomas</a>
+<a href='#buildings' style='--c:var(--gold)'><span class='ic'>🏛️</span>Tipos de prédio</a>
+<a href='#icons' style='--c:var(--rose)'><span class='ic'>💬</span>Ícones e balões</a>
+</nav><main>
+<header class='hero'><div class='cube'></div><h1>Minecraft Comes Alive · guia do dev</h1><p>O que o MCA original já faz, o que a expansão acrescenta e como os aldeões pensam, trabalham e enfeitam a vila.</p><div class='chips'><span>21 flags</span><span>25 profissões</span><span>30 tipos de prédio</span><span>16 oportunidades</span><span>1360 ícones</span></div></header>
+<section class='sec' id='mca' style='--c:var(--grass)'><h2><span class='ic'>🏡</span>MCA original</h2>
+
 <p>O <b>Minecraft Comes Alive</b> troca os aldeões vanilla por pessoas: cada um tem nome, gênero, genética (altura, pele, cabelo,
 olhos), personalidade, humor e memória de cada jogador (corações). Este fork mantém tudo isso e acrescenta a expansão.</p>
 <table><tr><th>Sistema</th><th>Resumo</th></tr>
@@ -45,7 +109,9 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <tr><td>Itens</td><td>Anéis, bebês, Editor de Aldeão, Bastão da Vida, apito, pente, agulha e linha, Blueprint, lápides, ouro rosa.</td></tr>
 </table>
 
-<h2 id='features'>Features da expansão</h2><p>Tudo vem desligado por padrão; ligue no <code>config/mca.json</code>.</p>
+</section>
+<section class='sec' id='features' style='--c:var(--violet)'><h2><span class='ic'>✨</span>Features da expansão</h2>
+<p>Tudo vem desligado por padrão; ligue no <code>config/mca.json</code>.</p>
 <table><tr><th>Flag</th><th>O que liga</th></tr>
 <tr><td><code>villagerNeeds</code></td><td>Necessidades: fome, sede, energia, social, lazer, segurança.</td></tr>
 <tr><td><code>villagerActionQueue</code></td><td>Fila de ações estilo The Sims sobre a cabeça.</td></tr>
@@ -56,25 +122,34 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <tr><td><code>villagerRequests</code></td><td>Pedidos com recompensa em escrow, caça, Mural de Pedidos.</td></tr>
 <tr><td><code>villageProgression</code></td><td>Níveis das casas e oficinas, etapas da vila, aba Evolução.</td></tr>
 <tr><td><code>villagerRoutines</code></td><td>Tempo livre por oportunidades, sentar de verdade.</td></tr>
+<tr><td><code>villagerBarter</code></td><td>Pechincha: qualquer aldeão vende o que carrega e compra o que precisa (amigos pagam menos).</td></tr>
+<tr><td><code>villagerActionLabels</code></td><td>Uma linha sobre a cabeça dizendo o que o aldeão está fazendo, vista de perto.</td></tr>
+<tr><td><code>villagerArcheryPractice</code></td><td>Arqueiros treinam em alvos de dia, entre as patrulhas.</td></tr>
+<tr><td><code>villagerSpeechBubbles</code></td><td>Falas num balão sobre a cabeça, letra por letra, com som (bipe, voz do MCA ou nada).</td></tr>
+<tr><td><code>villagerMouthAnimation</code></td><td>Com Fresh Animations, a boca abre nas vogais e a língua mexe junto do balão.</td></tr>
+<tr><td><code>villagerBeards</code></td><td>Barbas na cor do cabelo em parte dos homens adultos; escolha no Editor de Aldeão.</td></tr>
 <tr><td><code>squidwardHumanLikeModels</code></td><td>Aldeões com corpo de jogador (visual).</td></tr>
+<tr><td><code>squidward3dLayers</code></td><td>Camadas externas (chapéu, jaqueta, mangas, calça) em cubinhos 3D quando perto.</td></tr>
+<tr><td><code>player3dLayers</code></td><td>O mesmo efeito 3D nas camadas de roupa e cabelo dos jogadores.</td></tr>
+<tr><td><code>squidwardGeneticHitbox</code></td><td>A hitbox segue o tamanho genético e a idade do aldeão.</td></tr>
 <tr><td><code>freshAnimationsIntegration</code></td><td>Pacote MCA x Fresh Animations.</td></tr>
 <tr><td><code>radialInteractMenu</code></td><td>Menu radial de interação.</td></tr>
-</table><h3>Pelo livro-guia (Vilas Vivas: Guia da Expansão)</h3>
-<div class='chapter'><b>Introdução</b> 
+</table><h3>Pelo livro-guia (Vilas Vivas: Guia da Expansão)</h3><div class='chapters'>
+<div class='chapter' style='--k:var(--grass)'><b>Introdução</b>
 <p>Este guia explica tudo que a expansão acrescenta ao MCA: aldeões com necessidades, donos e agenda, obras planejadas, uma economia de verdade e mais.</p>
 <p>Cada sistema pode ser ligado ou desligado no mca.json: villagerNeeds, villagerActionQueue, villagerProperty, villagerWorkOrders e villagerEconomy. O visual tem opções próprias.</p>
 </div>
-<div class='chapter'><b>Capítulo 1</b> · Aparência
+<div class='chapter' style='--k:var(--sky)'><b>Capítulo 1</b><span class=st>Aparência</span>
 <p><b>Aldeões humanos</b><br>Com os modelos squidward, a opção squidwardHumanLikeModels dá aos aldeões o corpo do jogador, com a pele, o rosto, a roupa e o cabelo do MCA.</p>
 <p><b>Camadas 3D</b><br>squidward3dLayers transforma chapéu, jaqueta, mangas e calça em pequenos cubos quando o aldeão está perto. player3dLayers faz o mesmo com jogadores.</p>
 <p><b>Altura</b><br>O gene de altura muda o tamanho de cada aldeão (squidwardHeightVariation) e as crianças crescem por fases. Com Fresh Animations, ligue freshAnimationsIntegration.</p>
 <p><b>Trabalho</b><br>No horário de trabalho, o aldeão vai até a mesa de trabalho e trabalha nela um tempo, com a animação da profissão. Depois descansa, passeia e conversa.</p>
 </div>
-<div class='chapter'><b>Capítulo 2</b> · Menu radial
+<div class='chapter' style='--k:var(--violet)'><b>Capítulo 2</b><span class=st>Menu radial</span>
 <p>Clique com o botão direito num aldeão: os botões aparecem num círculo, com ícones. Conversar e Interagir são os dois caminhos principais.</p>
 <p><b>Submenus</b><br>Em Interagir: presente, troca, inventário, árvore da família, Comandos (seguir, ficar, cavalgar), Pedidos e Profissões. radialInteractMenu desligado volta ao menu clássico.</p>
 </div>
-<div class='chapter'><b>Capítulo 3</b> · Necessidades
+<div class='chapter' style='--k:var(--rose)'><b>Capítulo 3</b><span class=st>Necessidades</span>
 <p>Seis medidores de 0 a 100 caem com o tempo: Fome, Sede, Energia, Social, Lazer e Segurança. Medidores baixos viram pensamentos que pesam no humor.</p>
 <p><b>Fome</b><br>O aldeão come do inventário ou de um baú em casa: dê pão, carne ou outra comida. Trabalhar dá mais fome. Faminto, perde vida até meio coração, mas não morre.</p>
 <p><b>Sede</b><br>Bebe parado ao lado de um caldeirão com água: coloque caldeirões na vila.<br><b>Energia</b><br>Recupera dormindo na cama à noite. Sem cama, cochila onde estiver.</p>
@@ -82,15 +157,15 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Segurança</b><br>Cai quando monstros chegam perto. Recupera em casa, perto de guardas ou golens. Um medidor crítico faz o aldeão largar a rotina para resolver.</p>
 <p>Os medidores aparecem na tela de interação: passe o mouse para ver como atender cada um. Casais que dormem juntos ficam mais felizes.</p>
 </div>
-<div class='chapter'><b>Capítulo 4</b> · Fila de ações
+<div class='chapter' style='--k:var(--gold)'><b>Capítulo 4</b><span class=st>Fila de ações</span>
 <p>Como no The Sims, cada aldeão tem uma fila com o que a agenda, as necessidades e os seus pedidos mandam. Ele faz primeiro o mais urgente. A fila aparece sobre a cabeça.</p>
 <p><b>Pedidos</b><br>No menu Pedidos: comer, beber, dormir, ir para casa, trabalhar, socializar ou descansar. Cada item mostra o motivo e a urgência; clique num item para cancelar.</p>
 </div>
-<div class='chapter'><b>Capítulo 5</b> · Agenda
+<div class='chapter' style='--k:var(--teal)'><b>Capítulo 5</b><span class=st>Agenda</span>
 <p>Com o Editor de Aldeão, a aba Agenda mostra o dia do aldeão: Livre, Trabalho, Encontro, Dormir e Brincar. Escolha um modelo ou clique e arraste na linha do tempo para pintar os horários.</p>
 <p>A agenda personalizada é salva em Concluído; Restaurar volta à original. Avisos mostram o que falta: sem mesa de trabalho ou sem ponto de encontro, ele fica livre.</p>
 </div>
-<div class='chapter'><b>Capítulo 6</b> · Propriedade e crimes
+<div class='chapter' style='--k:var(--ember)'><b>Capítulo 6</b><span class=st>Propriedade e crimes</span>
 <p>Camas, mesas de trabalho, baús, portas e alçapões têm dono. O aldeão é dono da cama, da mesa de trabalho e da casa, com o que há dentro. Você é dono do que coloca.</p>
 <p><b>Quem pode entrar</b><br>Cônjuge, família, o prefeito e amigos com 50 corações ou mais (menos na cama). A porta de casa tranca quando todos os moradores estão dentro.</p>
 <p><b>Cadeado</b><br>Receita: 3 pepitas em arco sobre 3 lingotes. Clique com ele num baú ou porta seu para trancar. Agachado e de mão vazia, você o retira.</p>
@@ -98,7 +173,7 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Pé de cabra</b><br>4 lingotes em forma de gancho. Abre na hora e destrói o cadeado, mas faz barulho: quem ouve vem ver. O aldeão troca o cadeado depois de um dia.</p>
 <p><b>Testemunhas</b><br>Aldeões veem crimes a até 24 blocos (metade se você está agachado, metade de novo no escuro). Quem vê perde 10 corações com você; o dono, 25.</p>
 </div>
-<div class='chapter'><b>Capítulo 7</b> · Obras da vila
+<div class='chapter' style='--k:var(--grass)'><b>Capítulo 7</b><span class=st>Obras da vila</span>
 <p>Faça um Blueprint (papel em volta de corante azul) e use-o numa vila. O botão Planejar Obras abre uma câmera livre sobre a vila.</p>
 <p><b>Controles</b><br>WASD, Espaço e Shift voam. Arraste com o botão direito para olhar. A rolagem muda a altitude. Teclas 1 a 4: ferramentas. Tab: lista de obras.</p>
 <p><b>Escavar [1]</b><br>Mineiros e construtores tiram tudo da área e guardam no depósito.<br><b>Construir [2]</b><br>Construtores enchem a área com o bloco escolhido, tirado do depósito.</p>
@@ -106,7 +181,7 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Blueprints</b><br>Capturar [4]: arraste uma caixa em volta do que você construiu e dê um nome. Blueprint [3]: escolha um salvo, gire com R e posicione. Já vêm 4 prontos.</p>
 <p>Os construtores limpam o caminho, buscam cada material no depósito e, ao terminar, a obra passa a contar como prédio da vila. Também há o comando /mca workorder.</p>
 </div>
-<div class='chapter'><b>Capítulo 8</b> · Coletores
+<div class='chapter' style='--k:var(--sky)'><b>Capítulo 8</b><span class=st>Coletores</span>
 <p>Com villagerEconomy ligado, a vila produz de verdade. Profissões novas coletam recursos: um aldeão desempregado pega o emprego quando acha a estação livre.</p>
 <p><b>Estações</b><br>Cepo de Corte: sílex sobre tronco. Suporte de Caça: graveto, couro, graveto sobre 3 tábuas. Cesto de Coleta: trigo em forma de U.</p>
 <p><b>Lenhador</b><br>Derruba árvores perto do cepo, junta maçãs e gravetos e replanta as mudas.<br><b>Caçador</b><br>Caça animais selvagens; poupa os com nome, na corda, cercados e os últimos da espécie.</p>
@@ -114,23 +189,23 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Pescador</b><br>Pesca na margem perto do barril.<br><b>Mineiro</b><br>Sem obras, tira areia, cascalho e argila da superfície em volta de uma Peneira (tábua, linha, tábua sobre duas tábuas).</p>
 <p>Os coletores trabalham até 24 blocos da estação e param de coletar um item quando o depósito da vila já tem 128 dele.</p>
 </div>
-<div class='chapter'><b>Capítulo 9</b> · Oficinas
+<div class='chapter' style='--k:var(--violet)'><b>Capítulo 9</b><span class=st>Oficinas</span>
 <p>Aldeões na mesa de trabalho produzem por lotes, com insumos do baú da oficina. A padaria (do açougueiro) faz pão com trigo; o pedreiro faz tijolos com pedregulho.</p>
 <p>O ferramenteiro faz pé de cabra, machado e pá; o armeiro faz capacetes e às vezes acha diamante; o clérigo faz redstone com carne podre. As receitas ficam em data/mca/production.</p>
 <p><b>Divisão</b><br>A parte da vila segue o imposto: com 30%, 30% vai para o baú da oficina e o resto fica com o aldeão. Sem baú, fica tudo com ele. Os impostos antigos deixam de existir.</p>
 <p><b>Baú da oficina</b><br>É de quem trabalha ali e dos carregadores: abrir sem ser dono é roubo. Com o inventário cheio, o aldeão leva a parte dele para um baú da própria casa.</p>
 <p><b>Fazendeiro</b><br>Não tem receita: a vila recebe a parte dela da colheita de verdade, num baú da oficina ou ao lado do composteiro.</p>
 </div>
-<div class='chapter'><b>Capítulo 10</b> · Carregador
+<div class='chapter' style='--k:var(--rose)'><b>Capítulo 10</b><span class=st>Carregador</span>
 <p>O Carregador leva o que as oficinas fizeram para o depósito e abastece cada oficina com insumos para 5 lotes, aproveitando a mesma viagem.</p>
 <p>Vilas com depósito e duas oficinas ou mais ganham um carregador entre os desempregados, e mais um a cada 5 oficinas. Também dá para escolher no menu Profissões.</p>
 <p>Sem carregador, cada artesão busca sozinho um lote de insumos no depósito a cada dois dias.</p>
 </div>
-<div class='chapter'><b>Capítulo 11</b> · Depuração
+<div class='chapter' style='--k:var(--gold)'><b>Capítulo 11</b><span class=st>Depuração</span>
 <p>Segurando o Editor de Aldeão, o último aldeão na mira mostra sobre a cabeça o visual e a IA, o caminho e os lugares que lembra: cama, mesa de trabalho, ponto de encontro e casa.</p>
 <p>A tecla K congela ou descongela a IA dele. No editor, a aba Inspecionar mostra genes, social, visual, IA e locais, e a aba Agenda edita o dia dele.</p>
 </div>
-<div class='chapter'><b>Capítulo 12</b> · Aldeões mais espertos
+<div class='chapter' style='--k:var(--teal)'><b>Capítulo 12</b><span class=st>Aldeões mais espertos</span>
 <p>Com villagerSkills ligado, cada aldeão melhora na profissão trabalhando, de 0 a 100. A habilidade aparece ao lado da profissão na tela de interação.</p>
 <p><b>Habilidade</b><br>Quem é bom trabalha até duas vezes mais rápido, às vezes faz um a mais e acha coisas raras com mais frequência. Ferreiros habilidosos às vezes encantam o que fazem.</p>
 <p><b>Inteligência</b><br>Um gene herdado define até onde (de 40 a 100) e quão rápido o aldeão aprende. Crianças ficam mais espertas na Escola: atril, 4 escadas de madeira e 4 estantes.</p>
@@ -139,33 +214,38 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Decisões</b><br>O desempregado procura o emprego em que é melhor. Sem ferramenta, o coletor pega uma no depósito. Com fome e nada em casa, busca no depósito. Oficinas fazem primeiro o que falta.</p>
 <p><b>Tempo livre</b><br>Com villagerRoutines, o aldeão usa o que há por perto: senta em escadas e lajes, conversa com amigos, lê na biblioteca, ouve música, olha itens expostos, faz carinho no gato. Sozinho, fica perto dos outros.</p>
 </div>
-<div class='chapter'><b>Capítulo 13</b> · Pedidos
+<div class='chapter' style='--k:var(--ember)'><b>Capítulo 13</b><span class=st>Pedidos</span>
 <p>Com villagerRequests ligado, aparece no menu radial a opção &quot;Precisa de ajuda?&quot;. O aldeão pede uma entrega e promete uma recompensa tirada dos baús da casa dele.</p>
 <p><b>Recompensa</b><br>O aldeão separa a recompensa na hora do pedido: ela sai do baú e fica guardada até você entregar. Quanto mais corações vocês têm, mais valioso ele aceita oferecer.</p>
 <p><b>Entregar</b><br>Traga os itens e escolha &quot;Precisa de ajuda?&quot; de novo: você ganha a recompensa e corações pela dificuldade. Em 3 dias o pedido vence: a recompensa volta para casa e você perde 3 corações.</p>
 <p><b>Economias</b><br>No primeiro pedido, os baús da casa recebem as economias do aldeão, conforme a profissão. Depois elas crescem com a parte dele no trabalho. Pedidos e valores ficam em data/mca/requests.</p>
 <p><b>Caça</b><br>Às vezes o pedido é derrotar monstros: zumbis, aranhas, esqueletos, creepers, saqueadores. O aldeão conta pelas suas estatísticas; volte a falar com ele quando terminar.</p>
 <p><b>Mural</b><br>O Mural de Pedidos (3 papéis sobre 3 tábuas) traz um pedido de alguém da vila que precisa de ajuda. Agachado, ele lista os seus pedidos abertos. Até 3 por vila.</p>
+<p><b>Negociar</b><br>Com villagerBarter, qualquer aldeão vende o que carrega por esmeraldas e compra comida e o que a oficina usa. Amigos pagam menos. &quot;O que você carrega?&quot; mostra o inventário.</p>
 </div>
-<div class='chapter'><b>Capítulo 14</b> · A vila cresce
+<div class='chapter' style='--k:var(--grass)'><b>Capítulo 14</b><span class=st>A vila cresce</span>
 <p>Com villageProgression ligado, a vila segue um caminho: Acampamento, Aldeia, Vila, Vila Próspera, Cidade e Capital. A aba Evolução do Blueprint mostra a etapa e o que falta.</p>
 <p><b>O caminho</b><br>Cada etapa pede prédios, casas melhores, oficinas e moradores. Nada fica travado: qualquer prédio funciona antes da hora. O caminho só sugere a ordem e avisa quando a vila sobe.</p>
 <p><b>Casas</b><br>Casa Pequena: uma cama. Comum: 2 camas, um baú e chão de 30. Grande: 4 camas, 2 baús, fornalha e chão de 80. Enorme: 6 camas, 3 baús, 6 decorações e chão de 140.</p>
 <p><b>Oficinas</b><br>Cada mesa de trabalho é um lugar para um profissional. Uma padaria com 3 defumadores e espaço (15 de chão por mesa) é nível III e trabalha com 3 açougueiros.</p>
 </div>
-<div class='chapter'><b>Capítulo 15</b> · Outros mods e janelas
+<div class='chapter' style='--k:var(--sky)'><b>Capítulo 15</b><span class=st>Outros mods e janelas</span>
 <p><b>Integrações</b><br>Com villagerRoutines, os aldeões usam coisas de outros mods. Cada integração é um arquivo em data/mca/opportunities: sem o mod, o arquivo é ignorado e nada quebra.</p>
 <p><b>Música</b><br>Com Immersive Melodies, dê um instrumento de presente: o aldeão toca na folga, mais na taverna e na loja de música. Os vizinhos param para ouvir, e quem chega toca junto, no mesmo compasso.</p>
 <p><b>Cozinha</b><br>Com Farmer&#x27;s Delight, um açougueiro na taverna cozinha ensopados, sopas e banquetes. Um banquete posto na mesa reúne os aldeões: cada um pega uma porção. Armários contam como baús.</p>
 <p><b>Janelas</b><br>Venezianas: um alçapão e um graveto dão duas. Ponha na parede ao lado da janela; fechada, ela cobre a janela. Os aldeões abrem de manhã, fecham à noite e acendem as luminárias do Beautify.</p>
+<p><b>Itens postos</b><br>Com Tabletop, V põe o item da mão sobre um bloco. Os aldeões pegam o instrumento, tocam e devolvem, comem a comida e olham o resto. Oficinas expõem o que fazem nas mesas.</p>
 </div>
-<h2 id='behavior'>Comportamento dos aldeões</h2>
+</div>
+</section>
+<section class='sec' id='behavior' style='--c:var(--sky)'><h2><span class='ic'>🧠</span>Comportamento dos aldeões</h2>
+
 <p>Cada aldeão tem um <b>cérebro</b> (sistema de comportamento do Minecraft) com atividades. A <b>agenda</b> (editável na aba Agenda do
 Editor de Aldeão) diz qual atividade vale em cada hora; a CORE roda sempre.</p>
 <table><tr><th>Atividade</th><th>Quando</th><th>O que faz (pacote em <code>VillagerTasksMCA</code>)</th></tr>
 <tr><td>CORE</td><td>sempre</td><td>Abrir portas, andar/teleportar até o destino, validar cama e mesa, procurar emprego (com aptidão), olhar e conversar, autodefesa.</td></tr>
 <tr><td>IDLE</td><td>tempo livre</td><td>Prédio favorito, conversar, presentes, trocas, luto. Com <code>villagerRoutines</code>: rotina por oportunidades (abaixo) no lugar do passeio aleatório.</td></tr>
-<tr><td>WORK</td><td>expediente</td><td>Trabalhar na mesa (animação), produção da oficina, coletores, carregador, obras (construtor/mineiro), guardas patrulham.</td></tr>
+<tr><td>WORK</td><td>expediente</td><td>Trabalhar na mesa (animação), produção da oficina, coletores, carregador, obras (construtor/mineiro), guardas patrulham; com <code>villagerArcheryPractice</code>, arqueiros treinam no alvo.</td></tr>
 <tr><td>MEET</td><td>encontro</td><td>Ir ao sino e socializar.</td></tr>
 <tr><td>REST</td><td>noite</td><td>Ir para casa e dormir; sem cama, abrigo.</td></tr>
 <tr><td>PLAY</td><td>crianças</td><td>Brincar de pega-pega; com <code>villagerSkills</code>, ir à escola de dia.</td></tr>
@@ -187,7 +267,7 @@ pouco de acaso. Código em <code>expansion/minds/routine</code>.</p>
 <tr><td>Ouvir música</td><td>toca-discos tocando, bloco musical</td><td>lazer</td><td>Olha o toca-discos, notas musicais.</td></tr>
 <tr><td>Aquecer-se</td><td>fogueira acesa</td><td>segurança</td><td>Fica junto ao fogo.</td></tr>
 <tr><td>Carinho</td><td>gatos, cães e animais</td><td>lazer</td><td>Acompanha o animal, corações.</td></tr>
-<tr><td>Inspecionar</td><td>suportes de armadura, item frames, expositores do Items Displayed</td><td>lazer</td><td>Segura uma cópia do item exposto e vira de uma mão para a outra.</td></tr>
+<tr><td>Inspecionar</td><td>suportes de armadura, item frames, expositores do Items Displayed, itens largados com o Tabletop</td><td>lazer</td><td>Segura uma cópia do item exposto e vira de uma mão para a outra.</td></tr>
 <tr><td>Sentar (mods)</td><td>cadeiras e bancos do Tables &amp; Chairs 2</td><td>energia</td><td>Monta na cadeira como o jogador.</td></tr>
 <tr><td>Tocar</td><td>instrumento carregado ou exposto (Immersive Melodies)</td><td>lazer</td><td>O mod toca sozinho; quem chega perto de alguém tocando copia a música e toca junto. Vizinhos viram plateia (Ouvir).</td></tr>
 <tr><td>Banquete</td><td>blocos com porções (servings) ou mordidas (bites): banquetes e tortas do Farmer's Delight</td><td>fome</td><td>Pega uma porção e come em companhia.</td></tr>
@@ -200,6 +280,9 @@ pouco de acaso. Código em <code>expansion/minds/routine</code>.</p>
 <p>Coletores (lenhador, caçador, forrageiro, pescador, mineiro na peneira) trabalham num raio da estação e entregam a parte da vila no baú
 da oficina; oficinas produzem por receitas de datapack; o carregador leva produtos ao armazém e insumos às oficinas. Com
 <code>villagerSkills</code>, tudo isso dá habilidade, que acelera o trabalho.</p>
+<h3>Pechincha (<code>villagerBarter</code>)</h3>
+<p>Qualquer aldeão, amigo ou não, vende o que carrega por esmeraldas (mais barato para amigos) e, com esmeraldas próprias, compra comida e o
+que a oficina dele precisa. Guarda um pouco de comida para si. Qualquer um pode perguntar o que ele carrega. Código em <code>expansion/barter</code>.</p>
 
 <h3>Oportunidades por datapack (<code>data/mca/opportunities</code>)</h3><p>Cada arquivo diz o que um bloco ou entidade oferece. Integrações com outros mods são só arquivos assim: sem o mod, os ids não existem e o arquivo é ignorado. Integrações que precisam de código usam <code>Opportunities.register</code> num jar à parte.</p>
 <table><tr><th>Arquivo</th><th>Tipo</th><th>Blocos / entidades</th><th>Atração</th><th>Extras</th></tr>
@@ -213,6 +296,7 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 <tr><td><code>compat_items_displayed</code></td><td>inspect</td><td>items_displayed:item_display, items_displayed:jewelry_pillow</td><td>1.4</td><td>professions: {&#x27;minecraft:toolsmith&#x27;: 1.6, &#x27;minecraft:weaponsmith&#x27;: 1.6, &#x27;minecraft:armorer&#x27;: 1.6, &#x27;minecraft:cleric&#x27;: 1.3, &#x27;minecraft:librarian&#x27;: 1.2}</td></tr>
 <tr><td><code>compat_storage_delight_read</code></td><td>read</td><td>storagedelight:acacia_bookshelf_with_door, storagedelight:acacia_drawer_with_books, storagedelight:bamboo_bookshelf_with_door, storagedelight:bamboo_drawer_with_books, storagedelight:birch_bookshelf_with_door, … +19</td><td>1.0</td><td>rooms: {&#x27;library&#x27;: 1.8, &#x27;school&#x27;: 1.8}, professions: {&#x27;minecraft:librarian&#x27;: 1.5}, hold: minecraft:book</td></tr>
 <tr><td><code>compat_tables_chairs</code></td><td>sit</td><td>minecraft:item_display tac+chair, minecraft:item_display tac+bench</td><td>1.6</td><td></td></tr>
+<tr><td><code>compat_tabletop</code></td><td>inspect</td><td>tabletop:placed_items</td><td>1.3</td><td>rooms: {&#x27;inn&#x27;: 1.5, &#x27;library&#x27;: 1.3, &#x27;music_store&#x27;: 1.5}</td></tr>
 <tr><td><code>inspect_vanilla</code></td><td>inspect</td><td>minecraft:armor_stand, minecraft:item_frame, minecraft:glow_item_frame</td><td>0.8</td><td>professions: {&#x27;minecraft:toolsmith&#x27;: 1.5, &#x27;minecraft:weaponsmith&#x27;: 1.5, &#x27;minecraft:armorer&#x27;: 1.5}</td></tr>
 <tr><td><code>listen_jukebox</code></td><td>listen</td><td>minecraft:jukebox</td><td>1.5</td><td>properties: {&#x27;has_record&#x27;: &#x27;true&#x27;}, particle: minecraft:note</td></tr>
 <tr><td><code>listen_note_block</code></td><td>listen</td><td>minecraft:note_block</td><td>0.7</td><td>particle: minecraft:note</td></tr>
@@ -223,9 +307,40 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 <table><tr><th>Arquivo</th><th>Blocos</th><th>Propriedade</th><th>Entre from e to</th><th>Resto do dia</th></tr>
 <tr><td><code>compat_beautify_blinds</code></td><td>beautify:oak_blinds, beautify:spruce_blinds, beautify:birch_blinds, beautify:jungle_blinds, … +7</td><td>open</td><td>true (0–12500)</td><td>false</td></tr>
 <tr><td><code>compat_beautify_lamps</code></td><td>beautify:lamp_candelabra, beautify:lamp_candelabra_white, beautify:lamp_candelabra_orange, beautify:lamp_candelabra_magenta, … +15</td><td>on</td><td>true (12000–23500)</td><td>false</td></tr>
-<tr><td><code>shutters</code></td><td>mca:oak_shutter, mca:spruce_shutter, mca:birch_shutter, mca:jungle_shutter, … +8</td><td>open</td><td>true (0–12500)</td><td>false</td></tr>
+<tr><td><code>shutters</code></td><td>mca:oak_shutter, mca:spruce_shutter, mca:birch_shutter, mca:jungle_shutter, … +20</td><td>open</td><td>true (0–12500)</td><td>false</td></tr>
 </table>
-<h2 id='matrix'>Profissões × prédios × biomas</h2>
+</section>
+<section class='sec' id='looks' style='--c:var(--teal)'><h2><span class='ic'>🎭</span>Aparência, fala e blocos</h2>
+
+<p>O que muda na cara e no jeito dos aldeões. Os visuais com corpo de jogador vêm de <code>useSquidwardModels</code> +
+<code>squidwardHumanLikeModels</code>; com <code>freshAnimationsIntegration</code> quem anima é o Fresh Animations.</p>
+<table><tr><th>Sistema</th><th>Flag</th><th>Como funciona</th></tr>
+<tr><td>Balões de fala</td><td><code>villagerSpeechBubbles</code></td><td>A fala aparece letra por letra (<code>speechBubbleLettersPerSecond</code>), com o som de
+<code>speechBubbleSound</code>; o aldeão para enquanto fala com você. Continua indo para o chat. Código em <code>expansion/speech</code>.</td></tr>
+<tr><td>Boca falante</td><td><code>villagerMouthAnimation</code></td><td>Boca e língua no modelo do Fresh Animations, animadas pela variável EMF <code>mca_talk</code> no ritmo do balão.</td></tr>
+<tr><td>Barbas</td><td><code>villagerBeards</code></td><td>40% dos homens nascem com barba, que aparece na vida adulta, tingida com a cor do cabelo. Linha própria e página de grade no Editor.</td></tr>
+<tr><td>Olhos 6×6</td><td>sempre</td><td>A parte branca dos olhos ganhou espaço 6×6 na textura: rostos podem desenhar olhos detalhados; senão o olho 3×3 é ampliado.
+<code>mcaEyeBlinking</code> desliga a piscada do MCA quando outro mod anima os olhos.</td></tr>
+<tr><td>Camadas 3D</td><td><code>squidward3dLayers</code>, <code>player3dLayers</code></td><td>Roupa e cabelo viram cubinhos por pixel de perto, como os mods de skin 3D.</td></tr>
+<tr><td>Tamanho por idade</td><td><code>squidward*Size</code>, <code>squidwardHeightVariation</code></td><td>Ajuste do tamanho de bebês, crianças e adolescentes e de quanto o gene de altura varia.</td></tr>
+<tr><td>Animações de trabalho</td><td>sempre</td><td>Clipes em JSON (<code>assets/mca/animations/work</code>): martelar, cortar, mexer, escrever, tecer, agachar, remexer, carregar.
+O lenhador corta, o construtor martela, o carregador leva um baú, o caçador atira com arco. Teste com <code>/mca-admin workAnimation</code>.</td></tr>
+<tr><td>O que está fazendo</td><td><code>villagerActionLabels</code></td><td>Uma linha curta sobre a cabeça: dormindo, lendo, cortando árvore, indo para casa...</td></tr>
+</table>
+<h3>Blocos novos</h3>
+<table><tr><th>Bloco</th><th>O que é</th></tr>
+<tr><td>Venezianas (<code>mca:&lt;madeira&gt;_shutter</code>)</td><td>Uma por madeira, feitas do alçapão dela; abrem com animação. Os aldeões abrem de dia e fecham à noite (<code>daily_toggles/shutters.json</code>).</td></tr>
+<tr><td>Janelas de batente</td><td>Duas folhas que abrem para fora como um portão.</td></tr>
+<tr><td>Mural de Pedidos</td><td>Mostra os pedidos dos aldeões da vila (<code>villagerRequests</code>).</td></tr>
+<tr><td>Cepo, cavalete de caça, cesto de forrageiro</td><td>Mesas de trabalho do lenhador, do caçador e do forrageiro (<code>villagerEconomy</code>).</td></tr>
+</table>
+<h3>Outros mods (só arquivos de dados)</h3>
+<p>Nenhuma integração precisa de jar à parte: sem o mod, os ids não existem e o arquivo é ignorado. Feitas: Items Displayed, Tables &amp; Chairs 2,
+Immersive Melodies (bandas tocam juntas), Farmer's Delight (banquetes, fogão, receitas da taverna) e Storage Delight, Beautify (persianas, luminárias,
+livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no que está em cima).</p>
+
+</section>
+<section class='sec' id='matrix' style='--c:var(--ember)'><h2><span class='ic'>⚒️</span>Profissões × prédios × biomas</h2>
 <p>Presença nos biomas = a mesa de trabalho aparece nas estruturas da vila vanilla daquele bioma (lido do jar do jogo). Profissões sem mesa (MCA e algumas da expansão) não dependem do bioma.</p>
 <table><tr><th>Profissão</th><th>Origem</th><th>Mesa</th><th>Prédio</th><th>Produção</th><th>O que faz</th>
 <th>Planície</th>
@@ -234,175 +349,175 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 <th>Taiga</th>
 <th>Neve</th>
 </tr>
-<tr><td><b>Fazendeiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:composter</td><td>—</td><td>—</td><td>Planta e colhe; a vila recebe parte da colheita real.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Fazendeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:composter</td><td>—</td><td>—</td><td>Planta e colhe; a vila recebe parte da colheita real.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Pescador</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:barrel</td><td>Cabana de pescador</td><td>—</td><td>Pesca de verdade na margem perto do barril.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Pescador</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:barrel</td><td>Cabana de pescador</td><td>—</td><td>Pesca de verdade na margem perto do barril.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Pastor</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:loom</td><td>Fábrica de tecelagem</td><td>white_wool</td><td>Produz lã.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Pastor</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:loom</td><td>Fábrica de tecelagem</td><td>white_wool</td><td>Produz lã.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Açougueiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:smoker</td><td>Padaria, Açougueiro, Taverna</td><td>apple_pie, beef_stew, bread, chicken_soup, cooked_beef, cooked_chicken, cooked_mutton, cooked_porkchop, cooked_rabbit, fish_stew, roast_chicken_block, shepherds_pie_block, vegetable_soup</td><td>Cozinha carne; na padaria faz pão.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Açougueiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smoker</td><td>Padaria, Açougueiro, Taverna</td><td>apple_pie, beef_stew, bread, chicken_soup, cooked_beef, cooked_chicken, cooked_mutton, cooked_porkchop, cooked_rabbit, fish_stew, roast_chicken_block, shepherds_pie_block, vegetable_soup</td><td>Cozinha carne; na padaria faz pão.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Pedreiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:stonecutter</td><td>Pedreiro</td><td>stone_bricks</td><td>Pedregulho em tijolos de pedra.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Pedreiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:stonecutter</td><td>Pedreiro</td><td>stone_bricks</td><td>Pedregulho em tijolos de pedra.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Ferramenteiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:smithing_table</td><td>Armório, Ferramenteiro</td><td>crowbar, iron_axe, iron_shovel</td><td>Pé de cabra, machado, pá.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Ferramenteiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smithing_table</td><td>Armório, Ferramenteiro</td><td>crowbar, iron_axe, iron_shovel</td><td>Pé de cabra, machado, pá.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Ferreiro de armas</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:grindstone</td><td>Armório, Ferreiro, Ferreiro de armas</td><td>iron_sword</td><td>Espada de ferro.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Ferreiro de armas</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:grindstone</td><td>Armório, Ferreiro, Ferreiro de armas</td><td>iron_sword</td><td>Espada de ferro.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Armeiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:blast_furnace</td><td>Armoreiro, Ferreiro</td><td>iron_helmet</td><td>Capacete; às vezes diamante.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Armeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:blast_furnace</td><td>Armoreiro, Ferreiro</td><td>iron_helmet</td><td>Capacete; às vezes diamante.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Flecheiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:fletching_table</td><td>Flecheiro</td><td>arrow</td><td>Flechas.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Flecheiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:fletching_table</td><td>Flecheiro</td><td>arrow</td><td>Flechas.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Coureiro</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:cauldron</td><td>Enfermaria, Coureiro</td><td>leather</td><td>Couro de pele de coelho.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Coureiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:cauldron</td><td>Enfermaria, Coureiro</td><td>leather</td><td>Couro de pele de coelho.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Bibliotecário</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:lectern</td><td>Escriturador, Biblioteca, Escola, Armazém</td><td>book</td><td>Livros; ensina na escola.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Bibliotecário</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:lectern</td><td>Escriturador, Biblioteca, Escola, Armazém</td><td>book</td><td>Livros; ensina na escola.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Clérigo</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:brewing_stand</td><td>Enfermaria</td><td>redstone</td><td>Redstone; raro lápis e pérola.</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Clérigo</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:brewing_stand</td><td>Enfermaria</td><td>redstone</td><td>Redstone; raro lápis e pérola.</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Cartógrafo</b></td><td><span class='tag'>vanilla</span></td><td>minecraft:cartography_table</td><td>Cartógrafo</td><td>—</td><td>—</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
-<td class='y'>✔</td>
+<tr><td><b>Cartógrafo</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:cartography_table</td><td>Cartógrafo</td><td>—</td><td>—</td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
+<td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Guarda</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Patrulha e protege; recrutado entre os sem profissão importante.</td>
-<td class='n'>·</td>
-<td class='n'>·</td>
-<td class='n'>·</td>
-<td class='n'>·</td>
-<td class='n'>·</td>
-</tr>
-<tr><td><b>Arqueiro</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Guarda à distância.</td>
+<tr><td><b>Guarda</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Patrulha e protege; recrutado entre os sem profissão importante.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Fora da lei</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Expulso da vila.</td>
+<tr><td><b>Arqueiro</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Guarda à distância.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Aventureiro</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Visitante trazido pela taverna.</td>
+<tr><td><b>Fora da lei</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Expulso da vila.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Mercenário</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Contratado para lutar.</td>
+<tr><td><b>Aventureiro</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Visitante trazido pela taverna.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Cultista</b></td><td><span class='tag'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Raro, ligado aos livros do culto.</td>
+<tr><td><b>Mercenário</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Contratado para lutar.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Construtor</b></td><td><span class='tag'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Ergue obras e blueprints com material do armazém.</td>
+<tr><td><b>Cultista</b></td><td><span class='tag' data-g='MCA'>MCA</span></td><td>—</td><td>—</td><td>—</td><td>Raro, ligado aos livros do culto.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Mineiro</b></td><td><span class='tag'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Escava obras; sem obra, trabalha na Peneira.</td>
+<tr><td><b>Construtor</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Ergue obras e blueprints com material do armazém.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 </tr>
-<tr><td><b>Lenhador</b></td><td><span class='tag'>expansão</span></td><td>mca:chopping_block</td><td>Acampamento de Lenhador</td><td>—</td><td>Derruba árvores e replanta.</td>
+<tr><td><b>Mineiro</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Escava obras; sem obra, trabalha na Peneira.</td>
+<td class='n'>·</td>
+<td class='n'>·</td>
+<td class='n'>·</td>
+<td class='n'>·</td>
+<td class='n'>·</td>
+</tr>
+<tr><td><b>Lenhador</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>mca:chopping_block</td><td>Acampamento de Lenhador</td><td>—</td><td>Derruba árvores e replanta.</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 </tr>
-<tr><td><b>Caçador</b></td><td><span class='tag'>expansão</span></td><td>mca:hunting_rack</td><td>Cabana de Caçador</td><td>—</td><td>Caça animais selvagens.</td>
+<tr><td><b>Caçador</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>mca:hunting_rack</td><td>Cabana de Caçador</td><td>—</td><td>Caça animais selvagens.</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 </tr>
-<tr><td><b>Forrageiro</b></td><td><span class='tag'>expansão</span></td><td>mca:forage_basket</td><td>Cabana de Forrageiro</td><td>—</td><td>Colhe frutas, cogumelos, cana, bambu.</td>
+<tr><td><b>Forrageiro</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>mca:forage_basket</td><td>Cabana de Forrageiro</td><td>—</td><td>Colhe frutas, cogumelos, cana, bambu.</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 <td class='n'>colocar</td>
 </tr>
-<tr><td><b>Carregador</b></td><td><span class='tag'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Leva produtos e insumos entre oficinas e armazém.</td>
+<tr><td><b>Carregador</b></td><td><span class='tag' data-g='expansão'>expansão</span></td><td>—</td><td>—</td><td>—</td><td>Leva produtos e insumos entre oficinas e armazém.</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
 <td class='n'>·</td>
@@ -411,7 +526,9 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 </tr>
 </table>
 <p class='muted'>Cores de cama usadas por bioma (variedade das casas): Planície 2, Deserto 3, Savana 2, Taiga 2, Neve 3.</p>
-<h2 id='buildings'>Tipos de prédio</h2><table><tr><th>Tipo</th><th>Nome</th><th>Visível</th><th>Prioridade</th><th>Blocos exigidos</th></tr>
+</section>
+<section class='sec' id='buildings' style='--c:var(--gold)'><h2><span class='ic'>🏛️</span>Tipos de prédio</h2>
+<table><tr><th>Tipo</th><th>Nome</th><th>Visível</th><th>Prioridade</th><th>Blocos exigidos</th></tr>
 <tr><td><code>armorer</code></td><td>Armoreiro</td><td>não</td><td>1</td><td>1× minecraft:blast_furnace</td></tr>
 <tr><td><code>armory</code></td><td>Armório</td><td>sim</td><td>4</td><td>1× minecraft:smithing_table, 1× minecraft:grindstone, 1× #mca:anvils</td></tr>
 <tr><td><code>bakery</code></td><td>Padaria</td><td>não</td><td>1</td><td>1× minecraft:cake, 1× minecraft:smoker</td></tr>
@@ -443,7 +560,8 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 <tr><td><code>weaponsmith</code></td><td>Ferreiro de armas</td><td>não</td><td>1</td><td>1× minecraft:grindstone</td></tr>
 <tr><td><code>weaving_mill</code></td><td>Fábrica de tecelagem</td><td>não</td><td>1</td><td>1× minecraft:loom</td></tr>
 </table>
-<h2 id='icons'>Ícones e balões</h2>
+</section>
+<section class='sec' id='icons' style='--c:var(--rose)'><h2><span class='ic'>💬</span>Ícones e balões</h2>
 <p>Dois jeitos de mostrar algo sobre a cabeça de um aldeão:</p><ul><li><b>Ícone de item</b>: qualquer item do jogo vira um balão (é um <code>ItemDisplay</code> montado no aldeão, como em <code>NeedIndicators</code> e <code>ActionBubble</code>). Use o nome do arquivo como id, ex. <code>minecraft:bread</code>.</li><li><b>Partícula</b>: as partículas vanilla e as do MCA (<code>mca:pos_interaction</code>, <code>mca:neg_interaction</code>) aparecem pelo nome.</li></ul>
 <input id='filter' placeholder='Filtrar por nome (1360 imagens)'><div class='tabs'><button class='on' data-group='all'>Tudo</button>
 <button data-group='Itens (vanilla)'>Itens (vanilla) (796)</button>
@@ -1816,7 +1934,7 @@ da oficina; oficinas produzem por receitas de datapack; o carregador leva produt
 <div class='cell' data-group='Blocos (MCA)' data-name='upright_headstone'><img loading='lazy' src='_assets/mca/block/upright_headstone.png' alt=''>upright_headstone</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='wooden_slanted_headstone'><img loading='lazy' src='_assets/mca/block/wooden_slanted_headstone.png' alt=''>wooden_slanted_headstone</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='wooden_upright_headstone'><img loading='lazy' src='_assets/mca/block/wooden_upright_headstone.png' alt=''>wooden_upright_headstone</div>
-</div>
+</div></section>
 <script>
 const cells=[...document.querySelectorAll('.cell')];let group='all';
 function apply(){const q=document.getElementById('filter').value.toLowerCase();
@@ -1824,4 +1942,14 @@ cells.forEach(c=>{const ok=(group==='all'||c.dataset.group===group)&&c.dataset.n
 document.getElementById('filter').addEventListener('input',apply);
 document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>{
 document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');group=b.dataset.group;apply();}));
+document.querySelectorAll('table').forEach(t=>{const d=document.createElement('div');d.className='tw';t.before(d);d.append(t);});
+const secs=[...document.querySelectorAll('section.sec')],links=[...document.querySelectorAll('nav a')],bar=document.getElementById('progress');
+document.documentElement.classList.add('js');
+if('IntersectionObserver' in window){
+const reveal=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');reveal.unobserve(e.target);}}),{threshold:.02});
+secs.forEach(s=>reveal.observe(s));}else secs.forEach(s=>s.classList.add('in'));
+function onScroll(){const h=document.documentElement;bar.style.width=(h.scrollTop/((h.scrollHeight-h.clientHeight)||1)*100)+'%';
+let cur=secs[0];secs.forEach(s=>{if(s.getBoundingClientRect().top<innerHeight*.3)cur=s;});
+links.forEach(a=>a.classList.toggle('on',a.hash==='#'+cur.id));}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
 </script></main></body></html>
