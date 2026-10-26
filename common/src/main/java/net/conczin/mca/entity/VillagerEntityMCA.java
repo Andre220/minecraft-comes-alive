@@ -5,6 +5,7 @@ import net.conczin.mca.expansion.minds.ActionLabels;
 import net.conczin.mca.expansion.looks.Beards;
 import net.conczin.mca.expansion.requests.Requests;
 import net.conczin.mca.expansion.minds.Diet;
+import net.conczin.mca.expansion.minds.routine.Seats;
 import net.conczin.mca.expansion.minds.Skills;
 import com.mojang.serialization.MapCodec;
 import net.conczin.mca.Config;
@@ -1330,6 +1331,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     @Override
     public void rideTick() {
         super.rideTick();
+        Seats.faceOutOfStair(this); // expansion: minds
 
         Entity vehicle = getVehicle();
 
