@@ -44,6 +44,8 @@ Only do this with the dev client closed.
 | `AnimatedDoors-2.0.2.jar` | `animated_doors` | 2.0.2 | (from the Downloads folder; no homepage in its metadata) |
 | `notenoughanimations-fabric-1.12.5-mc26.2.jar` | `notenoughanimations` | 1.12.5 | https://modrinth.com/mod/not-enough-animations |
 | `firstperson-fabric-2.7.3-mc26.2.jar` | `firstperson` | 2.7.3 | https://modrinth.com/mod/first-person-model |
+| `DiagonalWalls-v26.2.0-mc26.2.x-Fabric.jar` | `diagonalwalls` | 26.2.0 | https://modrinth.com/mod/diagonal-walls (bundles `diagonalblocks`) |
+| `VisualWorkbench-v26.2.1-mc26.2.x-Fabric.jar` | `visualworkbench` | 26.2.1 | https://modrinth.com/mod/visual-workbench |
 
 ## Libraries other mods here need
 
@@ -52,6 +54,8 @@ Only do this with the dev client closed.
 | `cloth-config-26.2.155.jar` | `cloth-config` | 26.2.155 | Config screens of several mods |
 | `GlitchCore-fabric-26.2-26.2.0.0.0.jar` | `glitchcore` | 26.2.0.0.0 | Tough As Nails |
 | `libraryferret-fabric-26.2-5.0.1.jar` | `libraryferret` | 5.0.1 | Better Villages |
+| `puzzleslib-v26.2.5-mc26.2.x+fabric.jar` | `puzzleslib` | 26.2.5 | Diagonal Walls, Visual Workbench |
+| `ForgeConfigAPIPort-v26.2.1-mc26.2.x-Fabric.jar` | `forgeconfigapiport` | 26.2.1 | Puzzles Lib, Diagonal Walls, Visual Workbench |
 
 ## Outside this folder
 
