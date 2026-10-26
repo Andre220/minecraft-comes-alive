@@ -1217,7 +1217,7 @@
   "gui.workorder.pause": "Pausar",
   "gui.workorder.resume": "Retomar",
   "gui.workorder.cancel": "Cancelar",
-  "gui.workorder.help.idle.1": "Clique esquerdo: começar uma área · Rolagem: altitude · 1-4: ferramentas · Tab: obras",
+  "gui.workorder.help.idle.1": "Clique esquerdo: começar uma área · Botão do meio: escolher bloco · Rolagem: altitude · 1-4: ferramentas · Tab: obras",
   "gui.workorder.help.idle.2": "WASD, Espaço, Shift: voar (correr: mais rápido) · Arrastar com o direito ou Ctrl+mouse: olhar",
   "gui.workorder.help.selecting.1": "Mova o mouse para abrir a área · Rolagem: %1$s",
   "gui.workorder.help.selecting.2": "Clique esquerdo: planejar · Clique direito ou Esc: cancelar",
@@ -1264,7 +1264,7 @@
   "gui.workorder.material.free_count": "%1$s: %2$s (grátis)",
   "gui.workorder.rotate": "Girar o blueprint [R]",
   "gui.workorder.order.blueprint": "#%1$s %3$s · %2$s%%",
-  "gui.workorder.help.blueprint.1": "Clique esquerdo: posicionar o blueprint · R: girar · Tab: obras",
+  "gui.workorder.help.blueprint.1": "Clique esquerdo: posicionar o blueprint · R: girar · Rolagem: subir ou afundar · Tab: obras",
   "gui.workorder.help.blueprint.2": "WASD, Espaço, Shift: voar (correr: mais rápido) · Arrastar com o direito ou Ctrl+mouse: olhar",
   "gui.workorder.help.naming.1": "Digite um nome e aperte Enter para salvar o blueprint",
   "gui.workorder.help.naming.2": "Esc: cancelar",
@@ -1450,5 +1450,13 @@
   "block.mca.crimson_mirror": "Espelho Carmesim",
   "block.mca.crimson_standing_mirror": "Espelho de Chão Carmesim",
   "block.mca.warped_mirror": "Espelho Distorcido",
-  "block.mca.warped_standing_mirror": "Espelho de Chão Distorcido"
+  "block.mca.warped_standing_mirror": "Espelho de Chão Distorcido",
+  "blueprint.placed": "\"%1$s\" construído na hora (criativo).",
+  "gui.workorder.blueprint.loading": "O blueprint ainda está carregando, tente de novo em instantes.",
+  "workorder.done_now.dig": "%1$s blocos removidos na hora (criativo).",
+  "workorder.done_now.build": "%1$s blocos colocados na hora (criativo).",
+  "gui.workorder.picked": "Construindo com %1$s.",
+  "gui.workorder.up_down": "estender para cima ou para baixo",
+  "gui.workorder.blueprint.lift": "Altura: %1$s bloco(s)",
+  "workorder.working_now": "Trabalhando em %1$s blocos (criativo)..."
 }

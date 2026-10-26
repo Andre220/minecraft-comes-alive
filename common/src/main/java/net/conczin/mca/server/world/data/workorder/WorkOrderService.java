@@ -12,6 +12,9 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Block;
+import net.conczin.mca.Config;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
@@ -40,6 +43,9 @@ public final class WorkOrderService {
     public static Result create(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
         if (!WorkOrderPermissions.enabled()) {
             return Result.failure(Component.translatable("workorder.error.disabled"));
+        }
+        if (player.isCreative()) {
+            return applyNow(player, type, area, block);
         }
         ServerLevel level = player.level();
         Optional<Village> found = VillageManager.get(level).findNearestVillage(area.center(), Village.BORDER_MARGIN);
@@ -86,6 +92,25 @@ public final class WorkOrderService {
     }
 
     /**
+     * Creative: the area is dug out or built right away, village or not, with the same rules as the workers (nothing
+     * with a block entity is dug, no fluids; building fills what is empty or replaceable). Large areas are done a slice
+     * per tick (see {@link CreativeWork}); the player hears when it is finished.
+     */
+    public static Result applyNow(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
+        int max = Config.getInstance().workOrderMaxVolume;
+        if (area.volume() > max) {
+            return Result.failure(Component.translatable("workorder.error.too_big", area.volume(), max));
+        }
+        if (type == WorkOrderType.BUILD && block == null) {
+            return Result.failure(Component.translatable("workorder.error.no_block"));
+        }
+        CreativeWork.add(player.level(), type, area, block, player);
+        return new Result(null, null, CreativeWork.isLarge(area) || CreativeWork.busy()
+                ? Component.translatable("workorder.working_now", area.volume()).withStyle(ChatFormatting.GRAY)
+                : Component.empty());
+    }
+
+    /**
      * Saves what the player built inside the area as a blueprint. Inside a village the usual
      * planning rights apply; elsewhere only a Villager Editor allows it.
      */
@@ -117,6 +142,13 @@ public final class WorkOrderService {
         Optional<Blueprint> blueprint = BlueprintLibrary.get(player.level().getServer(), id);
         if (blueprint.isEmpty()) {
             return Result.failure(Component.translatable("blueprint.error.unknown", BlueprintLibrary.displayName(id)));
+        }
+        if (player.isCreative()) {
+            // creative: built at once, no village, builders or materials needed
+            if (!BlueprintLibrary.placeNow(player.level(), id, blueprint.get(), origin, rotation)) {
+                return Result.failure(Component.translatable("blueprint.error.unknown", BlueprintLibrary.displayName(id)));
+            }
+            return new Result(null, null, Component.translatable("blueprint.placed", BlueprintLibrary.displayName(id)).withStyle(ChatFormatting.GREEN));
         }
         WorkArea area = blueprint.get().area(origin, rotation);
         Optional<Village> found = VillageManager.get(player.level()).findNearestVillage(area.center(), Village.BORDER_MARGIN);

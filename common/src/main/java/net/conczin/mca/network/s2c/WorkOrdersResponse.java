@@ -123,9 +123,18 @@ public record WorkOrdersResponse(
         }
     }
 
-    public static WorkOrdersResponse none() {
+    /** Outside any village: no orders, but the saved blueprints are still listed (to look at, or put down in creative). */
+    public static WorkOrdersResponse none(ServerPlayer player) {
         return new WorkOrdersResponse(-1, "", WorkOrderPermissions.Access.DENIED.ordinal(),
-                rankKey(), false, 0, 0, 0, List.of(), Map.of(), List.of());
+                rankKey(), false, 0, 0, 0, List.of(), Map.of(), blueprints(player.level()));
+    }
+
+    private static List<BlueprintInfo> blueprints(ServerLevel level) {
+        return BlueprintLibrary.list(level.getServer()).stream()
+                .map(id -> BlueprintLibrary.get(level.getServer(), id))
+                .flatMap(java.util.Optional::stream)
+                .map(BlueprintInfo::of)
+                .toList();
     }
 
     public static WorkOrdersResponse of(ServerPlayer player, Village village) {
@@ -158,11 +167,7 @@ public record WorkOrdersResponse(
                 Config.getInstance().workOrderMaxVolume,
                 orders,
                 storage,
-                BlueprintLibrary.list(level.getServer()).stream()
-                        .map(id -> BlueprintLibrary.get(level.getServer(), id))
-                        .flatMap(java.util.Optional::stream)
-                        .map(BlueprintInfo::of)
-                        .toList()
+                blueprints(level)
         );
     }
 

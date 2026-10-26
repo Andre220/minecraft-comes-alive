@@ -77,6 +77,10 @@ public class WorkPlanningScreen extends Screen {
     private static final int LIST_TOP = 80;
     private static final int ROW_HEIGHT = 22;
     private static final int MAX_PALETTE = 12;
+    /** How many blocks picked from the world are kept at the front of the palette. */
+    private static final int MAX_PICKED = 4;
+    /** How far a blueprint can be raised or sunk. */
+    private static final int MAX_LIFT = 16;
     private static final int STATUS_TICKS = 100;
     private static final int MATERIAL_LINES = 4;
     /** Offered to Villager Editor holders even if nobody has them, since their orders are free. */
@@ -89,6 +93,8 @@ public class WorkPlanningScreen extends Screen {
     private final PlanningSelection selection = new PlanningSelection();
     private final Set<Movement> held = EnumSet.noneOf(Movement.class);
     private final List<BlockState> palette = new ArrayList<>();
+    /** Blocks picked from the world with the middle button, the latest first: they lead the palette. */
+    private final List<Block> picked = new ArrayList<>();
     /** Blueprints fetched for previews, by id; dropped when the server reports them changed. */
     private final Map<String, Blueprint> blueprints = new HashMap<>();
     private final Set<String> requested = new LinkedHashSet<>();
@@ -97,6 +103,8 @@ public class WorkPlanningScreen extends Screen {
     private @Nullable BlockState block;
     private @Nullable String blueprintId;
     private int rotation;
+    /** How far the blueprint is raised (or sunk into the ground, below zero) from where the cursor points. */
+    private int blueprintLift;
     private @Nullable BlockPos hovered;
     private @Nullable PlacementPreview preview;
     private @Nullable EditBox nameBox;
@@ -373,8 +381,20 @@ public class WorkPlanningScreen extends Screen {
     }
 
     /** Blocks to build with: what the storage holds most of, then what the player carries. */
+    /**
+     * The blocks to build with, the player's choice first: picked from the world, then the hotbar and the rest of the
+     * inventory, then what the village stores (only so many fit).
+     */
     private void rebuildPalette() {
-        Set<Block> blocks = new LinkedHashSet<>();
+        Set<Block> blocks = new LinkedHashSet<>(picked);
+        LocalPlayer player = minecraft.player;
+        if (player != null) {
+            for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+                if (player.getInventory().getItem(slot).getItem() instanceof BlockItem item) {
+                    blocks.add(item.getBlock());
+                }
+            }
+        }
         if (data != null) {
             data.storage().entrySet().stream()
                     .sorted(Map.Entry.<String, Integer>comparingByValue(Comparator.reverseOrder()))
@@ -383,14 +403,6 @@ public class WorkPlanningScreen extends Screen {
                     .filter(item -> item instanceof BlockItem)
                     .map(item -> ((BlockItem) item).getBlock())
                     .forEach(blocks::add);
-        }
-        LocalPlayer player = minecraft.player;
-        if (player != null) {
-            for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
-                if (player.getInventory().getItem(slot).getItem() instanceof BlockItem item) {
-                    blocks.add(item.getBlock());
-                }
-            }
         }
         if (data != null && data.getAccess() == WorkOrderPermissions.Access.EDITOR) {
             blocks.addAll(EDITOR_BLOCKS);
@@ -471,6 +483,7 @@ public class WorkPlanningScreen extends Screen {
             return;
         }
         if (preview == null) {
+            setStatus(Component.translatable("gui.workorder.blueprint.loading").withStyle(ChatFormatting.YELLOW));
             return;
         }
         Network.sendToServer(new PlaceBlueprintMessage(blueprintId, preview.origin(), preview.rotation()));
@@ -570,10 +583,11 @@ public class WorkPlanningScreen extends Screen {
         if (blueprint == null) {
             return null;
         }
-        if (preview != null && preview.blueprint() == blueprint && preview.origin().equals(hovered) && preview.rotation() == rotation) {
+        BlockPos origin = hovered.above(blueprintLift);
+        if (preview != null && preview.blueprint() == blueprint && preview.origin().equals(origin) && preview.rotation() == rotation) {
             return preview;
         }
-        Map<BlockPos, BlockState> placed = blueprint.place(hovered, rotation);
+        Map<BlockPos, BlockState> placed = blueprint.place(origin, rotation);
         int obstructions = 0;
         for (Map.Entry<BlockPos, BlockState> entry : placed.entrySet()) {
             BlockState current = level.getBlockState(entry.getKey());
@@ -581,7 +595,7 @@ public class WorkPlanningScreen extends Screen {
                 obstructions++;
             }
         }
-        return new PlacementPreview(blueprint, hovered, rotation, placed, blueprint.area(hovered, rotation),
+        return new PlacementPreview(blueprint, origin, rotation, placed, blueprint.area(origin, rotation),
                 blueprint.materials(), obstructions);
     }
 
@@ -689,7 +703,7 @@ public class WorkPlanningScreen extends Screen {
         // controls right above the toolbar, what the selection would do above them
         int infoY = bottomUiTop() - 12;
         String helpKey = helpKey();
-        Component dimension = Component.translatable(selection.getTool().growsDown() ? "gui.workorder.depth" : "gui.workorder.height");
+        Component dimension = Component.translatable("gui.workorder.up_down");
         graphics.centeredText(font, Component.translatable(helpKey + ".2", dimension), width / 2, infoY, grey);
         infoY -= 10;
         graphics.centeredText(font, Component.translatable(helpKey + ".1", dimension), width / 2, infoY, grey);
@@ -786,6 +800,10 @@ public class WorkPlanningScreen extends Screen {
         }
         if (preview == null) {
             return lines;
+        }
+        if (blueprintLift != 0) {
+            lines.add(Component.translatable("gui.workorder.blueprint.lift", (blueprintLift > 0 ? "+" : "") + blueprintLift)
+                    .withStyle(ChatFormatting.GRAY));
         }
 
         // materials, most needed first; drawn bottom-up so add them in reverse
@@ -930,14 +948,21 @@ public class WorkPlanningScreen extends Screen {
             }
             return true;
         }
+        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && !isOverUi(event.x(), event.y())) {
+            pickBlock();
+            return true;
+        }
         if (event.button() != GLFW.GLFW_MOUSE_BUTTON_LEFT || isOverUi(event.x(), event.y())) {
             return false;
         }
-        if (selection.getTool() != PlanningTool.CAPTURE && (data == null || !data.hasVillage())) {
+        // in creative, digging, building and blueprints are done at once, village or not
+        boolean creative = selection.getTool() != PlanningTool.CAPTURE && minecraft != null && minecraft.player != null
+                           && minecraft.player.isCreative();
+        if (selection.getTool() != PlanningTool.CAPTURE && !creative && (data == null || !data.hasVillage())) {
             setStatus(Component.translatable("gui.workorder.no_village").withStyle(ChatFormatting.YELLOW));
             return true;
         }
-        if (data != null && data.hasVillage() && !data.getAccess().allowed()) {
+        if (!creative && data != null && data.hasVillage() && !data.getAccess().allowed()) {
             setStatus(Component.translatable("gui.workorder.access.denied", Component.translatable(data.minRank())).withStyle(ChatFormatting.RED));
             return true;
         }
@@ -953,6 +978,32 @@ public class WorkPlanningScreen extends Screen {
             }
         }
         return true;
+    }
+
+    /** Like the game's pick block: the block under the cursor becomes the one to build with, first in the palette. */
+    private void pickBlock() {
+        if (minecraft == null || minecraft.level == null) {
+            return;
+        }
+        Vec3[] ray = cursorRay();
+        BlockHitResult hit = minecraft.level.clip(new ClipContext(ray[0], ray[0].add(ray[1].scale(PICK_RANGE)),
+                ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
+        if (hit.getType() != HitResult.Type.BLOCK) {
+            return;
+        }
+        Block target = minecraft.level.getBlockState(hit.getBlockPos()).getBlock();
+        if (target.asItem() == net.minecraft.world.item.Items.AIR) {
+            return;
+        }
+        picked.remove(target);
+        picked.addFirst(target);
+        while (picked.size() > MAX_PICKED) {
+            picked.removeLast();
+        }
+        rebuildPalette();
+        block = target.defaultBlockState();
+        setTool(PlanningTool.BUILD);
+        setStatus(Component.translatable("gui.workorder.picked", target.getName()).withStyle(ChatFormatting.GREEN));
     }
 
     @Override
@@ -988,7 +1039,9 @@ public class WorkPlanningScreen extends Screen {
             return true;
         }
         if (selection.isActive()) {
-            selection.adjustHeight(scrollY > 0 ? 1 : -1);
+            selection.adjustExtent(scrollY > 0 ? 1 : -1);
+        } else if (selection.getTool() == PlanningTool.BLUEPRINT) {
+            blueprintLift = Math.clamp(blueprintLift + (scrollY > 0 ? 1 : -1), -MAX_LIFT, MAX_LIFT);
         } else if (camera != null) {
             camera.moveBy(0, scrollY * SCROLL_CLIMB, 0);
         }

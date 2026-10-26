@@ -227,6 +227,86 @@ public final class WorkOrderGameTests {
         helper.succeed();
     }
 
+    /** Creative players dig and build at once: miners' rules for digging (chests stay), builders' for filling. */
+    @GameTest(batch = "mca_work_order_now", templateNamespace = "minecraft",
+            template = "bastion/blocks/air", timeoutTicks = 100)
+    public static void creativeDigAndBuildAtOnce(GameTestHelper helper) {
+        BlockPos center = helper.absolutePos(new BlockPos(5904, 2, 400));
+        net.conczin.mca.gametest.GameTestTerrain.prepareFlatArea(helper, center, 8, 6);
+        ServerLevel level = helper.getLevel();
+        BlockPos corner = center.offset(-2, 1, -2);
+        WorkArea area = WorkArea.of(corner, corner.offset(2, 1, 2));
+        for (BlockPos pos : BlockPos.betweenClosed(corner, corner.offset(2, 1, 2))) {
+            setBlock(level, pos.immutable(), Blocks.STONE.defaultBlockState());
+        }
+        setBlock(level, corner, Blocks.CHEST.defaultBlockState());
+
+        net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) helper.makeMockServerPlayer(net.minecraft.world.level.GameType.CREATIVE);
+        net.conczin.mca.server.world.data.workorder.WorkOrderService.Result dug =
+                net.conczin.mca.server.world.data.workorder.WorkOrderService.applyNow(player, WorkOrderType.DIG, area, null);
+        helper.assertTrue(dug.error() == null, "digging failed: " + dug.message().getString());
+        finishCreativeWork();
+        helper.assertTrue(level.getBlockState(corner).is(Blocks.CHEST), "a chest is never dug");
+        helper.assertTrue(level.getBlockState(corner.offset(1, 1, 1)).isAir() && level.getBlockState(corner.offset(2, 0, 2)).isAir(), "the stone is gone");
+
+        net.conczin.mca.server.world.data.workorder.WorkOrderService.Result built = net.conczin.mca.server.world.data.workorder.WorkOrderService
+                .applyNow(player, WorkOrderType.BUILD, area, Blocks.OAK_PLANKS.defaultBlockState());
+        helper.assertTrue(built.error() == null, "building failed: " + built.message().getString());
+        finishCreativeWork();
+        helper.assertTrue(level.getBlockState(corner.offset(1, 1, 1)).is(Blocks.OAK_PLANKS), "the empty spots are filled");
+        helper.assertTrue(level.getBlockState(corner).is(Blocks.CHEST), "the chest is left where it is");
+        helper.succeed();
+    }
+
+    /** Runs the creative work queue to its end, a slice per call as the server tick would. */
+    private static void finishCreativeWork() {
+        for (int ticks = 0; ticks < 1000 && net.conczin.mca.server.world.data.workorder.CreativeWork.busy(); ticks++) {
+            net.conczin.mca.server.world.data.workorder.CreativeWork.tick();
+        }
+    }
+
+    /** Creative players get a blueprint at once: every turn lands where the preview shows it, chests keep their contents. */
+    @GameTest(batch = "mca_work_order_place_now", templateNamespace = "minecraft",
+            template = "bastion/blocks/air", timeoutTicks = 100)
+    public static void creativeBlueprintIsPlacedAtOnce(GameTestHelper helper) {
+        BlockPos center = helper.absolutePos(new BlockPos(5648, 2, 400));
+        net.conczin.mca.gametest.GameTestTerrain.prepareFlatArea(helper, center, 24, 6);
+        ServerLevel level = helper.getLevel();
+
+        // an L of planks 3 wide and 2 deep, a stair facing north and a chest with something in it: nothing symmetric
+        BlockPos corner = center.offset(-12, 0, -12);
+        WorkArea area = WorkArea.of(corner, corner.offset(2, 1, 1));
+        setBlock(level, corner, Blocks.OAK_PLANKS.defaultBlockState());
+        setBlock(level, corner.offset(1, 0, 0), Blocks.OAK_PLANKS.defaultBlockState());
+        setBlock(level, corner.offset(2, 0, 0), Blocks.OAK_PLANKS.defaultBlockState());
+        setBlock(level, corner.offset(0, 0, 1), Blocks.OAK_PLANKS.defaultBlockState());
+        setBlock(level, corner.offset(0, 1, 0), Blocks.OAK_STAIRS.defaultBlockState().setValue(net.minecraft.world.level.block.StairBlock.FACING, Direction.NORTH));
+        setBlock(level, corner.offset(2, 1, 1), Blocks.CHEST.defaultBlockState());
+        ((Container) level.getBlockEntity(corner.offset(2, 1, 1))).setItem(0, new ItemStack(Items.APPLE));
+        BlueprintLibrary.CaptureResult captured = BlueprintLibrary.capture(level, area, "MCA GameTest Place Now", "tester");
+        helper.assertTrue(captured.blueprint() != null, "capture failed: " + (captured.error() == null ? "?" : captured.error().getString()));
+        Blueprint blueprint = captured.blueprint();
+
+        for (int rotation = 0; rotation < 4; rotation++) {
+            BlockPos origin = center.offset(-12 + rotation * 6, 0, 0);
+            helper.assertTrue(BlueprintLibrary.placeNow(level, blueprint.id(), blueprint, origin, rotation), "not placed at turn " + rotation);
+            for (Map.Entry<BlockPos, BlockState> planned : blueprint.place(origin, rotation).entrySet()) {
+                BlockState placed = level.getBlockState(planned.getKey());
+                helper.assertTrue(placed.getBlock() == planned.getValue().getBlock(),
+                        "turn " + rotation + " at " + planned.getKey().subtract(origin) + ": " + placed + " instead of " + planned.getValue());
+                if (placed.is(Blocks.OAK_STAIRS)) {
+                    helper.assertTrue(placed.getValue(net.minecraft.world.level.block.StairBlock.FACING)
+                                      == planned.getValue().getValue(net.minecraft.world.level.block.StairBlock.FACING), "the stair turns too, turn " + rotation);
+                }
+                if (placed.is(Blocks.CHEST)) {
+                    helper.assertTrue(((Container) level.getBlockEntity(planned.getKey())).getItem(0).is(Items.APPLE), "the chest keeps its apple, turn " + rotation);
+                }
+            }
+        }
+        level.getServer().getStructureManager().remove(blueprint.id());
+        helper.succeed();
+    }
+
     @GameTest(batch = "mca_work_order_raise_blueprint", templateNamespace = "minecraft",
             template = "bastion/blocks/air", timeoutTicks = 24000)
     public static void builderRaisesBundledCottageAndItBecomesAHouse(GameTestHelper helper) {

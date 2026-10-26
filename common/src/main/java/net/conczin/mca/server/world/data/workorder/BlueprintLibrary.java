@@ -15,6 +15,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import org.jspecify.annotations.Nullable;
 
@@ -117,6 +120,32 @@ public final class BlueprintLibrary {
         Blueprint blueprint = parse(id, template);
         CACHE.put(template, blueprint);
         return new CaptureResult(blueprint, null, replaced);
+    }
+
+    /**
+     * Puts a blueprint into the world at once, as it was saved (chests keep their contents, signs their text), its
+     * lowest corner on {@code origin} and turned like {@link Blueprint#place}. For players in creative. False if its
+     * structure file is gone.
+     */
+    public static boolean placeNow(ServerLevel level, Identifier id, Blueprint blueprint, BlockPos origin, int rotation) {
+        Optional<StructureTemplate> template = manager(level.getServer()).get(id);
+        if (template.isEmpty()) {
+            return false;
+        }
+        int turns = BlueprintTransform.normalize(rotation);
+        // vanilla turns about the pivot (0, 0, 0); moved back so the lowest corner lands on origin, as BlueprintTransform does
+        BlockPos shift = switch (turns) {
+            case 1 -> new BlockPos(blueprint.sizeZ() - 1, 0, 0);
+            case 2 -> new BlockPos(blueprint.sizeX() - 1, 0, blueprint.sizeZ() - 1);
+            case 3 -> new BlockPos(0, 0, blueprint.sizeX() - 1);
+            default -> BlockPos.ZERO;
+        };
+        StructurePlaceSettings settings = new StructurePlaceSettings()
+                .setRotation(Rotation.values()[turns])
+                .setRotationPivot(BlockPos.ZERO)
+                .setIgnoreEntities(true);
+        BlockPos at = origin.offset(shift);
+        return template.get().placeInWorld(level, at, at, settings, level.getRandom(), Block.UPDATE_CLIENTS);
     }
 
     /** Reads the blocks of a template through its saved form, which is public and stable. */

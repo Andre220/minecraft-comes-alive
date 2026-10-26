@@ -35,7 +35,7 @@ public record WorkOrdersRequest(BlockPos pos) implements HandleablePayload {
     static void sendResponse(ServerPlayer player, BlockPos pos) {
         BlockPos near = isNearPlayer(player, pos) ? pos : player.blockPosition();
         Optional<Village> village = VillageManager.get(player.level()).findNearestVillage(near, Village.BORDER_MARGIN);
-        Network.sendToPlayer(village.map(v -> WorkOrdersResponse.of(player, v)).orElseGet(WorkOrdersResponse::none), player);
+        Network.sendToPlayer(village.map(v -> WorkOrdersResponse.of(player, v)).orElseGet(() -> WorkOrdersResponse.none(player)), player);
     }
 
     static boolean isNearPlayer(ServerPlayer player, BlockPos pos) {

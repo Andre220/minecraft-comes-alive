@@ -1432,7 +1432,7 @@
   "gui.workorder.pause": "Pause",
   "gui.workorder.resume": "Resume",
   "gui.workorder.cancel": "Cancel",
-  "gui.workorder.help.idle.1": "Left click: start an area · Scroll: altitude · 1-4: tools · Tab: orders",
+  "gui.workorder.help.idle.1": "Left click: start an area · Middle click: pick block · Scroll: altitude · 1-4: tools · Tab: orders",
   "gui.workorder.help.idle.2": "WASD, Space, Shift: fly (sprint: faster) · Right drag or Ctrl+mouse: look",
   "gui.workorder.help.selecting.1": "Move the mouse to span the area · Scroll: %1$s",
   "gui.workorder.help.selecting.2": "Left click: plan it · Right click or Esc: cancel",
@@ -1479,7 +1479,7 @@
   "gui.workorder.material.free_count": "%1$s: %2$s (free)",
   "gui.workorder.rotate": "Turn the blueprint [R]",
   "gui.workorder.order.blueprint": "#%1$s %3$s · %2$s%%",
-  "gui.workorder.help.blueprint.1": "Left click: place the blueprint · R: turn it · Tab: orders",
+  "gui.workorder.help.blueprint.1": "Left click: place the blueprint · R: turn it · Scroll: raise or sink it · Tab: orders",
   "gui.workorder.help.blueprint.2": "WASD, Space, Shift: fly (sprint: faster) · Right drag or Ctrl+mouse: look",
   "gui.workorder.help.naming.1": "Type a name and press Enter to save the blueprint",
   "gui.workorder.help.naming.2": "Esc: cancel",
@@ -1665,5 +1665,13 @@
   "block.mca.crimson_mirror": "Crimson Mirror",
   "block.mca.crimson_standing_mirror": "Crimson Standing Mirror",
   "block.mca.warped_mirror": "Warped Mirror",
-  "block.mca.warped_standing_mirror": "Warped Standing Mirror"
+  "block.mca.warped_standing_mirror": "Warped Standing Mirror",
+  "blueprint.placed": "Built \"%1$s\" at once (creative).",
+  "gui.workorder.blueprint.loading": "The blueprint is still loading, try again in a moment.",
+  "workorder.done_now.dig": "Dug out %1$s blocks at once (creative).",
+  "workorder.done_now.build": "Placed %1$s blocks at once (creative).",
+  "gui.workorder.picked": "Building with %1$s.",
+  "gui.workorder.up_down": "stretch up or down",
+  "gui.workorder.blueprint.lift": "Height: %1$s block(s)",
+  "workorder.working_now": "Working on %1$s blocks (creative)..."
 }

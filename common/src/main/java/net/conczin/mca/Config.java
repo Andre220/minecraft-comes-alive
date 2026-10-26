@@ -673,6 +673,12 @@ public final class Config extends CommonConfig {
     public int workOrderMaxVolume = 4096;
 
     /**
+     * Creative digging and building is done this many blocks per server tick, area after area, so large areas do not
+     * stall the server. // expansion: work orders
+     */
+    public int workOrderBlocksPerTick = 4096;
+
+    /**
      * Largest number of open work orders per village.
      */
     public int workOrderMaxPerVillage = 16;

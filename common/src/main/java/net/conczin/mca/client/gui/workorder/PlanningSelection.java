@@ -8,8 +8,8 @@ import java.util.Optional;
 
 /**
  * The box a player drags out in the planning screen: the first click sets a corner, moving
- * the mouse spans the area on that layer and scrolling sets how deep (digging) or how high
- * (building, capturing) it goes.
+ * the mouse spans the area on that layer, and scrolling stretches it up or down from that layer
+ * (scrolling up raises its other side, scrolling down lowers it).
  */
 public final class PlanningSelection {
     public static final int MAX_HEIGHT = 48;
@@ -17,7 +17,8 @@ public final class PlanningSelection {
     private PlanningTool tool = PlanningTool.DIG;
     private @Nullable BlockPos anchor;
     private @Nullable BlockPos corner;
-    private int height = 1;
+    /** Layers above (positive) or below (negative) the clicked one the box reaches to. */
+    private int extent;
 
     public PlanningTool getTool() {
         return tool;
@@ -42,7 +43,7 @@ public final class PlanningSelection {
     public void start(BlockPos anchor) {
         this.anchor = anchor.immutable();
         this.corner = this.anchor;
-        this.height = 1;
+        this.extent = 0;
     }
 
     /** Moves the opposite corner; it always stays on the anchor's layer. */
@@ -52,28 +53,25 @@ public final class PlanningSelection {
         }
     }
 
-    public int getHeight() {
-        return height;
-    }
-
-    public void adjustHeight(int delta) {
-        height = Math.clamp(height + delta, 1, MAX_HEIGHT);
+    /** Stretches the box a layer up (positive) or down (negative); it is at most {@link #MAX_HEIGHT} tall. */
+    public void adjustExtent(int delta) {
+        extent = Math.clamp(extent + delta, -(MAX_HEIGHT - 1), MAX_HEIGHT - 1);
     }
 
     public void clear() {
         anchor = null;
         corner = null;
-        height = 1;
+        extent = 0;
     }
 
-    /** The selected box: digging goes down from the clicked layer, everything else goes up from it. */
+    /** The selected box: from the clicked layer up or down as far as it was stretched. */
     public Optional<WorkArea> area() {
         if (anchor == null || corner == null) {
             return Optional.empty();
         }
         int y = anchor.getY();
-        int bottom = tool.growsDown() ? y - (height - 1) : y;
-        int top = tool.growsDown() ? y : y + (height - 1);
+        int bottom = Math.min(y, y + extent);
+        int top = Math.max(y, y + extent);
         return Optional.of(new WorkArea(
                 Math.min(anchor.getX(), corner.getX()), bottom, Math.min(anchor.getZ(), corner.getZ()),
                 Math.max(anchor.getX(), corner.getX()), top, Math.max(anchor.getZ(), corner.getZ())

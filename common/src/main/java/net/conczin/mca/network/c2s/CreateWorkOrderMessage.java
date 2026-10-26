@@ -50,7 +50,9 @@ public record CreateWorkOrderMessage(int orderType, BlockPos from, BlockPos to, 
                 ? Block.stateById(blockState).getBlock().defaultBlockState()
                 : null;
         WorkOrderService.Result result = WorkOrderService.create(player, type, area, block);
-        player.sendSystemMessage(result.message());
+        if (!result.message().getString().isEmpty()) {
+            player.sendSystemMessage(result.message());
+        }
         WorkOrdersRequest.sendResponse(player, area.center());
     }
 

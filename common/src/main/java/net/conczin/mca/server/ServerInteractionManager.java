@@ -11,6 +11,7 @@ import net.conczin.mca.network.s2c.OpenDestinyGuiRequest;
 import net.conczin.mca.network.s2c.PlayerDataMessage;
 import net.conczin.mca.network.s2c.ShowToastRequest;
 import net.conczin.mca.server.world.data.PlayerSaveData;
+import net.conczin.mca.server.world.data.workorder.CreativeWork;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -49,6 +50,7 @@ public class ServerInteractionManager {
     }
 
     public void tick() {
+        CreativeWork.tick(); // expansion: work orders
         List<UUID> removals = new ArrayList<>();
         procreateMap.keySet().stream()
                 .filter((k) -> procreateMap.getLong(k) < System.currentTimeMillis())
