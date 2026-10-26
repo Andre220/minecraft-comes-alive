@@ -73,5 +73,6 @@ public interface MessagesMCA {
         c.register(ProgressMessages.Response.TYPE, ProgressMessages.Response.STREAM_CODEC, false); // expansion: progression
         c.register(OutfitMessages.Choose.TYPE, OutfitMessages.Choose.STREAM_CODEC, false); // expansion: looks
         c.register(OutfitMessages.Wear.TYPE, OutfitMessages.Wear.STREAM_CODEC, true); // expansion: looks
+        c.register(OutfitMessages.Close.TYPE, OutfitMessages.Close.STREAM_CODEC, true); // expansion: looks
     }
 }

@@ -236,6 +236,9 @@ public class SkinExporter {
         }
 
         try {
+            if (iris) {
+                EyeTextureLayers.addMissingIris(face); // expansion: looks
+            }
             EyeTextureLayers.Bounds bounds = EyeTextureLayers.findBounds(face);
             int splitX = bounds.minX() + bounds.width() / 2;
             compositeEyeLayer(base, face, EyeTextureLayers.Layer.SCLERA, EyeTextureLayers.Side.FULL, splitX, 0xFFFFFFFF);

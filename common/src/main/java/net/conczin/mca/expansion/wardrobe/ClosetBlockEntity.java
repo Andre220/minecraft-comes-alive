@@ -21,7 +21,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 public class ClosetBlockEntity extends BlockEntity {
     /** How long opening or closing takes, in ms. */
     private static final float DURATION = 350.0F;
-    private static final int MAX_COMPARTMENTS = 4;
+    static final int MAX_COMPARTMENTS = 4;
 
     private final NonNullList<ItemStack> items;
     /** A bit per door or drawer, set while it is open. */

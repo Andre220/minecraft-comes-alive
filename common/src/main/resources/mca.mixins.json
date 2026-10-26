@@ -50,6 +50,7 @@
     "client.MixinItemInHandLayer",
     "client.MixinLayerDefinitions",
     "client.MixinLivingEntityRenderer",
+    "client.MixinMinecraft",
     "client.MixinMultiPlayerGameMode",
     "client.MixinLivingEntityRenderState",
     "client.MixinModel",

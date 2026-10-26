@@ -115,6 +115,7 @@ public class FaceLayer<S extends HumanoidRenderState, M extends HumanoidModel<S>
                 if (resource.isEmpty()) return id;
 
                 try (InputStream stream = resource.get().open(); NativeImage originalImage = NativeImage.read(stream)) {
+                    EyeTextureLayers.addMissingIris(originalImage); // expansion: looks
                     int w = originalImage.getWidth();
                     int h = originalImage.getHeight();
                     EyeTextureLayers.Bounds bounds = EyeTextureLayers.findBounds(originalImage);

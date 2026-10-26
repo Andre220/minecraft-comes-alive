@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 import static net.conczin.mca.gametest.GameTestTerrain.prepareFlatArea;
@@ -126,6 +127,62 @@ public final class WardrobeGameTests {
             level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(w).inflate(3)).forEach(net.minecraft.world.entity.Entity::discard);
             helper.succeed();
         });
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = "bastion/blocks/air", timeoutTicks = 100)
+    public static void wardrobeDoorShuts(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        BlockPos center = helper.absolutePos(new BlockPos(17846, 2, 400));
+        prepareFlatArea(helper, center, 4, 4);
+        BlockPos w = center;
+        place(level, w, Wardrobes.WARDROBE_BLOCKS.get("oak"));
+        ClosetBlockEntity closet = (ClosetBlockEntity) level.getBlockEntity(w);
+        for (int slot = 0; slot < WardrobeBlock.SHELVES; slot++) {
+            closet.setItem(slot, OutfitItem.of(Wardrobes.OUTFIT, "mca:skins/clothing/normal/male/none.png"));
+        }
+        closet.setOpen(0, true);
+        net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) helper.makeMockServerPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        player.setPos(w.getX() + 0.5, w.getY(), w.getZ() + 3.5);
+
+        // a click on the door that reaches the server as a use of the block leaves it: the client shuts it by message
+        BlockState top = level.getBlockState(w.above());
+        top.useWithoutItem(level, player, new BlockHitResult(new Vec3(w.getX() + 0.05, w.getY() + 1.5, w.getZ() + 1.3), Direction.WEST, w.above(), false));
+        helper.assertTrue(closet.isOpen(0), "a door click as a block use leaves it to the message");
+        FurnitureBlock.shut(player, w, 0);
+        helper.assertTrue(!closet.isOpen(0), "the message shuts it");
+
+        // with every shelf full, a click in the empty space above an outfit still shuts it
+        closet.setOpen(0, true);
+        top.useWithoutItem(level, player, new BlockHitResult(new Vec3(w.getX() + 0.5, w.getY() + 1.17, w.getZ() + 0.9375), Direction.SOUTH, w.above(), false));
+        helper.assertTrue(!closet.isOpen(0), "a click above the outfits shuts it");
+
+        closet.setOpen(0, true);
+        player.setPos(w.getX() + 0.5, w.getY(), w.getZ() + 20.5);
+        FurnitureBlock.shut(player, w, 0);
+        helper.assertTrue(closet.isOpen(0), "not from far away");
+        helper.succeed();
+    }
+
+    @GameTest(templateNamespace = "minecraft", template = "bastion/blocks/air", timeoutTicks = 100)
+    public static void playerWearsTheOutfit(GameTestHelper helper) {
+        ServerLevel level = helper.getLevel();
+        net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) helper.makeMockServerPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        String before = "mca:skins/clothing/normal/neutral/none/5.png";
+        String after = "mca:skins/clothing/normal/neutral/none/3.png";
+        VillagerEntityMCA look = net.conczin.mca.registry.EntitiesMCA.MALE_VILLAGER.create(level, EntitySpawnReason.LOAD);
+        look.setClothes(before);
+        net.minecraft.world.level.storage.TagValueOutput output = net.minecraft.world.level.storage.TagValueOutput.createWithContext(
+                net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess());
+        look.saveWithoutId(output);
+        net.conczin.mca.server.world.data.PlayerSaveData data = net.conczin.mca.server.world.data.PlayerSaveData.get(player);
+        data.setEntityData(output.buildResult());
+
+        helper.assertTrue(Wardrobes.dress(player, after).equals(before), "gives back what was worn");
+        VillagerEntityMCA dressed = net.conczin.mca.registry.EntitiesMCA.MALE_VILLAGER.create(level, EntitySpawnReason.LOAD);
+        dressed.load(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, level.registryAccess(),
+                data.getEntityData()));
+        helper.assertTrue(dressed.getClothes().equals(after), "the player's look wears it: " + dressed.getClothes());
+        helper.succeed();
     }
 
     @GameTest(templateNamespace = "minecraft", template = "bastion/blocks/air", timeoutTicks = 100)

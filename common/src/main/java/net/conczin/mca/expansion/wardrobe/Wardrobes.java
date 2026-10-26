@@ -188,12 +188,19 @@ public final class Wardrobes {
         player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 0.8F, 1.0F);
     }
 
-    /** Puts clothes on the player's MCA look and tells everyone; gives back the clothes worn before. */
+    /**
+     * Puts clothes on the player's MCA look and tells everyone; gives back the clothes worn before. The look keeps
+     * them with its other tracked values, under "MCAData" (an older version put them at the top, where nothing read
+     * them: that copy is dropped).
+     */
     static String dress(ServerPlayer player, String clothes) {
         PlayerSaveData data = PlayerSaveData.get(player);
         CompoundTag look = data.getEntityData();
-        String wearing = look.getStringOr("Clothes", "");
-        look.putString("Clothes", clothes);
+        CompoundTag tracked = look.getCompoundOrEmpty(VillagerEntityMCA.MCA_DATA_KEY);
+        String wearing = tracked.getStringOr("Clothes", "");
+        tracked.putString("Clothes", clothes);
+        look.put(VillagerEntityMCA.MCA_DATA_KEY, tracked);
+        look.remove("Clothes");
         data.setEntityData(look);
         CompoundTag saved = data.getEntityData();
         player.level().players().forEach(p -> Network.sendToPlayer(new PlayerDataMessage(player.getUUID(), saved), p));

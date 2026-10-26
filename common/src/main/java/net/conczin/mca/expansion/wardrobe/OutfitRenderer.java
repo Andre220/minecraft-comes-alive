@@ -20,8 +20,9 @@ import java.util.function.Consumer;
 
 /**
  * Draws an outfit folded, lying down, out of the 64x64 clothing texture (the player skin layout): the shirt folded
- * into a flat box with the chest on top, the back underneath and a bit of the legs round its sides; the trousers
- * folded under it, peeking out in front; the sleeves laid out to each side. Each with its outer layer over it.
+ * into a flat box with the chest on top, the back underneath and a strip of the torso's sides round its edges; the
+ * trousers folded under it, peeking out in front; the sleeves folded over the chest, slanting in from the shoulders.
+ * Each with its outer layer over it.
  * An outfit without clothes shows the bare body texture.
  * <p>
  * Measures are in pixels of a block, the neck towards -z, the wearer's right towards -x.
@@ -43,7 +44,13 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
     /** The trousers under it, slid forward so their hems show. */
     private static final float TROUSERS_Y = 0.1F;
     private static final float TROUSERS_FORWARD = 1.5F;
-    private static final float SLEEVE_Y = 0.3F;
+    /** The sleeves lie on the shirt's outer layer, the left one over the right where they cross. */
+    private static final float SLEEVE_Y = SHIRT_Y1 + OUTER + 0.05F;
+    private static final float SLEEVE_STEP = 0.25F;
+    /** From the shoulder (this far in from the shirt's edge, at the neck) slanting in this many degrees. */
+    private static final float SLEEVE_INSET = 2.0F;
+    private static final float SLEEVE_TILT = 20.0F;
+    private static final float SLEEVE_LENGTH = 8.0F;
     /** For the item: raised so the outfit turns about its middle. */
     private static final float ITEM_LIFT = 6.5F;
 
@@ -105,7 +112,11 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
         });
     }
 
-    /** The shirt as a box: chest on top, back underneath, the top and bottom of the torso at the ends, legs at the sides. */
+    /**
+     * The shirt as a box: chest on top, back underneath. Round its edges, as if folded over them: the ends take the two
+     * rows of the chest next to them, the sides two columns of the torso's sides (the top of the torso and the legs are
+     * often bare in a clothing texture).
+     */
     private static void shirt(Faces f, float out, int layer) {
         float x0 = SHIRT_X0 - out;
         float x1 = SHIRT_X1 + out;
@@ -115,18 +126,18 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
         float z1 = SHIRT_Z1 + out;
         f.up(x0, x1, y1, z0, z1, 20, 20 + layer, 28, 32 + layer);
         f.down(x0, x1, y0, z0, z1, 32, 20 + layer, 40, 32 + layer);
-        // the ends: two rows of the torso's top (neck) and bottom (hem)
+        int top = 20 + layer;
+        int hem = 32 + layer;
+        // the ends: the chest's top two rows at the neck, its bottom two at the hem, the edge row at the top
         f.quad(0, 0, -1, new float[][]{{x1, y0, z0}, {x0, y0, z0}, {x0, y1, z0}, {x1, y1, z0}},
-                uv(20, 16 + layer, 28, 18 + layer));
+                new float[][]{{28, top + 2}, {20, top + 2}, {20, top}, {28, top}});
         f.quad(0, 0, 1, new float[][]{{x0, y0, z1}, {x1, y0, z1}, {x1, y1, z1}, {x0, y1, z1}},
-                uv(28, 16 + layer, 36, 18 + layer));
-        // the sides: two columns of the outside of each leg, laid along
+                new float[][]{{20, hem - 2}, {28, hem - 2}, {28, hem}, {20, hem}});
+        // the sides: the two columns of each side of the torso next to the chest, neck to hem along the side
         f.quad(-1, 0, 0, new float[][]{{x0, y0, z0}, {x0, y0, z1}, {x0, y1, z1}, {x0, y1, z0}},
-                new float[][]{{0, 20 + layer}, {0, 32 + layer}, {2, 32 + layer}, {2, 20 + layer}});
-        int leftLegU = layer == 0 ? 24 : 8;
-        int leftLegV = layer == 0 ? 52 : 52;
+                new float[][]{{18, top}, {18, hem}, {20, hem}, {20, top}});
         f.quad(1, 0, 0, new float[][]{{x1, y0, z1}, {x1, y0, z0}, {x1, y1, z0}, {x1, y1, z1}},
-                new float[][]{{leftLegU, leftLegV + 12}, {leftLegU, leftLegV}, {leftLegU + 2, leftLegV}, {leftLegU + 2, leftLegV + 12}});
+                new float[][]{{30, hem}, {30, top}, {28, top}, {28, hem}});
     }
 
     /** The trousers, flat under the shirt: both legs' fronts on top, their backs underneath. */
@@ -145,17 +156,16 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
         f.down(SHIRT_X1, mid, yBelow, z0, z1, leftU + 8, 52, leftU + 12, 64);
     }
 
-    /** The sleeves laid out beside the shirt: fronts on top, backs underneath. */
+    /** The sleeves folded over the chest: each arm's front, from the shoulder slanting in towards the middle. */
     private static void sleeves(Faces f, float out, int layer) {
-        float y = SLEEVE_Y + out;
-        float yBelow = SLEEVE_Y - out;
+        float slant = (float) Math.sin(Math.toRadians(SLEEVE_TILT));
+        float along = (float) Math.cos(Math.toRadians(SLEEVE_TILT));
+        float z = SHIRT_Z0 + 0.5F;
         // the wearer's right arm (44, 20), outer layer (44, 36); the left arm (36, 52), outer layer (52, 52)
         int rightV = 20 + layer;
         int leftU = layer == 0 ? 36 : 52;
-        f.up(0, SHIRT_X0, y, SHIRT_Z0, SHIRT_Z1, 44, rightV, 48, rightV + 12);
-        f.up(SHIRT_X1, 16, y, SHIRT_Z0, SHIRT_Z1, leftU, 52, leftU + 4, 64);
-        f.down(SHIRT_X0, 0, yBelow, SHIRT_Z0, SHIRT_Z1, 52, rightV, 56, rightV + 12);
-        f.down(16, SHIRT_X1, yBelow, SHIRT_Z0, SHIRT_Z1, leftU + 8, 52, leftU + 12, 64);
+        f.strip(SHIRT_X0 + SLEEVE_INSET, SLEEVE_Y + out, z, slant, along, 44, rightV, 48, rightV + 12);
+        f.strip(SHIRT_X1 - SLEEVE_INSET, SLEEVE_Y + SLEEVE_STEP + out, z, -slant, along, leftU, 52, leftU + 4, 64);
     }
 
     private static float[][] uv(float u0, float v0, float u1, float v1) {
@@ -177,6 +187,20 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
             quad(0, -1, 0, new float[][]{{xLeft, y, z1}, {xRight, y, z1}, {xRight, y, z0}, {xLeft, y, z0}}, uv(u0, v0, u1, v1));
         }
 
+        /**
+         * A face looking up, 4 px wide and {@link #SLEEVE_LENGTH} long, its texture's top at ({@code x}, {@code z}) and
+         * running down along ({@code dx}, {@code dz}), a unit length.
+         */
+        void strip(float x, float y, float z, float dx, float dz, float u0, float v0, float u1, float v1) {
+            // the texture's left, seen from above
+            float lx = -dz * 2.0F;
+            float lz = dx * 2.0F;
+            float ex = x + dx * SLEEVE_LENGTH;
+            float ez = z + dz * SLEEVE_LENGTH;
+            quad(0, 1, 0, new float[][]{{ex + lx, y, ez + lz}, {ex - lx, y, ez - lz}, {x - lx, y, z - lz}, {x + lx, y, z + lz}},
+                    uv(u0, v0, u1, v1));
+        }
+
         void quad(float nx, float ny, float nz, float[][] corners, float[][] uvs) {
             for (int i = 0; i < 4; i++) {
                 buffer.addVertex(pose, corners[i][0] * PX, corners[i][1] * PX, corners[i][2] * PX)
@@ -192,7 +216,7 @@ public class OutfitRenderer implements SpecialModelRenderer<OutfitRenderer.Look>
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
         for (float x : new float[]{0.0F, 1.0F}) {
-            for (float y : new float[]{ITEM_LIFT * PX, (ITEM_LIFT + SHIRT_Y1 + OUTER) * PX}) {
+            for (float y : new float[]{ITEM_LIFT * PX, (ITEM_LIFT + SLEEVE_Y + SLEEVE_STEP + OUTER) * PX}) {
                 for (float z : new float[]{(SHIRT_Z0 - OUTER) * PX, (SHIRT_Z1 + TROUSERS_FORWARD) * PX}) {
                     output.accept(new Vector3f(x, y, z));
                 }

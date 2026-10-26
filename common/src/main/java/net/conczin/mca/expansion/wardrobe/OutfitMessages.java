@@ -48,4 +48,24 @@ public final class OutfitMessages {
             return TYPE;
         }
     }
+
+    /**
+     * Client to server: shut that open door or drawer. A click on it comes this way, not as a use of the block: an
+     * open door stands further out than the server takes a click on a block.
+     */
+    public record Close(BlockPos pos, int compartment) implements HandleablePayload {
+        public static final CustomPacketPayload.Type<Close> TYPE = new CustomPacketPayload.Type<>(MCA.locate("closet_close"));
+        public static final StreamCodec<FriendlyByteBuf, Close> STREAM_CODEC = StreamCodec.composite(
+                BlockPos.STREAM_CODEC, Close::pos, ByteBufCodecs.VAR_INT, Close::compartment, Close::new);
+
+        @Override
+        public void handleServer(ServerPlayer player) {
+            FurnitureBlock.shut(player, pos, compartment);
+        }
+
+        @Override
+        public CustomPacketPayload.Type<Close> type() {
+            return TYPE;
+        }
+    }
 }

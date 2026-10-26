@@ -35,8 +35,6 @@ public class ClosetRenderer implements BlockEntityRenderer<ClosetBlockEntity, Cl
     private static final float DRAWER_TRAVEL = 8.0F * PX;
     private static final float SHELF_OUTFIT = 0.75F;
     private static final float DRAWER_OUTFIT = 0.33F;
-    /** Where the wardrobe's shelves are, in px above the closet block: the floor, then the two shelves. */
-    private static final float[] SHELVES = {2.0F, 11.5F, 21.0F};
 
     public static class State extends BlockEntityRenderState {
         @Nullable BlockState block;
@@ -105,7 +103,7 @@ public class ClosetRenderer implements BlockEntityRenderer<ClosetBlockEntity, Cl
             if (look != null) {
                 // folded on its shelf
                 pose.pushPose();
-                pose.translate(0.5F - SHELF_OUTFIT / 2, SHELVES[slot] * PX, 2.0F * PX);
+                pose.translate(0.5F - SHELF_OUTFIT / 2, WardrobeBlock.SHELF_HEIGHTS[slot] * PX, 2.0F * PX);
                 pose.scale(SHELF_OUTFIT, SHELF_OUTFIT, SHELF_OUTFIT);
                 OutfitRenderer.submitLook(look, pose, collector, state.lightCoords);
                 pose.popPose();

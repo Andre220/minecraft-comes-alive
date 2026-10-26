@@ -9,6 +9,11 @@ public final class EyeTextureLayers {
     private static final int SCLERA_MAX_CHANNEL_SPREAD = 32;
     private static final int IRIS_MIN_CHANNEL = 32;
     public static final int DETAILS_TINT = 0xFF808080;
+    /**
+     * A painted-in pupil: white, so the eye colour tints it to exactly that colour, as Fresh Animations' pupils are.
+     * Its alpha is just under opaque, which keeps it from being taken for the eye white.
+     */
+    private static final int PAINTED_PUPIL = 0xFEFFFFFF;
 
     private EyeTextureLayers() {
     }
@@ -48,6 +53,57 @@ public final class EyeTextureLayers {
             throw new IllegalStateException("Face eye texture has no visible pixels");
         }
         return new Bounds(minX, minY, maxX, maxY);
+    }
+
+    /**
+     * Faces drawn for Fresh Animations' moving pupils (expansion: looks) have only the eye whites. Where a face has no
+     * iris of its own, paints a pupil in like those: one layout pixel square, in the middle of each eye.
+     */
+    public static void addMissingIris(NativeImage face) {
+        int width = face.getWidth();
+        int height = face.getHeight();
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                int pixel = face.getPixel(x, y);
+                if (ARGB.alpha(pixel) != 0 && !isScleraPixel(ARGB.alpha(pixel), ARGB.red(pixel), ARGB.green(pixel), ARGB.blue(pixel))) {
+                    return;
+                }
+            }
+        }
+        Bounds all = findBounds(face);
+        int splitX = all.minX() + all.width() / 2;
+        int scale = Math.max(1, width / 64);
+        paintPupil(face, all.minX(), splitX, scale);
+        paintPupil(face, splitX, all.maxX() + 1, scale);
+    }
+
+    private static void paintPupil(NativeImage face, int fromX, int toX, int scale) {
+        int minX = Integer.MAX_VALUE;
+        int maxX = -1;
+        int minY = Integer.MAX_VALUE;
+        int maxY = -1;
+        for (int x = fromX; x < toX; x++) {
+            for (int y = 0; y < face.getHeight(); y++) {
+                if (ARGB.alpha(face.getPixel(x, y)) != 0) {
+                    minX = Math.min(minX, x);
+                    maxX = Math.max(maxX, x);
+                    minY = Math.min(minY, y);
+                    maxY = Math.max(maxY, y);
+                }
+            }
+        }
+        if (maxX < 0) {
+            return;
+        }
+        int x0 = (minX + maxX + 1) / 2 - scale / 2;
+        int y0 = (minY + maxY + 1) / 2 - scale / 2;
+        for (int x = x0; x < x0 + scale; x++) {
+            for (int y = y0; y < y0 + scale; y++) {
+                if (ARGB.alpha(face.getPixel(x, y)) != 0) {
+                    face.setPixel(x, y, PAINTED_PUPIL);
+                }
+            }
+        }
     }
 
     public static boolean isInSide(int x, int splitX, Side side) {

@@ -32,6 +32,10 @@ public class WardrobeBlock extends FurnitureBlock {
     public static final EnumProperty<Piece> PIECE = EnumProperty.create("piece", Piece.class, Piece.BODY, Piece.DOOR);
     /** Three outfits behind each door, one above the other. */
     public static final int SHELVES = 3;
+    /** Where the shelves are, in px above the closet block: the floor, then the two shelves. */
+    public static final float[] SHELF_HEIGHTS = {2.0F, 11.5F, 21.0F};
+    /** How high above its shelf a click is still on the folded outfit, in px (the click lands on the front). */
+    private static final double OUTFIT_REACH = 6.0;
 
     public WardrobeBlock(Properties properties) {
         super(properties);
@@ -78,6 +82,13 @@ public class WardrobeBlock extends FurnitureBlock {
     @Override
     protected int slotAt(double x, double y) {
         return Math.clamp((int) ((y - 2.0 / 16.0) / (28.0 / 16.0 / SHELVES)), 0, SHELVES - 1);
+    }
+
+    /** On the folded outfit: just above its shelf, and not out at the sides. */
+    @Override
+    protected boolean onOutfit(double x, double y) {
+        double above = y * 16 - SHELF_HEIGHTS[slotAt(x, y)];
+        return above < OUTFIT_REACH && x > 2.0 / 16.0 && x < 14.0 / 16.0;
     }
 
     @Override

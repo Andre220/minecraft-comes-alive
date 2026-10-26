@@ -198,20 +198,24 @@ public abstract class FurnitureBlock extends Block implements EntityBlock {
         if (!(level.getBlockEntity(closetPos) instanceof ClosetBlockEntity closet)) {
             return InteractionResult.PASS;
         }
-        if (!(player instanceof ServerPlayer serverPlayer)) {
-            return InteractionResult.SUCCESS;
-        }
         Vec3 hit = hitResult.getLocation().subtract(closetPos.getX(), closetPos.getY(), closetPos.getZ());
         Vec3 local = toSouth(hit, state.getValue(FACING));
         int compartment = compartmentAt(local.x, local.y);
+        // standing out in front: the open door, or an open drawer's front (from above, a drawer is for its outfit).
+        // The client shuts it by a message; the server would not take most of such a click (see OutfitMessages.Close).
+        boolean onDoor = local.z > 1.0 + 1.0E-3 && hitResult.getDirection() != Direction.UP;
+        if (!(player instanceof ServerPlayer serverPlayer)) {
+            if (onDoor && closet.isOpen(compartment)) {
+                Network.sendToServer(new OutfitMessages.Close(closetPos, compartment));
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (onDoor) {
+            return InteractionResult.SUCCESS;
+        }
         int slot = slotAt(local.x, local.y);
         ItemStack stored = closet.getItem(slot);
-        // standing out in front: the open door, or an open drawer's front (from above, a drawer is for its outfit)
-        boolean onDoor = local.z > 1.0 + 1.0E-3 && hitResult.getDirection() != Direction.UP;
-        if (onDoor && closet.isOpen(compartment)) {
-            closet.setOpen(compartment, false);
-            level.playSound(null, pos, closeSound(), SoundSource.BLOCKS, 0.8F, 1.0F);
-        } else if (!closet.isOpen(compartment)) {
+        if (!closet.isOpen(compartment)) {
             closet.setOpen(compartment, true);
             level.playSound(null, pos, openSound(), SoundSource.BLOCKS, 0.8F, 1.0F);
         } else if (held.getItem() instanceof OutfitItem && stored.isEmpty()) {
@@ -221,13 +225,31 @@ public abstract class FurnitureBlock extends Block implements EntityBlock {
         } else if (!stored.isEmpty() && held.isEmpty() && player.isShiftKeyDown()) {
             player.getInventory().placeItemBackInInventory(closet.takeItem(slot));
             level.playSound(null, pos, SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.BLOCKS, 0.8F, 1.2F);
-        } else if (!stored.isEmpty()) {
+        } else if (!stored.isEmpty() && onOutfit(local.x, local.y)) {
             Network.sendToPlayer(new OutfitMessages.Choose(closetPos, slot), serverPlayer);
         } else {
             closet.setOpen(compartment, false);
             level.playSound(null, pos, closeSound(), SoundSource.BLOCKS, 0.8F, 1.0F);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Whether a click at that point inside is on the outfit in its place, not the empty space around it. */
+    protected boolean onOutfit(double x, double y) {
+        return true;
+    }
+
+    /** Shuts a door or drawer the player clicked, if they are near enough to have. */
+    static void shut(ServerPlayer player, BlockPos closetPos, int compartment) {
+        Level level = player.level();
+        if (!player.isWithinBlockInteractionRange(closetPos, 2.0)
+            || !(level.getBlockEntity(closetPos) instanceof ClosetBlockEntity closet)
+            || !(closet.getBlockState().getBlock() instanceof FurnitureBlock furniture)
+            || compartment < 0 || compartment >= ClosetBlockEntity.MAX_COMPARTMENTS || !closet.isOpen(compartment)) {
+            return;
+        }
+        closet.setOpen(compartment, false);
+        level.playSound(null, closetPos, furniture.closeSound(), SoundSource.BLOCKS, 0.8F, 1.0F);
     }
 
     /** A point in a block turned back to how it would be for a piece facing south (x from the left, z to the front). */
