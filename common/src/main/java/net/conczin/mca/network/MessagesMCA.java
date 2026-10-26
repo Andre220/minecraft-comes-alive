@@ -1,5 +1,6 @@
 package net.conczin.mca.network;
 
+import net.conczin.mca.expansion.mirror.MirrorMessages;
 import net.conczin.mca.expansion.wardrobe.OutfitMessages;
 import net.conczin.mca.expansion.progression.ProgressMessages;
 import net.conczin.mca.network.c2s.*;
@@ -72,6 +73,7 @@ public interface MessagesMCA {
         c.register(BlueprintResponse.TYPE, BlueprintResponse.STREAM_CODEC, false);
         c.register(ProgressMessages.Response.TYPE, ProgressMessages.Response.STREAM_CODEC, false); // expansion: progression
         c.register(OutfitMessages.Choose.TYPE, OutfitMessages.Choose.STREAM_CODEC, false); // expansion: looks
+        c.register(MirrorMessages.Look.TYPE, MirrorMessages.Look.STREAM_CODEC, false); // expansion: mirrors
         c.register(OutfitMessages.Wear.TYPE, OutfitMessages.Wear.STREAM_CODEC, true); // expansion: looks
         c.register(OutfitMessages.Close.TYPE, OutfitMessages.Close.STREAM_CODEC, true); // expansion: looks
     }

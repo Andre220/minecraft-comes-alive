@@ -1,6 +1,8 @@
 package net.conczin.mca.neoforge;
 
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.expansion.mirror.MirrorRenderer;
+import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.ClosetRenderer;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.conczin.mca.expansion.wardrobe.OutfitRenderer;
@@ -52,6 +54,7 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
         // Block entity renderers
         event.registerBlockEntityRenderer(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(Wardrobes.CLOSET, ClosetRenderer::new); // expansion: looks
+        event.registerBlockEntityRenderer(Mirrors.MIRROR, MirrorRenderer::new); // expansion: mirrors
 
         // Entity renderers
         if (Config.getInstance().useSquidwardModels) {

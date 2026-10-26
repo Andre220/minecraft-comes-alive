@@ -1,5 +1,6 @@
 package net.conczin.mca.block;
 
+import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.MCA;
 import net.conczin.mca.registry.BlocksMCA;
@@ -35,6 +36,7 @@ public class BlockEntityTypesMCA {
                 }
         );
         Wardrobes.registerBlockEntityTypes(register); // expansion: looks
+        Mirrors.registerBlockEntityTypes(register); // expansion: mirrors
     }
 
     public interface TriFunction<E extends BlockEntity> {

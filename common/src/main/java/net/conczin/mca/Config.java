@@ -386,6 +386,15 @@ public final class Config extends CommonConfig {
     /** A villager's new clothes (new job, grown up) wait until it passes by the wardrobe or dresser at home. // expansion: looks */
     public boolean villagerWardrobes = false;
 
+    /** A click on a mirror opens the hair editor, as a comb does but without wearing it out. // expansion: mirrors */
+    public boolean villagerMirrors = false;
+
+    /**
+     * Mirrors show who stands in front of them (client). Only people are drawn, not the world behind them; off while
+     * a shader pack is in use. // expansion: mirrors
+     */
+    public boolean mirrorReflections = false;
+
     /**
      * With human-like squidward villagers, turns the outer layers (hat, jacket, sleeves, pants) into
      * small cubes per pixel when the villager is close, similar to 3D skin layer mods.

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    " P "
+  ],
+  "key": {
+    "P": "minecraft:cherry_planks",
+    "G": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "mca:cherry_mirror",
+    "count": 1
+  }
+}

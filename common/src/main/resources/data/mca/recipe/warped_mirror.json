@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    " P "
+  ],
+  "key": {
+    "P": "minecraft:warped_planks",
+    "G": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "mca:warped_mirror",
+    "count": 1
+  }
+}

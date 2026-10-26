@@ -4,6 +4,8 @@ import net.conczin.mca.Config;
 import net.conczin.mca.MCAClient;
 import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.resources.data.SerializablePair;
+import net.conczin.mca.expansion.mirror.MirrorReflections;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.Identifier;
@@ -70,6 +72,12 @@ public abstract class MixinGameRenderer {
             }
         }
         return null;
+    }
+
+    /** Mirrors: their reflections are drawn after the level, to be shown the next frame. */
+    @Inject(method = "renderLevel", at = @At("TAIL"))
+    private void mca$renderMirrors(DeltaTracker deltaTracker, CallbackInfo ci) {
+        MirrorReflections.render(minecraft, ((GameRenderer) (Object) this).featureRenderDispatcher(), deltaTracker.getGameTimeDeltaPartialTick(false)); // expansion: mirrors
     }
 
     @Inject(method = "tick", at = @At("TAIL"))

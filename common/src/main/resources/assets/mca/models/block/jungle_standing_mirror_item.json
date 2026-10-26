@@ -1,0 +1,7 @@
+{
+  "parent": "mca:block/template_standing_mirror_item",
+  "textures": {
+    "body": "minecraft:block/stripped_jungle_log",
+    "glass": "mca:block/mirror_glass"
+  }
+}

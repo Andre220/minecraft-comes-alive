@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    " P "
+  ],
+  "key": {
+    "P": "minecraft:birch_planks",
+    "G": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "mca:birch_mirror",
+    "count": 1
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=south,low=false": {
+      "model": "mca:block/jungle_mirror"
+    },
+    "facing=south,low=true": {
+      "model": "mca:block/jungle_mirror_low"
+    },
+    "facing=west,low=false": {
+      "model": "mca:block/jungle_mirror",
+      "y": 90
+    },
+    "facing=west,low=true": {
+      "model": "mca:block/jungle_mirror_low",
+      "y": 90
+    },
+    "facing=north,low=false": {
+      "model": "mca:block/jungle_mirror",
+      "y": 180
+    },
+    "facing=north,low=true": {
+      "model": "mca:block/jungle_mirror_low",
+      "y": 180
+    },
+    "facing=east,low=false": {
+      "model": "mca:block/jungle_mirror",
+      "y": 270
+    },
+    "facing=east,low=true": {
+      "model": "mca:block/jungle_mirror_low",
+      "y": 270
+    }
+  }
+}

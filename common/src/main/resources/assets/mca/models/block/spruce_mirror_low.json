@@ -1,0 +1,7 @@
+{
+  "parent": "mca:block/template_mirror_low",
+  "textures": {
+    "body": "minecraft:block/stripped_spruce_log",
+    "glass": "mca:block/mirror_glass"
+  }
+}

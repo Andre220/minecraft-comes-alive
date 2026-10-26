@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    "PGP",
+    "PGP",
+    "P P"
+  ],
+  "key": {
+    "P": "minecraft:pale_oak_planks",
+    "G": "minecraft:glass_pane"
+  },
+  "result": {
+    "id": "mca:pale_oak_standing_mirror",
+    "count": 1
+  }
+}

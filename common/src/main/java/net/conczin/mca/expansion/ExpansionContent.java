@@ -1,5 +1,6 @@
 package net.conczin.mca.expansion;
 
+import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.economy.EconomyRegistry;
 import net.conczin.mca.expansion.requests.RequestBoardBlock;
@@ -29,5 +30,6 @@ public final class ExpansionContent {
         EconomyRegistry.bootstrap();
         ExpansionGuide.bootstrap();
         Wardrobes.bootstrap();
+        Mirrors.bootstrap();
     }
 }
