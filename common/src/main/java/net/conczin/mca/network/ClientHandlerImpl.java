@@ -106,6 +106,9 @@ public class ClientHandlerImpl implements ClientHandler {
             case WORK_PLANNING:
                 client.gui.setScreen(new WorkPlanningScreen());
                 break;
+            case TOWN_HALL: // expansion: town hall
+                client.gui.setScreen(new TownHallScreen());
+                break;
             default:
         }
     }

@@ -1,5 +1,6 @@
 package net.conczin.mca.client.render.layer;
 
+import net.conczin.mca.client.render.voxel.VillagerParts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.conczin.mca.client.render.VanillaVillagerLook;
 import net.conczin.mca.client.render.VanillaVillagerLookHolder;
@@ -31,6 +32,7 @@ public class HumanLikeVillager3dLayer extends RenderLayer<VillagerRenderState, V
             return;
         }
         // LivingEntityRenderer posed the model (and EMF animated it) right before its layers.
+        VillagerParts.poseNow(getParentModel(), state);
         VoxelLayerRenderer.submit(getParentModel().root(), poseStack, submitNodeCollector, lightCoords,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), VanillaVillagerLook.textureFor(visuals));
     }

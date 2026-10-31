@@ -1,6 +1,10 @@
 package net.conczin.mca.network;
 
+import net.conczin.mca.api.addon.Addons;
+import net.conczin.mca.expansion.townhall.TownHallMessages;
+import net.conczin.mca.expansion.minds.AttributeMessages;
 import net.conczin.mca.expansion.mirror.MirrorMessages;
+import net.conczin.mca.expansion.talk.TalkPanels;
 import net.conczin.mca.expansion.wardrobe.OutfitMessages;
 import net.conczin.mca.expansion.progression.ProgressMessages;
 import net.conczin.mca.network.c2s.*;
@@ -74,7 +78,13 @@ public interface MessagesMCA {
         c.register(ProgressMessages.Response.TYPE, ProgressMessages.Response.STREAM_CODEC, false); // expansion: progression
         c.register(OutfitMessages.Choose.TYPE, OutfitMessages.Choose.STREAM_CODEC, false); // expansion: looks
         c.register(MirrorMessages.Look.TYPE, MirrorMessages.Look.STREAM_CODEC, false); // expansion: mirrors
+        c.register(TalkPanels.Reveal.TYPE, TalkPanels.Reveal.STREAM_CODEC, false); // expansion: talk
+        c.register(TownHallMessages.Response.TYPE, TownHallMessages.Response.STREAM_CODEC, false); // expansion: town hall
         c.register(OutfitMessages.Wear.TYPE, OutfitMessages.Wear.STREAM_CODEC, true); // expansion: looks
+        c.register(AttributeMessages.Spend.TYPE, AttributeMessages.Spend.STREAM_CODEC, true); // expansion: minds
+        c.register(TownHallMessages.Request.TYPE, TownHallMessages.Request.STREAM_CODEC, true); // expansion: town hall
+        c.register(TownHallMessages.Assign.TYPE, TownHallMessages.Assign.STREAM_CODEC, true); // expansion: town hall
         c.register(OutfitMessages.Close.TYPE, OutfitMessages.Close.STREAM_CODEC, true); // expansion: looks
+        Addons.registerMessages(c);
     }
 }

@@ -1,7 +1,6 @@
 package net.conczin.mca.expansion.economy;
 
 import net.conczin.mca.entity.VillagerEntityMCA;
-import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.server.world.data.workorder.VillageStorage;
 import net.minecraft.server.level.ServerLevel;
@@ -29,7 +28,7 @@ public final class VillageEconomyManager {
             return;
         }
         residents.stream()
-                .filter(v -> v.isAlive() && v.getAgeState() == AgeState.ADULT)
+                .filter(v -> v.isAlive() && v.getAgeState().isAdult())
                 .filter(v -> v.getVillagerData().profession().is(VillagerProfession.NONE))
                 .findFirst()
                 .ifPresent(v -> v.setProfession(EconomyRegistry.HAULER));

@@ -417,7 +417,8 @@ class BlueprintScreenMapInteractionTest {
                     "Keep navigation at its original horizontal position");
             assertEquals(screen.height / 2 - 56, initialNavigation.getFirst().getY(),
                     "Keep navigation at its original vertical position");
-            for (String section : List.of("rank", "catalog", "villagers", "rules", "map")) {
+            // "villagers" is left out: it opens the residents screen instead of a page of the blueprint
+            for (String section : List.of("rank", "catalog", "rules", "map")) {
                 var sectionButton = screen.children().stream()
                         .filter(child -> child instanceof net.minecraft.client.gui.components.Button button
                                 && button.getMessage().equals(net.minecraft.network.chat.Component.translatable(

@@ -36,9 +36,14 @@
     "MixinTypedInstance",
     "MixinVillager",
     "MixinZombie",
-    "MixinZombieVillager"
+    "MixinZombieVillager",
+    "addon.roads.AbstractHorseAccessor",
+    "addon.roads.MixinAbstractHorse",
+    "addon.roads.MixinWanderingTraderSpawner",
+    "addon.roads.MixinLivingEntityFactions"
   ],
   "client": [
+    "client.MixinAbstractButton",
     "client.MixinAbstractClientPlayer",
     "client.MixinClientLanguage",
     "client.MixinCrossedArmsItemLayer",
@@ -52,6 +57,7 @@
     "client.MixinLivingEntityRenderer",
     "client.MixinMinecraft",
     "client.MixinMultiPlayerGameMode",
+    "client.MixinPictureInPictureRenderer",
     "client.MixinLivingEntityRenderState",
     "client.MixinModel",
     "client.MixinPlayerRenderer",
@@ -59,7 +65,10 @@
     "client.MixinVanillaVillagerRenderState",
     "client.MixinVillagerModel",
     "client.MixinVillagerProfessionLayer",
-    "client.MixinVillagerRenderer"
+    "client.MixinVillagerRenderer",
+    "client.MixinZombieVillagerRenderState",
+    "client.MixinZombieVillagerRenderer",
+    "client.MixinCustomHeadLayer"
   ],
   "injectors": {
     "defaultRequire": 1

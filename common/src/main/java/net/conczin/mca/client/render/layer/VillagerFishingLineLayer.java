@@ -56,7 +56,7 @@ public final class VillagerFishingLineLayer extends RenderLayer<VillagerRenderSt
         return handPose.last().pose().transformPosition(new Vector3f());
     }
 
-    private static Vector3f getHookInCurrentModelSpace(PoseStack poseStack, Vec3 hookWorld) {
+    static Vector3f getHookInCurrentModelSpace(PoseStack poseStack, Vec3 hookWorld) {
         Vec3 camera = Minecraft.getInstance().gameRenderer.mainCamera().position();
         Vector3f hookRenderSpace = new Vector3f(
                 (float) (hookWorld.x - camera.x),
@@ -68,7 +68,7 @@ public final class VillagerFishingLineLayer extends RenderLayer<VillagerRenderSt
         return inverseVillagerPose.transformPosition(hookRenderSpace);
     }
 
-    private static void renderLine(
+    static void renderLine(
             PoseStack poseStack,
             SubmitNodeCollector submitNodeCollector,
             Vector3f hook,

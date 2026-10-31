@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
 import net.conczin.mca.Config;
 import net.conczin.mca.block.TombstoneBlock;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -35,6 +36,9 @@ public final class Mourning {
     }
 
     public static void start(VillagerEntityMCA villager, BlockPos grave) {
+        if (villager.getTraits().hasTrait(PersonalityTraits.PSYCHOPATH) || villager.getTraits().hasTrait(PersonalityTraits.BLOODLUST)) {
+            return; // psychopaths do not mourn (a trait from RimWorld)
+        }
         villager.getBrain().setMemory(
                 MemoryModuleTypeMCA.MOURNING_SITE,
                 GlobalPos.of(villager.level().dimension(), grave)

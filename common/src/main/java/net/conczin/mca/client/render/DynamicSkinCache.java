@@ -176,8 +176,12 @@ public final class DynamicSkinCache {
         });
     }
 
+    /**
+     * The skin for MCA's own model (players, and villagers without the vanilla look): it has no moving pupils, so the
+     * face keeps its own eyes and iris. Handing the iris to Fresh Animations' planes here left players cross-eyed.
+     */
     public static Identifier getOrCreateStitchedSkin(VillagerVisuals visuals) {
-        return getOrCreateStitchedSkin(visuals, true);
+        return getOrCreateStitchedSkin(visuals, false);
     }
 
     /**

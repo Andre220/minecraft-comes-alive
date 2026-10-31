@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.Config;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Needs;
+import net.conczin.mca.entity.ai.relationship.Conversations;
 import net.conczin.mca.registry.ParticleTypesMCA;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -40,6 +41,8 @@ public class IdleRoutineTask extends Behavior<VillagerEntityMCA> {
     private static final int RECENT = 3;
     private static final int NEED_TICK = 20;
     private static final double BAND_RANGE = 10.0;
+    /** Ticks into a chat when it turns out a good one or an argument. */
+    private static final int CHAT_OUTCOME = 240;
 
     private enum Phase {WALK, DO}
 
@@ -89,7 +92,7 @@ public class IdleRoutineTask extends Behavior<VillagerEntityMCA> {
         Opportunity best = null;
         double bestScore = 0;
         for (Opportunity opportunity : opportunities) {
-            double score = opportunity.appeal() * opportunity.kind().weight();
+            double score = opportunity.appeal() * opportunity.kind().weight() * villager.getTraits().getAppealMultiplier(opportunity.kind());
             if (needs.hasNeeds()) {
                 // the lower the need, the more it pulls: from 1x when full to 3x when empty
                 score *= 1.0 + 2.0 * (1.0 - needs.get(opportunity.kind().need()) / Needs.MAX);
@@ -213,6 +216,9 @@ public class IdleRoutineTask extends Behavior<VillagerEntityMCA> {
             case CHAT -> {
                 if (partner instanceof VillagerEntityMCA friend) {
                     friend.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new EntityTracker(villager, true));
+                    if (ticks == CHAT_OUTCOME) {
+                        Conversations.talk(level, villager, friend); // a good chat or an argument
+                    }
                 }
                 if (ticks % 80 == 0) {
                     villager.swing(InteractionHand.MAIN_HAND);

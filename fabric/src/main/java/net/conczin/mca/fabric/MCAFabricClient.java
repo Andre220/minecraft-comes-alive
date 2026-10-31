@@ -1,7 +1,12 @@
 package net.conczin.mca.fabric;
 
+import net.conczin.mca.client.model.ElderPosture;
+import net.conczin.mca.client.model.WalkPosture;
+import net.conczin.mca.client.model.WorkAnimationVariables;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.mirror.MirrorRenderer;
+import net.conczin.mca.expansion.townhall.CityRecordsRenderer;
+import net.conczin.mca.expansion.townhall.TownHall;
 import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.ClosetRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderers;
@@ -53,6 +58,9 @@ public final class MCAFabricClient extends ClientProxyAbstractImpl implements Cl
     public void onInitializeClient() {
         Network.registerClientSender(ClientPlayNetworking::send);
         MouthMotion.registerWithEntityModelFeatures(); // expansion: speech
+        WorkAnimationVariables.registerWithEntityModelFeatures();
+        ElderPosture.registerWithEntityModelFeatures();
+        WalkPosture.registerWithEntityModelFeatures();
 
         if (Config.getInstance().useSquidwardModels) {
             EntityRenderers.register(EntitiesMCA.MALE_VILLAGER, VillagerRenderer::new);
@@ -79,6 +87,7 @@ public final class MCAFabricClient extends ClientProxyAbstractImpl implements Cl
         SpecialModelRenderers.ID_MAPPER.put(OutfitRenderer.ID, OutfitRenderer.Unbaked.MAP_CODEC); // expansion: looks
         BlockEntityRenderers.register(Wardrobes.CLOSET, ClosetRenderer::new); // expansion: looks
         BlockEntityRenderers.register(Mirrors.MIRROR, MirrorRenderer::new); // expansion: mirrors
+        BlockEntityRenderers.register(TownHall.RECORDS, CityRecordsRenderer::new); // expansion: town hall
 
         // Register resource reload listeners
         ResourceLoader resourceLoader = ResourceLoader.get(PackType.CLIENT_RESOURCES);

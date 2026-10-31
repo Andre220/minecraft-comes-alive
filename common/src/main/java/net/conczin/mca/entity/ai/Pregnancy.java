@@ -83,13 +83,13 @@ public class Pregnancy {
     }
 
     public boolean tryStartGestation() {
-        // You can't get double-pregnant
-        if (isPregnant() || mother.getTraits().hasTrait(Traits.INFERTILE)) {
+        // You can't get double-pregnant, and elders have no more children
+        if (isPregnant() || mother.getTraits().hasTrait(Traits.INFERTILE) || mother.getAgeState() == AgeState.ELDER) {
             return false;
         }
 
         return getFather().map(father -> {
-            if (father.getTraits().hasTrait(Traits.INFERTILE)) {
+            if (father.getTraits().hasTrait(Traits.INFERTILE) || father.getAgeState() == AgeState.ELDER) {
                 return false;
             }
 

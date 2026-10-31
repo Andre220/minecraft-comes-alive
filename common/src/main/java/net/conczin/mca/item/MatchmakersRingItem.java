@@ -2,7 +2,6 @@ package net.conczin.mca.item;
 
 import net.conczin.mca.entity.Status;
 import net.conczin.mca.entity.VillagerEntityMCA;
-import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.util.WorldUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -25,7 +24,7 @@ public class MatchmakersRingItem extends Item implements SpecialCaseGift {
         }
 
         // ensure our target isn't married already or young
-        if (villager.getRelationships().isMarried() || villager.getAgeState() != AgeState.ADULT) {
+        if (villager.getRelationships().isMarried() || !villager.getAgeState().isAdult()) {
             villager.sendChatMessage(player, "interaction.matchmaker.fail.married");
             return InteractionResult.FAIL;
         }

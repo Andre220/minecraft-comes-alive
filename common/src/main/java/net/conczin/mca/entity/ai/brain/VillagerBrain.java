@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain;
 
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.conczin.mca.Config;
 import net.conczin.mca.entity.Status;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -163,7 +164,12 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
     }
 
     public void randomize(AgeState ageState) {
-        setPersonality(Personality.getRandom(ageState));
+        // the voice comes from the traits; only villagers without such a trait yet get a random one
+        if (entity.getTraits().getVoiceTraits().isEmpty()) {
+            setPersonality(Personality.getRandom(ageState));
+        } else {
+            syncVoice();
+        }
         entity.setTrackedValue(MOOD, entity.getRandom().nextInt(MoodGroup.MAX_LEVEL - MoodGroup.NORMAL_MIN_LEVEL + 1) + MoodGroup.NORMAL_MIN_LEVEL);
     }
 
@@ -216,6 +222,18 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
 
     public void setPersonality(Personality personality) {
         entity.setTrackedValue(PERSONALITY, personality.getId());
+    }
+
+    /**
+     * The personality is the dialogue voice of a trait: it stays while a trait still gives it,
+     * otherwise the voice of the first such trait takes over. Without one it is left as it is.
+     */
+    public void syncVoice() {
+        List<Traits.Trait> voices = entity.getTraits().getVoiceTraits();
+        Personality current = getPersonality();
+        if (!voices.isEmpty() && voices.stream().noneMatch(t -> t.getVoice() == current)) {
+            setPersonality(voices.getFirst().getVoice());
+        }
     }
 
     public Mood getMood() {
@@ -407,11 +425,11 @@ public class VillagerBrain<E extends Mob & VillagerLike<E>> {
             entity.level().broadcastEntityEvent(entity, Status.MCA_VILLAGER_POS_INTERACTION);
         } else {
             entity.level().broadcastEntityEvent(entity, Status.MCA_VILLAGER_NEG_INTERACTION);
-
-            //sensitive people doubles the loss
-            if (entity.getVillagerBrain().getPersonality() == Personality.SENSITIVE) {
-                hearts *= 2;
-            }
+        }
+        // traits change how much is won or lost, e.g. sensitive villagers take losses twice as hard
+        hearts = entity.getTraits().scaleHearts(hearts);
+        if (hearts > 0 && entity instanceof VillagerEntityMCA villager) { // expansion: minds, social villagers win hearts easily
+            hearts = Math.round(hearts * VillagerAttributes.heartFactor(villager));
         }
 
         memory.modInteractionFatigue(1);

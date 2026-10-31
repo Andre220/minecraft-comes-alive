@@ -1,7 +1,12 @@
 package net.conczin.mca.neoforge;
 
+import net.conczin.mca.client.model.ElderPosture;
+import net.conczin.mca.client.model.WalkPosture;
+import net.conczin.mca.client.model.WorkAnimationVariables;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.mirror.MirrorRenderer;
+import net.conczin.mca.expansion.townhall.CityRecordsRenderer;
+import net.conczin.mca.expansion.townhall.TownHall;
 import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.ClosetRenderer;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
@@ -55,6 +60,7 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
         event.registerBlockEntityRenderer(BlockEntityTypesMCA.TOMBSTONE, TombstoneBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(Wardrobes.CLOSET, ClosetRenderer::new); // expansion: looks
         event.registerBlockEntityRenderer(Mirrors.MIRROR, MirrorRenderer::new); // expansion: mirrors
+        event.registerBlockEntityRenderer(TownHall.RECORDS, CityRecordsRenderer::new); // expansion: town hall
 
         // Entity renderers
         if (Config.getInstance().useSquidwardModels) {
@@ -127,6 +133,9 @@ public final class ClientNeoForge extends ClientProxyAbstractImpl {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         MouthMotion.registerWithEntityModelFeatures(); // expansion: speech
+        WorkAnimationVariables.registerWithEntityModelFeatures();
+        ElderPosture.registerWithEntityModelFeatures();
+        WalkPosture.registerWithEntityModelFeatures();
         event.enqueueWork(() -> {
         });
     }

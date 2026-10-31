@@ -1,5 +1,8 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
+import net.conczin.mca.entity.VillagerLike;
+import net.conczin.mca.entity.ai.traits.MentalBreaks;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -45,6 +48,10 @@ public interface SchedulesMCA {
             EnvironmentAttribute<Activity> normalSchedule,
             EnvironmentAttribute<Activity> nightSchedule
     ) {
+        // the brain is first made in the entity's constructor, before its traits exist: night owls get theirs on a later refresh
+        if (entity instanceof VillagerLike<?> villager && villager.getTraits() != null && villager.getTraits().hasTrait(PersonalityTraits.NIGHT_OWL)) {
+            return nightSchedule; // the night owl trait (from RimWorld)
+        }
         return (allowNightOwl && entity.getRandom().nextFloat() < Config.getInstance().nightOwlChance) ? nightSchedule : normalSchedule;
     }
 
@@ -132,6 +139,10 @@ public interface SchedulesMCA {
      * critical need overrides it (see {@link Needs#overrideActivity}).
      */
     static Activity scheduledActivity(VillagerEntityMCA villager) {
+        // A sulking villager does not work (a mental break).
+        if (MentalBreaks.isSulking(villager)) {
+            return Activity.IDLE;
+        }
         // With the action queue on, its head decides (it already weighs schedule and needs).
         Activity queued = villager.getActionQueue().currentActivity();
         if (queued != null) {
@@ -148,8 +159,10 @@ public interface SchedulesMCA {
      */
     static Activity plannedAt(VillagerEntityMCA villager, int slot) {
         String custom = villager.getVillagerBrain().getCustomSchedule();
-        String schedule = custom.isEmpty() ? presetFor(villager).schedule() : custom;
-        return activityOf(schedule.charAt(Math.floorMod(slot, SLOTS)));
+        if (!custom.isEmpty()) {
+            return activityOf(custom.charAt(Math.floorMod(slot, SLOTS)));
+        }
+        return halfShift(villager, Math.floorMod(slot, SLOTS), activityOf(presetFor(villager).schedule().charAt(Math.floorMod(slot, SLOTS))));
     }
 
     /** What the villager's schedule asks for right now: its personal schedule, or its timeline. */
@@ -159,12 +172,21 @@ public interface SchedulesMCA {
             return activityOf(custom.charAt(currentSlot(villager.level())));
         }
         EnvironmentAttribute<Activity> schedule = villager.getBrain().schedule;
-        return schedule == null ? Activity.IDLE : villager.level().environmentAttributes().getValue(schedule, villager.position());
+        Activity activity = schedule == null ? Activity.IDLE : villager.level().environmentAttributes().getValue(schedule, villager.position());
+        return halfShift(villager, currentSlot(villager.level()), activity);
+    }
+
+    /** Hour of the day (0 = 06:00) from which elders stop working: they only work the morning. */
+    int ELDER_WORK_UNTIL = 6;
+
+    /** Elders work half a shift; a personal schedule set by the player is left as it is. */
+    private static Activity halfShift(VillagerEntityMCA villager, int slot, Activity activity) {
+        return activity == Activity.WORK && slot >= ELDER_WORK_UNTIL && villager.getAgeState() == AgeState.ELDER ? Activity.IDLE : activity;
     }
 
     /** The preset closest to the timeline a villager of this kind follows; night owls cannot be told apart. */
     static Preset presetFor(VillagerEntityMCA villager) {
-        if (!villager.getAgeState().equals(AgeState.ADULT)) {
+        if (!villager.getAgeState().isAdult()) {
             return Preset.CHILD;
         }
         if (villager.isGuard()) {

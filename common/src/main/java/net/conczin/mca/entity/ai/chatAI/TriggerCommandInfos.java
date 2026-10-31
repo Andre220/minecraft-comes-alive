@@ -28,7 +28,7 @@ public class TriggerCommandInfos {
             new TriggerCommandInfo("try-go-home", "Try to go to your home in the village if possible",
                     (p, v) -> v.getResidency().goHome(p)),
             new TriggerCommandInfo("open-trade-window", "Open the trade menu when the player is interested in trading, wants to check your prices or your inventory.",
-                    (p, v) -> v.startTrading(p),
+                    (p, v) -> v.openTrade(p),
                     (p, v) -> v.hasTradeOffers())
     );
 

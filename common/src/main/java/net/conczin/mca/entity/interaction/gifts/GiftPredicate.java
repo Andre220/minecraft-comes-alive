@@ -70,8 +70,10 @@ public class GiftPredicate {
             return Personality.get(id)
                     .orElseThrow(() -> new JsonSyntaxException("Unknown personality '" + id + "'"));
         }, personality ->
+                // personalities became traits: the voice, or the trait that gives it
                 (villager, stack, player) ->
-                        villager.getVillagerBrain().getPersonality() == personality ? 1.0f : 0.0f
+                        villager.getVillagerBrain().getPersonality() == personality
+                        || Traits.forVoice(personality).filter(villager.getTraits()::hasTrait).isPresent() ? 1.0f : 0.0f
         );
         register("is_pregnant", GsonHelper::convertToBoolean, pregnant ->
                 (villager, stack, player) ->

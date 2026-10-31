@@ -1,5 +1,8 @@
 package net.conczin.mca.expansion.progression;
 
+import net.minecraft.resources.Identifier;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.conczin.mca.MCA;
 import net.conczin.mca.network.Network;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,9 +18,11 @@ import java.util.List;
  */
 public final class ProgressPage {
     public static final String PAGE = "progress";
+    /** The widest the text gets; narrower when the screen has less room. */
     private static final int WIDTH = 300;
     private static final int LINE_HEIGHT = 10;
-    private static final int MAX_LINES = 20;
+    private static final int PADDING = 6;
+    private static final Identifier PANEL = MCA.locate("interact/panel");
 
     private static int scroll;
 
@@ -46,27 +51,36 @@ public final class ProgressPage {
         scroll = Math.max(0, scroll - (int) Math.signum(amount));
     }
 
-    public static void render(GuiGraphicsExtractor context, Font font, int screenWidth, int top) {
+    /**
+     * Draws the page in the area right of the screen's tabs: from {@code left} to the screen's right edge, from
+     * {@code top} down to {@code bottom}, wrapped to fit and scrolled with the mouse wheel.
+     */
+    public static void render(GuiGraphicsExtractor context, Font font, int left, int top, int right, int bottom) {
+        int width = Math.min(WIDTH, right - left - PADDING * 2);
         if (ProgressCache.isWaiting()) {
-            context.centeredText(font, Component.translatable("gui.blueprint.waiting"), screenWidth / 2, top + 40, 0xffaaaaaa);
+            context.text(font, Component.translatable("gui.blueprint.waiting"), left + PADDING, top + PADDING, 0xffaaaaaa);
             return;
         }
         List<FormattedCharSequence> wrapped = new ArrayList<>();
         for (Component line : ProgressCache.lines()) {
-            List<FormattedCharSequence> split = font.split(line, WIDTH);
+            List<FormattedCharSequence> split = font.split(line, width);
             if (split.isEmpty()) {
                 wrapped.add(FormattedCharSequence.EMPTY);
             }
             wrapped.addAll(split);
         }
-        scroll = Math.min(scroll, Math.max(0, wrapped.size() - MAX_LINES));
-        int x = screenWidth / 2 - WIDTH / 2;
-        for (int i = 0; i < MAX_LINES && scroll + i < wrapped.size(); i++) {
-            context.text(font, wrapped.get(scroll + i), x, top + i * LINE_HEIGHT, 0xffffffff, true);
+        int maxLines = Math.max(3, (bottom - top - PADDING * 2 - LINE_HEIGHT) / LINE_HEIGHT);
+        scroll = Math.min(scroll, Math.max(0, wrapped.size() - maxLines));
+        int shown = Math.min(maxLines, wrapped.size() - scroll);
+        int panelBottom = top + PADDING * 2 + shown * LINE_HEIGHT + (wrapped.size() > maxLines ? LINE_HEIGHT : 0);
+        context.blitSprite(RenderPipelines.GUI_TEXTURED, PANEL, left, top, width + PADDING * 2, panelBottom - top);
+        int x = left + PADDING;
+        for (int i = 0; i < shown; i++) {
+            context.text(font, wrapped.get(scroll + i), x, top + PADDING + i * LINE_HEIGHT, 0xffffffff, true);
         }
-        if (wrapped.size() > MAX_LINES) {
-            context.centeredText(font, Component.literal((scroll + 1) + "-" + Math.min(wrapped.size(), scroll + MAX_LINES) + " / " + wrapped.size()),
-                    screenWidth / 2, top + MAX_LINES * LINE_HEIGHT + 4, 0xff888888);
+        if (wrapped.size() > maxLines) {
+            context.text(font, Component.literal((scroll + 1) + "-" + Math.min(wrapped.size(), scroll + maxLines) + " / " + wrapped.size()),
+                    x, top + PADDING + shown * LINE_HEIGHT, 0xff888888);
         }
     }
 }

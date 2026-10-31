@@ -1,5 +1,7 @@
 package net.conczin.mca.server;
 
+import net.conczin.mca.api.addon.McaAddon;
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.Config;
 import net.conczin.mca.ducks.IVillagerEntity;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -29,6 +31,7 @@ public class SpawnQueue {
     private final ConcurrentLinkedQueue<Villager> villagerSpawnQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<ZombieVillager> zombieVillagerSpawnQueue = new ConcurrentLinkedQueue<>();
     private final ConcurrentLinkedQueue<Zombie> zombieSpawnList = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Entity> addonSpawnQueue = new ConcurrentLinkedQueue<>(); // entities addons replace
 
     public static SpawnQueue getInstance() {
         return INSTANCE;
@@ -74,6 +77,15 @@ public class SpawnQueue {
                     .spawn(((IVillagerEntity) zve).mca$getSpawnReason());
 
             copyPastaIntensifies(villager, zve);
+        }
+
+        Entity addonEntity = addonSpawnQueue.poll();
+        if (addonEntity != null) {
+            addonEntity.discard();
+            McaAddon replacer = Addons.spawnReplacer(addonEntity);
+            if (replacer != null) {
+                replacer.replaceSpawn(addonEntity);
+            }
         }
 
         Zombie ze = zombieSpawnList.poll();
@@ -133,6 +145,9 @@ public class SpawnQueue {
             && Config.getInstance().fractionOfVanillaZombies < entity.getRandom().nextFloat()
             && !zombieVillagerSpawnQueue.contains(entity)) {
             return zombieVillagerSpawnQueue.add((ZombieVillager) entity);
+        }
+        if (!addonSpawnQueue.contains(entity) && Addons.spawnReplacer(entity) != null) {
+            return addonSpawnQueue.add(entity);
         }
         if (Config.getInstance().overwriteAllZombiesWithZombieVillagers
             && entity.getClass().equals(Zombie.class)

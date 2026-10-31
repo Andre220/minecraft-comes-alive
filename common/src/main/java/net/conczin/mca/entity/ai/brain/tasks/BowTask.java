@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain.tasks;
 
+import net.conczin.mca.entity.VillagerLike;
 import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.ai.RangedWeaponHelper;
@@ -24,6 +25,11 @@ public class BowTask<E extends Mob & CrossbowAttackMob> extends Behavior<E> {
     private LivingEntity lastTarget;
     private int attackCooldown;
     private int lostSightTicks;
+
+    /** Ticks to draw the bow: careful shooters take longer, the trigger happy less (see their traits). */
+    private static int drawTicks(Mob entity) {
+        return entity instanceof VillagerLike<?> villager ? Math.round(DRAW_TICKS * villager.getTraits().getDrawTimeMultiplier()) : DRAW_TICKS;
+    }
 
     public BowTask(int fireInterval, int range) {
         super(ImmutableMap.of(
@@ -109,7 +115,7 @@ public class BowTask<E extends Mob & CrossbowAttackMob> extends Behavior<E> {
             }
 
             int pullTime = entity.getTicksUsingItem();
-            if (visible && pullTime >= DRAW_TICKS) {
+            if (visible && pullTime >= drawTicks(entity)) {
                 entity.stopUsingItem();
                 entity.performRangedAttack(target, BowItem.getPowerForTime(pullTime));
                 this.attackCooldown = this.fireInterval;

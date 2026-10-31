@@ -82,7 +82,7 @@ public record VillagerEditorSyncRequest(String command, UUID uuid, CompoundTag d
         if (key.startsWith("Gene")) {
             return true;
         }
-        if (key.equals("Personality") || key.equals("Traits")) {
+        if (key.equals("Personality") || key.equals("Traits") || key.equals("AdultTicks")) {
             return true;
         }
         for (String visualKey : MCA_VISUAL_KEYS) {

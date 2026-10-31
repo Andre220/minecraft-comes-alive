@@ -191,5 +191,25 @@
   {
     "id": "mca:skins/clothing/normal/neutral/weaponsmith/3.png",
     "profession": "minecraft:weaponsmith"
+  },
+  {
+    "id": "mca:skins/clothing/normal/neutral/leatherworker/0.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/neutral/cartographer/0.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/neutral/cartographer/1.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/neutral/cartographer/2.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/neutral/leatherworker/0.png",
+    "profession": "mca:caravaneer"
   }
 ]

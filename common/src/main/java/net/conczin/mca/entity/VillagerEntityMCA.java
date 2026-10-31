@@ -1,5 +1,9 @@
 package net.conczin.mca.entity;
 
+import net.conczin.mca.api.addon.Addons;
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
+import net.conczin.mca.entity.ai.traits.MentalBreaks;
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.minds.ActionLabels;
 import net.conczin.mca.expansion.looks.Beards;
@@ -8,6 +12,7 @@ import net.conczin.mca.expansion.minds.Diet;
 import net.conczin.mca.expansion.minds.routine.Seats;
 import net.conczin.mca.expansion.minds.Skills;
 import com.mojang.serialization.MapCodec;
+import net.conczin.mca.CommonConfig;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.MCAClient;
@@ -23,6 +28,7 @@ import net.conczin.mca.entity.ai.chatAI.ChatAIContext;
 import net.conczin.mca.entity.ai.navigation.MCAGroundPathNavigation;
 import net.conczin.mca.entity.ai.navigation.PersistentPathTarget;
 import net.conczin.mca.entity.ai.relationship.*;
+import net.conczin.mca.entity.ai.traits.TraitBehaviors;
 import net.conczin.mca.entity.interaction.VillagerCommandHandler;
 import net.conczin.mca.registry.*;
 import net.conczin.mca.resources.Names;
@@ -130,11 +136,18 @@ import java.util.function.Predicate;
 public class VillagerEntityMCA extends Villager implements VillagerLike<VillagerEntityMCA>, MenuProvider, CompassionateEntity<BreedableRelationship>, CrossbowAttackMob {
     private static final float FRIENDLY_ARROW_UNCERTAINTY = 2.0F;
     private static final CDataParameter<Float> INFECTION_PROGRESS = CParameter.create("InfectionProgress", 0.0f);
+    /** Ticks lived as an adult; past villagerElderAfterTime the villager is an elder. */
+    private static final CDataParameter<Integer> ADULT_TICKS = CParameter.create("AdultTicks", 0);
+    private static final int MAX_ADULT_TICKS = Integer.MAX_VALUE / 2;
+    /** The last night the chance of dying of old age was rolled. */
+    private long oldAgeNight = -1;
     private static final EntityDataAccessor<Long> DATA_VISUAL_AGE_ANCHOR = SynchedEntityData.defineId(VillagerEntityMCA.class, EntityDataSerializers.LONG);
     private static final float VEHICLE_ATTACHMENT_Y = 0.6F;
     public static final String MCA_DATA_KEY = "MCAData";
     public static final int MAX_NICKNAME_LENGTH = 32;
     static final String CHAT_AI_PROMPT_KEY = "ChatAIPrompt";
+    static final String ADDON_DATA_KEY = "Addons";
+    private CompoundTag addonData = new CompoundTag();
     static final String NICKNAMES_KEY = "nicknames";
     private static final CDataManager<VillagerEntityMCA> DATA = createTrackedData(new CDataManager.Builder<>(
             VillagerEntityMCA.class,
@@ -152,6 +165,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     private final Traits traits = new Traits(this);
     private final Residency residency = new Residency(this);
     private final Needs needs = new Needs(this);
+    private final Opinions opinions = new Opinions(this);
     private final ActionQueue actionQueue = new ActionQueue(this);
     private final BreedableRelationship relations = new BreedableRelationship(this);
     private final VillagerCommandHandler interactions = new VillagerCommandHandler(this);
@@ -235,10 +249,12 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     }
 
     public static <E extends Entity> CDataManager.Builder<E> createTrackedData(CDataManager.Builder<E> builder) {
-        return VillagerLike.createTrackedData(builder).addAll(INFECTION_PROGRESS)
+        return VillagerLike.createTrackedData(builder).addAll(INFECTION_PROGRESS, ADULT_TICKS)
                 .add(Residency::createTrackedData)
                 .add(Needs::createTrackedData)
+                .add(Opinions::createTrackedData)
                 .add(Skills::createTrackedData) // expansion: minds
+                .add(VillagerAttributes::createTrackedData) // expansion: minds
                 .add(Beards::createTrackedData) // expansion: looks
                 .add(Wardrobes::createTrackedData) // expansion: looks
                 .add(ActionLabels::createTrackedData) // expansion: minds
@@ -413,6 +429,11 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         return needs;
     }
 
+    /** What this villager thinks of the other villagers. */
+    public Opinions getOpinions() {
+        return opinions;
+    }
+
     public ActionQueue getActionQueue() {
         return actionQueue;
     }
@@ -444,6 +465,11 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, SpawnGroupData groupData) {
         SpawnGroupData data = super.finalizeSpawn(level, difficulty, spawnType, groupData);
 
+        if (spawnType != EntitySpawnReason.BREEDING && spawnType != EntitySpawnReason.CONVERSION && !isBaby()) {
+            randomizeAdultTicks();
+            refreshDimensions();
+            updateAttributes();
+        }
         initialize(spawnType);
 
         FamilyTreeNode entry = getRelationships().getFamilyEntry();
@@ -516,7 +542,18 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
 
     @Override
     public AgeState getAgeState() {
-        return AgeState.byCurrentAge(getVisualAge());
+        return withElder(AgeState.byCurrentAge(getVisualAge()));
+    }
+
+    /** Whether this adult has lived long enough as one to be an elder; never when elders are off. */
+    public boolean isElder() {
+        int after = Config.getServerConfig().villagerElderAfterTime;
+        return after > 0 && getTrackedValue(ADULT_TICKS) >= after;
+    }
+
+    /** The age counter ends with adulthood; old age comes from the time lived as an adult. */
+    private AgeState withElder(AgeState state) {
+        return state == AgeState.ADULT && isElder() ? AgeState.ELDER : state;
     }
 
     @Override
@@ -524,14 +561,54 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         AgeState previousState = getAgeState();
         super.setAge(age);
         syncVisualAgeAnchor(age);
+        onAgeStateTransition(previousState, withElder(AgeState.byCurrentAge(age)));
+    }
 
-        AgeState current = AgeState.byCurrentAge(age);
-        if (current != previousState) {
+    private void onAgeStateTransition(AgeState previous, AgeState current) {
+        if (current != previous) {
             refreshDimensions();
             updateAttributes();
             if (ageStateEventsEnabled && !level().isClientSide()) {
                 onAgeStateChanged(current);
             }
+        }
+    }
+
+    /** Adults grow older while they live; an age lock (or the no aging trait) stops that too. */
+    private void ageAsAdult(int ticks) {
+        if (AgeState.byCurrentAge(getAge()) != AgeState.ADULT || isAgeLocked() || Config.getServerConfig().villagerElderAfterTime <= 0) {
+            return;
+        }
+        AgeState previous = getAgeState();
+        setTrackedValue(ADULT_TICKS, Math.min(MAX_ADULT_TICKS, getTrackedValue(ADULT_TICKS) + ticks));
+        onAgeStateTransition(previous, getAgeState());
+    }
+
+    /**
+     * With old age death on (off by default), a very old villager may pass away in its sleep: at
+     * most one chance per night. The usual death follows, with grave and mourning.
+     */
+    private void maybeDieOfOldAge(ServerLevel level) {
+        CommonConfig config = Config.getServerConfig();
+        if (!config.villagerOldAgeDeath || !isSleeping() || getAgeState() != AgeState.ELDER
+            || getTrackedValue(ADULT_TICKS) < (long) config.villagerElderAfterTime + config.villagerOldAgeDeathAfterTime) {
+            return;
+        }
+        long night = level.getOverworldClockTime() / 24000L;
+        if (night == oldAgeNight) {
+            return;
+        }
+        oldAgeNight = night;
+        if (random.nextFloat() < config.villagerOldAgeDeathChance) {
+            kill(level);
+        }
+    }
+
+    /** A random time already lived as an adult, so a new village has its elders: about one in six. */
+    private void randomizeAdultTicks() {
+        int after = Config.getServerConfig().villagerElderAfterTime;
+        if (after > 0) {
+            setTrackedValue(ADULT_TICKS, (int) (random.nextFloat() * after * 1.2F));
         }
     }
 
@@ -590,6 +667,15 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             super.setAgeLocked(active);
             syncVisualAgeAnchor(age);
         }
+        if (trait.getVoice() != null && !level().isClientSide()) {
+            getVillagerBrain().syncVoice();
+        }
+        if (!trait.getEffects().isEmpty()) {
+            updateAttributes();
+        }
+        if (trait == PersonalityTraits.NIGHT_OWL) {
+            scheduleNeedsRefresh = true;
+        }
     }
 
     @Override
@@ -597,7 +683,12 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         int age = getVisualAge();
         super.setAgeLocked(getTraits().hasTrait(Traits.NO_AGING));
         syncVisualAgeAnchor(age);
+        // the brain was made before the traits arrived; a night owl's schedule needs them (see SchedulesMCA)
+        scheduleNeedsRefresh = getTraits().hasTrait(PersonalityTraits.NIGHT_OWL);
     }
+
+    /** Set when a night owl's schedule has to be picked again, once the server ticks. */
+    private boolean scheduleNeedsRefresh;
 
     @Override
     public boolean doHurtTarget(ServerLevel level, Entity target) {
@@ -666,7 +757,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             if (player.isShiftKeyDown()) {
                 if (!level().isClientSide() && canTradeWithProfession()) {
                     getInteractions().stopInteracting();
-                    startTrading(player);
+                    openTrade(player);
                 }
             } else {
                 playWelcomeSound();
@@ -684,6 +775,8 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     public InteractionResult mobInteract(Player player, InteractionHand hand) {
         // This allows hitbox interactions to be ignored if the player is carrying a child villager.
         if (getVehicle() != null && getVehicle().equals(player)) return InteractionResult.PASS;
+        // expansion: factions, a band's bandit has no word for a player it is hostile to
+        if (!level().isClientSide() && Addons.refusesInteraction(this, player)) return InteractionResult.SUCCESS;
 
         ItemStack stack = player.getItemInHand(hand);
         boolean isOnBlacklist = Config.getInstance().villagerInteractionItemBlacklist.contains(BuiltInRegistries.ITEM.getKey(stack.getItem()).toString());
@@ -701,7 +794,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                 }
 
                 if (hasOffers && !level().isClientSide()) {
-                    startTrading(player);
+                    openTrade(player);
                 }
             }
             return level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME;
@@ -787,9 +880,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             damageAmount *= 0.5f;
         }
 
-        if (getTraits().hasTrait(Traits.TOUGH)) {
-            damageAmount *= 0.75f;
-        }
+        damageAmount *= getTraits().getDamageTakenMultiplier();
 
         if (source.getEntity() instanceof Enemy) {
             needs.onHurtByMob();
@@ -818,7 +909,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
             if (source.getDirectEntity() instanceof Zombie
                 && getProfession() != ProfessionsMCA.GUARD
                 && Config.getInstance().enableInfection
-                && random.nextFloat() < Config.getInstance().zombieBiteInfectionChance
+                && random.nextFloat() < Config.getInstance().zombieBiteInfectionChance * traits.getInfectionMultiplier()
                 && random.nextFloat() > (getVillagerData().level() - 1) * Config.getInstance().infectionChanceDecreasePerLevel
                 && (getResidency().getHomeVillage().filter(v -> v.hasBuilding("infirmary")).isEmpty() || random.nextBoolean())) {
                 setInfected(true);
@@ -1132,7 +1223,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                         sendChatToAllAround("villager.sickness");
                     }
 
-                infection += 1.0f / Config.getInstance().infectionTime;
+                infection += traits.getInfectionMultiplier() / Config.getInstance().infectionTime;
                 setInfectionProgress(infection);
 
                 if (infection > 1.0f) {
@@ -1149,6 +1240,32 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                 sendChatToAllAround("villager.scream");
             }
             wasPanicking = panicking;
+
+            if (this.tickCount % 20 == 0) {
+                if (scheduleNeedsRefresh) {
+                    scheduleNeedsRefresh = false;
+                    refreshBrain((ServerLevel) level());
+                }
+                if (!traits.isMigrated()) {
+                    // old saves, once: the personality becomes a trait, then some adults turn out to be elders
+                    traits.migrate(getAgeState());
+                    if (AgeState.byCurrentAge(getAge()) == AgeState.ADULT) {
+                        AgeState previous = getAgeState();
+                        randomizeAdultTicks();
+                        onAgeStateTransition(previous, getAgeState());
+                    }
+                }
+                ageAsAdult(20);
+                opinions.tick();
+                TraitBehaviors.tick((ServerLevel) level(), this); // kleptomaniacs swipe, clumsy villagers stumble
+                MentalBreaks.tick((ServerLevel) level(), this);
+                Addons.villagerTick((ServerLevel) level(), this);
+                if (VillagerAttributes.enabled()) { // expansion: minds
+                    VillagerAttributes.ensure(this);
+                    VillagerAttributes.selfSpend(this);
+                }
+                maybeDieOfOldAge((ServerLevel) level());
+            }
 
             // sirben noises
             if (this.tickCount % 60 == 0 && random.nextInt(50) == 0 && traits.hasTrait(Traits.SIRBEN)) {
@@ -1701,7 +1818,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     }
 
     private void updateDimensionsForAge(int age) {
-        AgeState current = AgeState.byCurrentAge(age);
+        AgeState current = withElder(AgeState.byCurrentAge(age));
         AgeState next = current.getNext();
         if (next != current) {
             dimensions.interpolate(current, next, AgeState.getDelta(age));
@@ -1715,8 +1832,19 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         if (state == AgeState.UNASSIGNED || state == getAgeState()) {
             return false;
         }
+        int elderAfter = Config.getServerConfig().villagerElderAfterTime;
+        if (state == AgeState.ELDER && elderAfter <= 0) {
+            return false;
+        }
 
+        // one transition from the old state to the new, without passing through adulthood
+        AgeState previous = getAgeState();
+        boolean events = ageStateEventsEnabled;
+        ageStateEventsEnabled = false;
+        setTrackedValue(ADULT_TICKS, state == AgeState.ELDER ? elderAfter : 0);
         setAge(state.toAge());
+        ageStateEventsEnabled = events;
+        onAgeStateTransition(previous, getAgeState());
         return true;
     }
 
@@ -1737,8 +1865,23 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                     );
         }
 
+        if (state == AgeState.ELDER) {
+            // tell player children their parent has grown old
+            relations.getFamily(0, 1)
+                    .filter(Player.class::isInstance)
+                    .map(Player.class::cast).forEach(
+                            p -> sendEventMessage(Component.translatable("notify.parent.elder", getName()), p)
+                    );
+        }
+
         refreshBrain((ServerLevel) level());
         getVillagerBrain().randomize(state);
+        getTraits().dropOutgrown(state);
+        getTraits().fillSlots(state);
+        if (state == AgeState.ELDER) {
+            getTraits().growOld(); // maybe trade a trait for one of old age, like wisdom
+            Beards.growOld(this); // expansion: looks
+        }
         Wardrobes.newClothes(this); // expansion: looks - put on at the wardrobe
     }
 
@@ -1876,6 +2019,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         Optional<Integer> savedVanillaAge = input.getInt("Age");
         CompoundTag nbt = McaDataFixers.update(readMcaSaveData(input));
         super.readAdditionalSaveData(input);
+        addonData = nbt.getCompoundOrEmpty(ADDON_DATA_KEY).copy();
 
         if (!level().isClientSide() && isSleeping()) {
             boolean sleepingAtHome = getBrain().getMemory(MemoryModuleType.HOME)
@@ -1953,6 +2097,7 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
     public final void addAdditionalSaveData(ValueOutput output) {
         CompoundTag nbt = new CompoundTag();
         super.addAdditionalSaveData(output);
+        nbt.put(ADDON_DATA_KEY, addonData.copy());
 
         relations.writeToNbt(nbt);
         longTermMemory.writeToNbt(nbt);
@@ -1970,6 +2115,11 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
         }
 
         storeMcaSaveData(output, nbt);
+    }
+
+    /** Every addon's own data on this villager, by addon id; see {@link Addons#data}. */
+    public CompoundTag getAddonData() {
+        return addonData;
     }
 
     public String getChatAIPrompt() {
@@ -2085,11 +2235,19 @@ public class VillagerEntityMCA extends Villager implements VillagerLike<Villager
                     target.position(),
                     target.getBbHeight()
             );
+            // careful shooters aim longer and hit closer, the trigger happy the other way round
+            float draw = traits.getDrawTimeMultiplier();
             Projectile.spawnProjectileUsingShoot(
-                    arrowEntity, serverLevel, projectile, shot.x, shot.y, shot.z, 1.6F, FRIENDLY_ARROW_UNCERTAINTY
+                    arrowEntity, serverLevel, projectile, shot.x, shot.y, shot.z, 1.6F, FRIENDLY_ARROW_UNCERTAINTY / draw / draw
             );
             this.playSound(SoundEvents.SKELETON_SHOOT, 1.0F, 1.0F / (this.getRandom().nextFloat() * 0.4F + 0.8F));
         }
+    }
+
+    /** Opens trading with the prices of a social villager, cheaper, or an awkward one, dearer (expansion: minds). */
+    public void openTrade(Player player) {
+        VillagerAttributes.adjustPrices(this);
+        startTrading(player);
     }
 
     @Override

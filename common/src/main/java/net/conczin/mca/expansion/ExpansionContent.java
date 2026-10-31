@@ -1,9 +1,12 @@
 package net.conczin.mca.expansion;
 
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.expansion.mirror.Mirrors;
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
 import net.conczin.mca.expansion.economy.EconomyRegistry;
 import net.conczin.mca.expansion.requests.RequestBoardBlock;
+import net.conczin.mca.expansion.talk.TalkPanels;
+import net.conczin.mca.expansion.townhall.TownHall;
 import net.conczin.mca.registry.BlocksMCA;
 import net.conczin.mca.registry.ItemsMCA;
 import net.minecraft.world.item.BlockItem;
@@ -31,5 +34,8 @@ public final class ExpansionContent {
         ExpansionGuide.bootstrap();
         Wardrobes.bootstrap();
         Mirrors.bootstrap();
+        TownHall.bootstrap();
+        TalkPanels.bootstrap();
+        Addons.bootstrap();
     }
 }

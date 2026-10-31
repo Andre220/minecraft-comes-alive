@@ -1,6 +1,8 @@
 package net.conczin.mca;
 
 import net.conczin.mca.expansion.speech.MouthMotion;
+import net.conczin.mca.client.model.ElderPosture;
+import net.conczin.mca.client.model.WalkPosture;
 import net.conczin.mca.expansion.speech.SpeechBubbles;
 import net.conczin.mca.client.debug.VillagerDebugTool;
 import net.conczin.mca.client.render.WorkAnimationEffects;
@@ -90,6 +92,8 @@ public class MCAClient {
         SpeechBubbles.tick(client); // expansion: speech
         MouthMotion.tick(client); // expansion: speech
         WorkAnimationEffects.tick(client);
+        ElderPosture.tick(client);
+        WalkPosture.tick(client);
     }
 
     public static void addPlayerData(UUID uuid, VillagerEntityMCA villager) {

@@ -2,6 +2,8 @@ package net.conczin.mca.network.c2s;
 
 import net.conczin.mca.MCA;
 import net.conczin.mca.network.HandleablePayload;
+import net.conczin.mca.resources.Rank;
+import net.conczin.mca.resources.Tasks;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.minecraft.network.FriendlyByteBuf;
@@ -29,12 +31,20 @@ public record SaveVillageMessage(
         this(village.getId(), village.getTaxes(), village.getPopulationThreshold(), village.getMarriageThreshold());
     }
 
+    /** Each rule changes only for a sender with the rank the blueprint asks for it; the client alone does not decide. */
     @Override
     public void handleServer(ServerPlayer player) {
         VillageManager.get(player.level()).getOrEmpty(id).ifPresent(village -> {
-            village.setTaxes(taxes);
-            village.setPopulationThreshold(populationThreshold);
-            village.setMarriageThreshold(marriageThreshold);
+            Rank rank = Tasks.getRank(village, player);
+            if (rank.isAtLeast(Rank.MERCHANT)) {
+                village.setTaxes(taxes);
+            }
+            if (rank.isAtLeast(Rank.NOBLE)) {
+                village.setPopulationThreshold(populationThreshold);
+            }
+            if (rank.isAtLeast(Rank.MAYOR)) {
+                village.setMarriageThreshold(marriageThreshold);
+            }
         });
     }
 

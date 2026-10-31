@@ -1,0 +1,62 @@
+[
+  {
+    "identifier": "gui.button.backarrow",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.overview",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.map",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.jobs",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.residents",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.works",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.rules",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.progress",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.catalog",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  },
+  {
+    "identifier": "gui.button.town_hall.rank",
+    "notifyServer": false,
+    "targetServer": false,
+    "constraints": ""
+  }
+]

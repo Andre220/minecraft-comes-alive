@@ -2,6 +2,130 @@
   "silent": true,
   "answers": [
     {
+      "name": "bandit_band",
+      "constraints": "bandit",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_band": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_hire",
+      "constraints": "bandit,bandit_friend",
+      "results": [
+        {
+          "actions": {
+            "next": "bandit_hire"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_truce",
+      "constraints": "bandit",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_truce": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "caravan_from",
+      "constraints": "caravan",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "caravan_from": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "caravan_news",
+      "constraints": "caravan",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "caravan_news": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "how_are_you",
+      "constraints": "info_talk",
+      "results": [
+        {
+          "actions": {
+            "show": "feelings",
+            "next": "main",
+            "say": "talk.feelings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "where_work",
+      "constraints": "info_talk",
+      "results": [
+        {
+          "actions": {
+            "show": "work",
+            "next": "main",
+            "say": "talk.work"
+          }
+        }
+      ]
+    },
+    {
+      "name": "about_you",
+      "constraints": "info_talk",
+      "results": [
+        {
+          "actions": {
+            "show": "traits",
+            "next": "main",
+            "say": "talk.traits"
+          }
+        }
+      ]
+    },
+    {
+      "name": "friends",
+      "constraints": "info_talk",
+      "results": [
+        {
+          "actions": {
+            "show": "friends",
+            "next": "main",
+            "say": "talk.friends"
+          }
+        }
+      ]
+    },
+    {
+      "name": "good_at",
+      "constraints": "info_talk,attributes",
+      "results": [
+        {
+          "actions": {
+            "show": "skills",
+            "next": "main",
+            "say": "talk.skills"
+          }
+        }
+      ]
+    },
+    {
       "name": "rock_paper_scissor",
       "constraints": "!adult",
       "results": [

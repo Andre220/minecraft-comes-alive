@@ -54,5 +54,6 @@ public record OpenGuiRequest(int gui, int villager) implements HandleablePayload
         COMB,
         CLOSE,
         WORK_PLANNING,
+        TOWN_HALL, // expansion: town hall
     }
 }

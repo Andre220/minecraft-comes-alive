@@ -40,8 +40,9 @@ public class VillagerEntityMCARenderer extends VillagerLikeEntityMCARenderer<Vil
                 : bobber.getPosition(partialTicks).add(0.0, 0.25, 0.0);
     }
 
+    /** The bobber of the rod the villager holds, if one is out. */
     @Nullable
-    private static MCAFishingBobberEntity findOwnedBobber(VillagerEntityMCA villager) {
+    public static MCAFishingBobberEntity findOwnedBobber(VillagerEntityMCA villager) {
         if (!(villager.getItemInHand(villager.getDominantHand()).getItem() instanceof FishingRodItem)) {
             return null;
         }

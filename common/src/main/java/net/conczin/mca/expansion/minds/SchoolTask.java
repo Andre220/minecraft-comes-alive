@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Genetics;
 import net.conczin.mca.entity.ai.relationship.AgeState;
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
 import net.conczin.mca.server.world.data.Building;
 import net.conczin.mca.server.world.data.Village;
 import net.minecraft.core.BlockPos;
@@ -16,11 +17,13 @@ import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Children and teens go to the village school in the daytime and get a bit brighter there:
- * their intelligence gene grows, faster with a librarian teaching in the school.
+ * their intelligence gene grows, faster with a librarian teaching in the school, and faster
+ * still with a wise villager there.
  */
 public class SchoolTask extends Behavior<VillagerEntityMCA> {
     public static final String SCHOOL = "school";
@@ -28,7 +31,7 @@ public class SchoolTask extends Behavior<VillagerEntityMCA> {
     private static final int LESSON_TICKS = 1200;
     private static final int COOLDOWN = 2400;
     private static final int STEP_TICKS = 100;
-    /** Intelligence gained per step of a lesson, doubled with a teacher. */
+    /** Intelligence gained per step of a lesson, times the teaching of the school. */
     private static final float GAIN_PER_STEP = 0.002F;
     private static final double INSIDE_SQR = 3.0 * 3.0;
 
@@ -46,7 +49,7 @@ public class SchoolTask extends Behavior<VillagerEntityMCA> {
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, VillagerEntityMCA villager) {
         AgeState age = villager.getAgeState();
-        if (!Skills.enabled() || level.getGameTime() < nextTry || age == AgeState.ADULT || age == AgeState.BABY
+        if (!Skills.enabled() || level.getGameTime() < nextTry || age.isAdult() || age == AgeState.BABY
             || !level.isBrightOutside()) {
             return false;
         }
@@ -82,7 +85,7 @@ public class SchoolTask extends Behavior<VillagerEntityMCA> {
         }
         villager.lookAt(school);
         if (++studied % STEP_TICKS == 0) {
-            learn(villager, hasTeacher(level, school) ? 2 : 1);
+            learn(villager, teaching(level, school));
         }
     }
 
@@ -99,8 +102,12 @@ public class SchoolTask extends Behavior<VillagerEntityMCA> {
         }
     }
 
-    private static boolean hasTeacher(ServerLevel level, BlockPos school) {
-        return !level.getEntitiesOfClass(VillagerEntityMCA.class, new AABB(school).inflate(6),
-                v -> v.isAlive() && v.getVillagerData().profession().is(VillagerProfession.LIBRARIAN)).isEmpty();
+    /** 1 alone, +1 with a librarian in the school, +1 with a wise villager there; a wise librarian counts twice. */
+    static int teaching(ServerLevel level, BlockPos school) {
+        List<VillagerEntityMCA> around = level.getEntitiesOfClass(VillagerEntityMCA.class, new AABB(school).inflate(6),
+                v -> v.isAlive() && v.getAgeState().isAdult());
+        boolean librarian = around.stream().anyMatch(v -> v.getVillagerData().profession().is(VillagerProfession.LIBRARIAN));
+        boolean wise = around.stream().anyMatch(v -> v.getTraits().hasTrait(PersonalityTraits.WISE));
+        return 1 + (librarian ? 1 : 0) + (wise ? 1 : 0);
     }
 }

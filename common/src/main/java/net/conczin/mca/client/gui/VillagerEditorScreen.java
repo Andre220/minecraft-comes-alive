@@ -1,5 +1,6 @@
 package net.conczin.mca.client.gui;
 
+import java.util.Locale;
 import net.conczin.mca.expansion.looks.Beards;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
@@ -17,6 +18,7 @@ import net.conczin.mca.entity.ai.Traits;
 import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.entity.ai.relationship.Gender;
 import net.conczin.mca.entity.ai.relationship.Personality;
+import net.conczin.mca.entity.ai.traits.TraitCategory;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.network.c2s.GetVillagerRequest;
 import net.conczin.mca.network.c2s.VillagerEditorSyncRequest;
@@ -47,6 +49,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
@@ -65,6 +68,7 @@ import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -81,7 +85,7 @@ import java.util.function.Supplier;
 public class VillagerEditorScreen extends Screen implements SkinListUpdateListener {
     protected static final int DATA_WIDTH = 175;
 
-    private static final int TRAITS_PER_PAGE = 8;
+    private static final int TRAITS_PER_PAGE = 16;
     private static final int LAYERED_HAIR_PER_PAGE = 6;
 
     private static final float MIN_PREVIEW_ZOOM = 0.7F;
@@ -112,6 +116,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     ButtonWidget widgetFeminine;
     private int villagerBreedingAge;
     private int traitPage = 0;
+    private TraitCategory traitCategory = TraitCategory.EMOTIONAL;
     private EditBox villagerNameField;
     private boolean hsvColoredSkin;
     private boolean hsvColoredHair;
@@ -130,6 +135,11 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     private Gender filterGender = Gender.NEUTRAL;
     private String searchString = "";
     private int hoveredClothingId;
+    // the look grid of the character tab shown (expansion: looks), its page, and the clothes/hair search
+    private @Nullable LookGrid lookGrid;
+    private @Nullable ButtonWidget lookGridPageButton;
+    private int lookGridPage = -1;
+    private String lookSearch = "";
     private ButtonWidget villagerSkinWidget;
     private ButtonWidget playerSkinWidget;
     private ButtonWidget vanillaSkinWidget;
@@ -346,7 +356,13 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             presetsBackupNbt = null;
         }
 
+        if (!page.equals(prevPage)) {
+            lookGridPage = -1;
+            lookSearch = "";
+        }
         this.page = page;
+        lookGrid = null;
+        lookGridPageButton = null;
 
         clearWidgets();
 
@@ -446,11 +462,27 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
                 //age
                 if (!villagerUUID.equals(playerUUID)) {
-                    addRenderableWidget(new GeneSliderWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.age"), 1.0 + villagerBreedingAge / (double) AgeState.getMaxAge(), b -> {
+                    boolean elders = villager instanceof VillagerEntityMCA && Config.getServerConfig().villagerElderAfterTime > 0;
+                    int sliderWidth = elders ? DATA_WIDTH - 50 : DATA_WIDTH;
+                    addRenderableWidget(new GeneSliderWidget(width / 2, y, sliderWidth, 20, Component.translatable("gui.villager_editor.age"), 1.0 + villagerBreedingAge / (double) AgeState.getMaxAge(), b -> {
                         villagerBreedingAge = -(int) ((1.0 - b) * AgeState.getMaxAge()) + 1;
+                        if (villager.getAgeState() == AgeState.ELDER && villagerBreedingAge < 0) {
+                            villager.setAgeState(AgeState.ADULT); // growing young again ends old age
+                        }
                         villager.setAge(villagerBreedingAge);
                         villager.refreshDimensions();
                     }));
+                    if (elders) {
+                        // old age is not on the age counter: a toggle next to it
+                        boolean elder = villager.getAgeState() == AgeState.ELDER;
+                        addRenderableWidget(new ButtonWidget(width / 2 + sliderWidth, y, DATA_WIDTH - sliderWidth, 20,
+                                AgeState.ELDER.getName().copy().withStyle(elder ? ChatFormatting.GREEN : ChatFormatting.GRAY), b -> {
+                            villager.setAgeState(elder ? AgeState.ADULT : AgeState.ELDER);
+                            villagerBreedingAge = 0;
+                            villager.refreshDimensions();
+                            setPage("general");
+                        }));
+                    }
                     y += 28;
                 }
 
@@ -477,10 +509,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             }
             case "body" -> {
                 addCharacterSubpageTabs(y, "body");
-                y += 24;
-
-                y = addSkinSelectionWidgets(y);
-                y += 4;
+                y += 44;
 
                 //genes
                 if (!Config.getServerConfig().allowPlayerSizeAdjustment && villagerUUID.equals(playerUUID)) {
@@ -548,19 +577,48 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             }
             case "clothing_style" -> {
                 addCharacterSubpageTabs(y, "clothing_style");
-                y += 24;
+                y += 44;
 
-                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.randClothing"), b -> randomClothing()));
-                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.selectClothing"), b -> {
-                    setPage("clothing");
-                }));
+                addRenderableWidget(new ButtonWidget(width / 2, y, 50, 20, Component.translatable("gui.button.random"), b -> randomClothing()));
+                addLookSearch(width / 2 + 50, y, DATA_WIDTH - 110);
+                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 60, y, 60, 20, Component.translatable("gui.button.library"), b ->
+                        Minecraft.getInstance().gui.setScreen(new SkinLibraryScreen(this, villagerVisualization))));
                 y += 22;
 
-                addCycleCommandRow(y, "clothing", getClothingText());
+                addLookGrid(y, LookGrid.Frame.BODY, searched(getClothingChoices().stream()
+                                .map(Clothing::getIdentifier).distinct().sorted(SkinListEntry::compareIdentifiers).toList()),
+                        villager.getClothes(), VillagerEntityMCA::setClothes, 0.0F);
+            }
+            case "look_skin" -> {
+                addCharacterSubpageTabs(y, "look_skin");
+                y += 44;
+                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.randSkin"), b -> randomSkin()));
+                y += 22;
+                addLookGrid(y, LookGrid.Frame.BODY, getBodySkinIdsForCurrentGender(), villager.getSkin(), VillagerEntityMCA::setSkin, 0.0F);
+            }
+            case "beard_style" -> {
+                addCharacterSubpageTabs(y, "beard_style");
+                y += 44;
+                addLookGrid(y, LookGrid.Frame.HEAD, Beards.choices(), Beards.get(villager), Beards::set, 0.0F);
             }
             case "hair_style", "head" -> {
                 addCharacterSubpageTabs(y, "hair_style");
-                y += 24;
+                y += 44;
+                addRenderableWidget(new ButtonWidget(width / 2, y, 50, 20, Component.translatable("gui.button.random"), b -> randomHairStyle()));
+                addLookSearch(width / 2 + 50, y, DATA_WIDTH - 110);
+                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 60, y, 60, 20, Component.translatable("gui.villager_editor.advancedHair"), b -> {
+                    setPage("hair_advanced");
+                }));
+                y += 22;
+
+                List<String> styles = getIdsForCurrentGender(ClientSkinCatalog.hairStyles().values());
+                addLookGrid(y, LookGrid.Frame.HEAD, searched(styles), findCurrentHairStyle(styles).orElse(null),
+                        this::applyHairStyle, 0.0F);
+            }
+            case "hair_color" -> {
+                addCharacterSubpageTabs(y, "hair_color");
+                y += 44;
+
 
                 addRenderableWidget(new TooltipButtonWidget(width / 2, y, DATA_WIDTH, 20,
                         Component.translatable(hsvColoredHair ? "gui.villager_editor.hair_hsv" : "gui.villager_editor.hair_genetic"),
@@ -573,25 +631,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                             init();
                         }));
                 y += 22;
-
-                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.randHair"), b -> randomHairStyle()));
-                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.selectHair"), b -> {
-                    setPage("hair");
-                }));
-                y += 22;
-
-                addCycleCommandRow(y, "hair", getHairStyleText());
-                y += 22;
-
-                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.advancedHair"), b -> {
-                    setPage("hair_advanced");
-                }));
-                y += 22;
-
-                if (Beards.enabled()) { // expansion: looks
-                    addBeardRow(y);
-                    y += 22;
-                }
 
                 if (hsvColoredHair) {
                     addRgbColorSliders(y, this::refreshHairColor);
@@ -612,7 +651,14 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             }
             case "eyes" -> {
                 addCharacterSubpageTabs(y, "eyes");
-                y += 24;
+                y += 44;
+                addLookGrid(y, LookGrid.Frame.FACE, faceChoices(),
+                        String.valueOf((int) Math.clamp(genetics.getGene(Genetics.FACE) * getFaceCount(), 0, getFaceCount() - 1)),
+                        (look, face) -> wearFace(look, face, getFaceCount()), 0.0F);
+            }
+            case "eye_color" -> {
+                addCharacterSubpageTabs(y, "eye_color");
+                y += 44;
 
                 boolean hasHetero = villager.getTraits().hasTrait(Traits.HETEROCHROMIA);
                 int maxTarget = hasHetero ? 2 : 1;
@@ -620,7 +666,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     eyeColorTarget = 1;
                 }
 
-                y = geneChanger(y, Genetics.FACE, getFaceCount());
                 addGeneSlider(width / 2, y, DATA_WIDTH, Genetics.EYE_BRIGHTNESS);
                 y += 22;
 
@@ -676,52 +721,72 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     });
                 }
             }
-            case "personality" -> {
-                //personality
-                List<ButtonWidget> personalityButtons = new LinkedList<>();
-                int row = 0;
-                final int BUTTONS_PER_ROW = 2;
-                for (Personality p : Personality.all()) {
-                    if (p != Personality.UNASSIGNED) {
-                        if (row == BUTTONS_PER_ROW) {
-                            row = 0;
-                            y += 19;
-                        }
-                        ButtonWidget widget = addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH / BUTTONS_PER_ROW * row, y, DATA_WIDTH / BUTTONS_PER_ROW, 20, p.getName(), b -> {
-                            villager.getVillagerBrain().setPersonality(p);
-                            personalityButtons.forEach(v -> v.active = true);
-                            b.active = false;
-                        }));
-                        widget.active = p != villager.getVillagerBrain().getPersonality();
-                        personalityButtons.add(widget);
-                        row++;
-                    }
-                }
-            }
             case "traits" -> {
-                //traits
-                addRenderableWidget(new ButtonWidget(width / 2, y, 32, 20, Component.literal("<"), b -> setTraitPage(traitPage - 1)));
-                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 32, y, 32, 20, Component.literal(">"), b -> setTraitPage(traitPage + 1)));
-                addRenderableWidget(new ButtonWidget(width / 2 + 32, y, DATA_WIDTH - 32 * 2, 20, Component.translatable("gui.villager_editor.page", traitPage + 1), b -> traitPage++));
-                y += 22;
+                //traits, one category at a time: < > switch the category, the middle button the page
                 Traits.Trait[] traits = getValidTraits();
+                int traitPages = Math.max(1, (traits.length + TRAITS_PER_PAGE - 1) / TRAITS_PER_PAGE);
+                MutableComponent header = traitCategory.getName().copy();
+                if (traitPages > 1) {
+                    header.append(" " + (traitPage + 1) + "/" + traitPages);
+                }
+                addRenderableWidget(new ButtonWidget(width / 2, y, 32, 20, Component.literal("<"), b -> setTraitCategory(-1)));
+                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 32, y, 32, 20, Component.literal(">"), b -> setTraitCategory(1)));
+                addRenderableWidget(new ButtonWidget(width / 2 + 32, y, DATA_WIDTH - 32 * 2, 20, header, b -> setTraitPage(traitPage + 1 < traitPages ? traitPage + 1 : 0)));
+                y += 22;
+
+                // slots, voice and reroll
+                Traits villagerTraits = villager.getTraits();
+                AgeState age = villager.getAgeState();
+                int third = DATA_WIDTH / 3;
+                ButtonWidget slots = addRenderableWidget(new ButtonWidget(width / 2, y, third, 20,
+                        Component.translatable("trait.slots", villagerTraits.getPersonalityTraits().size(), Traits.getSlots(age)), b -> {
+                }));
+                slots.active = false;
+                List<Traits.Trait> voices = villagerTraits.getVoiceTraits();
+                Personality voice = villager.getVillagerBrain().getPersonality();
+                ButtonWidget voiceButton = addRenderableWidget(new ButtonWidget(width / 2 + third, y, third, 20,
+                        Component.translatable("trait.voice", voice.getName()), b -> {
+                    // the next trait with a voice speaks
+                    int current = voices.stream().map(Traits.Trait::getVoice).toList().indexOf(voice);
+                    villager.getVillagerBrain().setPersonality(voices.get((current + 1) % voices.size()).getVoice());
+                    setPage("traits");
+                }));
+                voiceButton.active = voices.size() > 1;
+                addRenderableWidget(new ButtonWidget(width / 2 + third * 2, y, DATA_WIDTH - third * 2, 20, Component.translatable("trait.reroll"), b -> {
+                    villagerTraits.getPersonalityTraits().forEach(villagerTraits::removeTrait);
+                    villagerTraits.fillSlots(age);
+                    villager.getVillagerBrain().syncVoice();
+                    setPage("traits");
+                }));
+                y += 22;
+
+                // the traits of the category, two per row
+                int column = DATA_WIDTH / 2;
                 for (int i = 0; i < TRAITS_PER_PAGE; i++) {
                     int index = i + traitPage * TRAITS_PER_PAGE;
-                    if (index < traits.length) {
-                        Traits.Trait t = traits[index];
-                        MutableComponent name = t.getName().copy().withStyle(villager.getTraits().hasTrait(t) ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-                        addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, name, b -> {
-                            if (villager.getTraits().hasTrait(t)) {
-                                villager.getTraits().removeTrait(t);
-                            } else {
-                                villager.getTraits().addTrait(t);
-                            }
-                            b.setMessage(t.getName().copy().withStyle(villager.getTraits().hasTrait(t) ? ChatFormatting.GREEN : ChatFormatting.GRAY));
-                        }));
-                        y += 20;
-                    } else {
+                    if (index >= traits.length) {
                         break;
                     }
+                    Traits.Trait t = traits[index];
+                    boolean owned = villagerTraits.hasTrait(t);
+                    Component reason = owned ? null : traitBlockedReason(t, age);
+                    MutableComponent name = Component.literal(t.getVoice() == voice && owned ? "★ " : "").append(t.getName())
+                            .withStyle(owned ? ChatFormatting.GREEN : reason == null ? ChatFormatting.GRAY : ChatFormatting.DARK_GRAY);
+                    List<Component> lines = new ArrayList<>(TraitTooltips.lines(t, voice));
+                    if (reason != null) {
+                        lines.add(reason);
+                    }
+                    ButtonWidget button = addRenderableWidget(new ButtonWidget(width / 2 + column * (i % 2), y + 20 * (i / 2), column, 20, name, b -> {
+                        if (villagerTraits.hasTrait(t)) {
+                            villagerTraits.removeTrait(t);
+                        } else {
+                            villagerTraits.addTrait(t);
+                        }
+                        villager.getVillagerBrain().syncVoice();
+                        setPage("traits");
+                    }, ComponentUtils.formatList(lines, Component.literal("\n"))));
+                    // the player may bypass the restrictions, villagers keep to conflicts, age and slots
+                    button.active = owned || reason == null || villagerUUID.equals(playerUUID) && Config.getInstance().bypassTraitRestrictions;
                 }
             }
             case "debug" -> {
@@ -867,7 +932,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 }));
                 addRenderableWidget(new ButtonWidget(width / 2 + 32 + 32, y, 64, 20, Component.translatable("gui.button.done"), b -> {
                     if (page.equals("clothing") || page.equals("skin")) {
-                        setPage(page.equals("skin") ? "body" : "clothing_style");
+                        setPage(page.equals("skin") ? "look_skin" : "clothing_style");
                     } else if (isLayeredHairPage()) {
                         setPage("hair_advanced");
                     } else {
@@ -1094,35 +1159,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         villager.setEyeLeftDye(getSelectedDye());
     }
 
-    private int geneChanger(int y, Genetics.GeneType gene, int maxCount) {
-        int bw = 22;
-        Genetics genetics = villager.getGenetics();
-        float val = genetics.getGene(gene);
-        int currentIndex = (int) Math.clamp(val * maxCount, 0, maxCount - 1);
-
-        addRenderableWidget(new ButtonWidget(width / 2, y, bw, 20, Component.literal("<"), b -> {
-            int prevIndex = (currentIndex - 1 + maxCount) % maxCount;
-            genetics.setGene(gene, (prevIndex + 0.5f) / (float) maxCount);
-            init();
-        }));
-
-        addRenderableWidget(new ButtonWidget(width / 2 + bw, y, DATA_WIDTH - bw * 2, 20,
-                Component.literal(Component.translatable(gene.getTranslationKey()).getString() + ": " + (currentIndex + 1)),
-                b -> {
-                    int nextIndex = (currentIndex + 1) % maxCount;
-                    genetics.setGene(gene, (nextIndex + 0.5f) / (float) maxCount);
-                    init();
-                }));
-
-        addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - bw, y, bw, 20, Component.literal(">"), b -> {
-            int nextIndex = (currentIndex + 1) % maxCount;
-            genetics.setGene(gene, (nextIndex + 0.5f) / (float) maxCount);
-            init();
-        }));
-
-        return y + 22;
-    }
-
     private int getFaceCount() {
         FaceList faceList = FaceList.getInstance();
         if (faceList == null) {
@@ -1135,64 +1171,185 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         return Math.clamp(preferredSize, 48, height - y - 8);
     }
 
+    /**
+     * The character tab's own tabs, two rows of four (expansion: looks): each look choice is a tab showing its grid of
+     * previews, and the fine adjustments (body sliders, colors) have tabs of their own.
+     */
+    private static final List<String> CHARACTER_TABS = List.of(
+            "look_skin", "body", "clothing_style", "hair_style",
+            "hair_color", "beard_style", "eyes", "eye_color");
+
     private void addCharacterSubpageTabs(int y, String selectedPage) {
         int tabWidth = DATA_WIDTH / 4;
-        addCharacterSubpageTab(width / 2, y, tabWidth, "body", selectedPage);
-        addCharacterSubpageTab(width / 2 + tabWidth, y, tabWidth, "clothing_style", selectedPage);
-        addCharacterSubpageTab(width / 2 + tabWidth * 2, y, tabWidth, "hair_style", selectedPage);
-        addCharacterSubpageTab(width / 2 + tabWidth * 3, y, DATA_WIDTH - tabWidth * 3, "eyes", selectedPage);
+        for (int i = 0; i < CHARACTER_TABS.size(); i++) {
+            String tab = CHARACTER_TABS.get(i);
+            int column = i % 4;
+            int w = column == 3 ? DATA_WIDTH - tabWidth * 3 : tabWidth;
+            ButtonWidget button = addCharacterSubpageTab(width / 2 + tabWidth * column, y + i / 4 * 20, w, tab, selectedPage);
+            if (tab.equals("beard_style") && !Beards.enabled()) {
+                button.active = false;
+            }
+        }
     }
 
-    private void addCharacterSubpageTab(int x, int y, int width, String page, String selectedPage) {
+    /** Where the grid of a look tab goes: below the tabs and its row of buttons, above its page row. */
+    private void addLookGrid(int y, LookGrid.Frame frame, List<String> choices, @Nullable String worn,
+                             java.util.function.BiConsumer<VillagerEntityMCA, String> wear, float rotation) {
+        int bottom = height / 2 + 96;
+        lookGrid = new LookGrid(frame, choices, worn, wear, rotation, width / 2, y, DATA_WIDTH, bottom - 22 - y, lookGridPage);
+        lookGridPage = lookGrid.page();
+        int row = bottom - 20;
+        addRenderableWidget(new ButtonWidget(width / 2, row, 30, 20, Component.literal("<"), b -> turnLookGrid(-1)));
+        lookGridPageButton = addRenderableWidget(new ButtonWidget(width / 2 + 30, row, DATA_WIDTH - 60, 20, Component.empty(), b -> {
+        }));
+        addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 30, row, 30, 20, Component.literal(">"), b -> turnLookGrid(1)));
+        updateLookGridPage();
+    }
+
+    private void turnLookGrid(int step) {
+        if (lookGrid != null) {
+            lookGrid.turn(step);
+            lookGridPage = lookGrid.page();
+            updateLookGridPage();
+        }
+    }
+
+    private void updateLookGridPage() {
+        if (lookGrid != null && lookGridPageButton != null) {
+            lookGridPageButton.setMessage(Component.literal((lookGrid.page() + 1) + " / " + lookGrid.pages()));
+        }
+    }
+
+    /** A search box for the clothes and hair grids. */
+    private void addLookSearch(int x, int y, int w) {
+        EditBox search = addRenderableWidget(new EditBox(this.font, x + 1, y + 1, w - 2, 18, Component.translatable("gui.villager_editor.search")));
+        search.setMaxLength(64);
+        search.setHint(Component.translatable("gui.villager_editor.search"));
+        search.setValue(lookSearch);
+        search.setResponder(value -> {
+            if (!value.equals(lookSearch)) {
+                lookSearch = value;
+                lookGridPage = 0;
+                rebuildLookPage(search);
+            }
+        });
+    }
+
+    /** Rebuilds the page for a new search, keeping the search box focused. */
+    private void rebuildLookPage(EditBox old) {
+        int cursor = old.getCursorPosition();
+        setPage(page);
+        children().stream().filter(c -> c instanceof EditBox).map(EditBox.class::cast).findFirst().ifPresent(box -> {
+            setFocused(box);
+            box.setFocused(true);
+            box.setCursorPosition(cursor);
+        });
+    }
+
+    private List<String> searched(List<String> ids) {
+        if (MCA.isBlankString(lookSearch)) {
+            return ids;
+        }
+        String needle = lookSearch.toLowerCase(Locale.ROOT);
+        return ids.stream().filter(id -> id.toLowerCase(Locale.ROOT).contains(needle)).toList();
+    }
+
+    private List<String> faceChoices() {
+        int count = getFaceCount();
+        List<String> faces = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
+            faces.add(String.valueOf(i));
+        }
+        return faces;
+    }
+
+    private static void wearFace(VillagerEntityMCA villager, String face, int count) {
+        villager.getGenetics().setGene(Genetics.FACE, (Integer.parseInt(face) + 0.5F) / count);
+    }
+
+    /** The choice clicked in the look grid is worn, as the cycle buttons did. */
+    private boolean clickLookGrid(double mouseX, double mouseY) {
+        String choice = lookGrid == null ? null : lookGrid.click(mouseX, mouseY);
+        if (choice == null) {
+            return false;
+        }
+        switch (page) {
+            case "look_skin" -> {
+                if (beginEditorCommand()) {
+                    villager.setSkin(choice);
+                    sendCommandLocked("skin");
+                }
+            }
+            case "clothing_style" -> {
+                if (beginEditorCommand()) {
+                    villager.setClothes(choice);
+                    markClothingSelected();
+                    sendCommandLocked("clothing");
+                    eventCallback("clothing");
+                }
+            }
+            case "hair_style" -> {
+                if (beginEditorCommand()) {
+                    applyHairStyle(villager, choice);
+                    sendCommandLocked("hair");
+                    eventCallback("hair");
+                }
+            }
+            case "beard_style" -> {
+                Beards.set(villager, choice);
+                Beards.set(villagerVisualization, choice);
+                eventCallback("beard");
+            }
+            case "eyes" -> wearFace(villager, choice, getFaceCount());
+            default -> {
+                return false;
+            }
+        }
+        init();
+        return true;
+    }
+
+    /** The editor's own preview of a grid card: facing front, without the large preview's turn and zoom. */
+    void extractLookPreview(GuiGraphicsExtractor context, int x0, int y0, int x1, int y1, int size, float offsetY,
+                            float mouseX, float mouseY, float delta, LivingEntity entity, float rotationOffset) {
+        extractEntityPreview(context, x0, y0, x1, y1, Math.max(1, Math.round(size / previewZoom)), offsetY, mouseX, mouseY, delta,
+                entity, rotationOffset - previewRotation);
+    }
+
+    /** Puts the shared preview villager back as the edited one. */
+    private void resetVisualization() {
+        CompoundTag nbt = saveEntityData(villager);
+        villagerVisualization.load(TagValueInput.create(ProblemReporter.DISCARDING, villagerVisualization.registryAccess(), nbt));
+        villagerVisualization.setAge(villager.getVisualAge());
+        villagerVisualization.refreshDimensions();
+    }
+
+    /** The large preview shows the card under the mouse on the villager, or the villager as it is. */
+    private LivingEntity largePreviewEntity() {
+        String hovered = lookGrid == null ? null : lookGrid.hovered();
+        if (hovered == null) {
+            return villager;
+        }
+        resetVisualization();
+        switch (page) {
+            case "look_skin" -> villagerVisualization.setSkin(hovered);
+            case "clothing_style" -> villagerVisualization.setClothes(hovered);
+            case "hair_style" -> applyHairStyle(villagerVisualization, hovered);
+            case "beard_style" -> Beards.set(villagerVisualization, hovered);
+            case "eyes" -> wearFace(villagerVisualization, hovered, getFaceCount());
+            default -> {
+                return villager;
+            }
+        }
+        return villagerVisualization;
+    }
+
+    private ButtonWidget addCharacterSubpageTab(int x, int y, int width, String page, String selectedPage) {
         ButtonWidget button = addRenderableWidget(new ButtonWidget(x, y, width, 20,
                 Component.translatable("gui.villager_editor.subpage." + page),
                 b -> setPage(page)));
         button.active = !page.equals(selectedPage);
-    }
-
-    private void addCycleCommandRow(int y, String command, Component label) {
-        addRenderableWidget(new ButtonWidget(width / 2, y, 25, 20, Component.literal("<"), b -> {
-            if (command.equals("clothing")) {
-                cycleClothing(-1);
-            } else if (command.equals("hair")) {
-                cycleHairStyle(-1);
-            }
-        }));
-        addRenderableWidget(new ButtonWidget(width / 2 + 25, y, DATA_WIDTH - 50, 20, label, b -> {
-        })).active = false;
-        addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 25, y, 25, 20, Component.literal(">"), b -> {
-            if (command.equals("clothing")) {
-                cycleClothing(1);
-            } else if (command.equals("hair")) {
-                cycleHairStyle(1);
-            }
-        }));
-    }
-
-    // expansion: looks - the beard: cycle through the choices, or pick one from previews
-    private void addBeardRow(int y) {
-        int arrowWidth = 20;
-        int selectWidth = 45;
-        int labelWidth = DATA_WIDTH - arrowWidth * 2 - selectWidth;
-        addRenderableWidget(new ButtonWidget(width / 2, y, arrowWidth, 20, Component.literal("<"), b -> cycleBeard(-1)));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth, y, labelWidth, 20, getBeardText(), b -> {
-        }));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth + labelWidth, y, arrowWidth, 20, Component.literal(">"), b -> cycleBeard(1)));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth * 2 + labelWidth, y, selectWidth, 20, Component.translatable("gui.villager_editor.select"), b -> {
-            setPage("beard");
-        }));
-    }
-
-    private void cycleBeard(int step) {
-        String beard = Beards.cycle(Beards.get(villager), step);
-        Beards.set(villager, beard);
-        Beards.set(villagerVisualization, beard);
-        init();
-    }
-
-    private Component getBeardText() {
-        String style = Beards.styleOf(Beards.get(villager));
-        return Component.translatable("gui.villager_editor.beard", Component.translatable("gui.villager_editor.beard." + (style.isEmpty() ? "none" : style)));
+        return button;
     }
 
     private void addLayeredHairCyclerRow(int y, LayeredHair.Category category) {
@@ -1206,32 +1363,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth * 2 + labelWidth, y, selectWidth, 20, Component.translatable("gui.villager_editor.select"), b -> {
             setPage("hair_" + category.getId());
         }));
-    }
-
-    private int addSkinSelectionWidgets(int y) {
-        addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.randSkin"), b -> {
-            randomSkin();
-        }));
-        addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH / 2, y, DATA_WIDTH / 2, 20, Component.translatable("gui.villager_editor.selectSkin"), b -> {
-            setPage("skin");
-        }));
-        y += 22;
-
-        if (ClientSkinCatalog.bodySkins().isEmpty()) {
-            addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.loading"), b -> {
-            })).active = false;
-            return y + 24;
-        }
-
-        addRenderableWidget(new ButtonWidget(width / 2, y, 25, 20, Component.literal("<"), b -> {
-            cycleSkin(-1);
-        }));
-        addRenderableWidget(new ButtonWidget(width / 2 + 25, y, DATA_WIDTH - 50, 20, getSkinIndexText(), b -> {
-        })).active = false;
-        addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 25, y, 25, 20, Component.literal(">"), b -> {
-            cycleSkin(1);
-        }));
-        return y + 24;
     }
 
     private List<Clothing> getClothingChoices() {
@@ -1269,31 +1400,8 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         return SkinSelection.layeredHair(ClientSkinCatalog.layeredHair().values(), category, villager.getGenetics().getGender());
     }
 
-    private Component getClothingText() {
-        List<String> clothes = getClothingChoices().stream()
-                .map(Clothing::getIdentifier)
-                .distinct()
-                .sorted(SkinListEntry::compareIdentifiers)
-                .toList();
-        return getSelectionIndexText("gui.villager_editor.clothing_index", clothes, villager.getClothes());
-    }
-
     private void randomClothing() {
         Optional<String> selected = SkinSelection.pickDifferentWeightedId(getRandomClothingChoices(), entry -> entry.getIdentifier().equals(villager.getClothes()));
-        if (selected.isEmpty() || !beginEditorCommand()) {
-            return;
-        }
-        villager.setClothes(selected.get());
-        sendCommandLocked("clothing");
-    }
-
-    private void cycleClothing(int offset) {
-        List<String> clothes = getClothingChoices().stream()
-                .map(Clothing::getIdentifier)
-                .distinct()
-                .sorted(SkinListEntry::compareIdentifiers)
-                .toList();
-        Optional<String> selected = SkinSelection.cycleValue(clothes, villager.getClothes(), offset);
         if (selected.isEmpty() || !beginEditorCommand()) {
             return;
         }
@@ -1310,28 +1418,8 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         sendCommandLocked("hair");
     }
 
-    private void cycleHairStyle(int offset) {
-        List<String> styles = getIdsForCurrentGender(ClientSkinCatalog.hairStyles().values());
-        Optional<String> selected = SkinSelection.cycleValue(styles, findCurrentHairStyle(styles).orElse(""), offset);
-        if (selected.isEmpty() || !beginEditorCommand()) {
-            return;
-        }
-        applyHairStyle(villager, selected.get());
-        sendCommandLocked("hair");
-    }
-
     private void randomSkin() {
         Optional<String> selected = SkinSelection.pickDifferentWeightedId(getBodySkinChoices(), entry -> entry.getIdentifier().equals(villager.getSkin()));
-        if (selected.isEmpty() || !beginEditorCommand()) {
-            return;
-        }
-        villager.setSkin(selected.get());
-        sendCommandLocked("skin");
-    }
-
-    private void cycleSkin(int offset) {
-        List<String> skins = getIdsForCurrentGender(ClientSkinCatalog.bodySkins().values());
-        Optional<String> selected = SkinSelection.cycleValue(skins, villager.getSkin(), offset);
         if (selected.isEmpty() || !beginEditorCommand()) {
             return;
         }
@@ -1357,11 +1445,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
     private String pickRandomLayeredHair(LayeredHair.Category category) {
         return SkinSelection.pickLayeredHair(getLayeredHairChoices(category), category).orElse("");
-    }
-
-    private Component getHairStyleText() {
-        List<String> styles = getIdsForCurrentGender(ClientSkinCatalog.hairStyles().values());
-        return getSelectionIndexText("gui.villager_editor.hair_index", styles, findCurrentHairStyle(styles).orElse(""));
     }
 
     private Optional<String> findCurrentHairStyle(List<String> styleIds) {
@@ -1390,18 +1473,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
     private String getCurrentLayeredHair(LayeredHair.Category category) {
         return villager.getLayeredHair(category);
-    }
-
-    private Component getSelectionIndexText(String key, List<String> values, String selected) {
-        int index = values.indexOf(selected);
-        int displayTotal = values.size();
-        int displayIndex = values.isEmpty() ? 0 : index < 0 ? 1 : index + 1;
-        return Component.translatable(key, displayIndex, displayTotal);
-    }
-
-    private Component getSkinIndexText() {
-        List<String> skins = getBodySkinIdsForCurrentGender();
-        return getSelectionIndexText("gui.villager_editor.skin_index", skins, villager.getSkin());
     }
 
     private List<String> getBodySkinIdsForCurrentGender() {
@@ -1467,13 +1538,48 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         return Component.translatable("gui.villager_editor.hair_layer_display." + category.getId());
     }
 
+    /** The traits of the selected category the editor offers. */
     private Traits.Trait[] getValidTraits() {
         return Traits.all().stream().filter(e -> {
+            if (e.getCategory() != traitCategory) {
+                return false;
+            }
             if (villagerUUID.equals(playerUUID)) {
                 return (Config.getInstance().bypassTraitRestrictions || e.isUsableOnPlayer()) && e.isEnabled();
             }
             return e.isEnabled();
         }).toList().toArray(Traits.Trait[]::new);
+    }
+
+    /** Why a trait cannot be added now, or null when it can. */
+    private @Nullable Component traitBlockedReason(Traits.Trait trait, AgeState age) {
+        Traits traits = villager.getTraits();
+        for (Traits.Trait owned : traits.getTraits()) {
+            if (owned.conflictsWith(trait)) {
+                return Component.translatable("trait.conflicts", owned.getName()).withStyle(ChatFormatting.RED);
+            }
+        }
+        AgeState minAge = trait.getMinAge();
+        AgeState maxAge = trait.getMaxAge();
+        if (!trait.isValidFor(age)) {
+            if (maxAge != null && age.ordinal() > maxAge.ordinal()) {
+                return Component.translatable("trait.max_age", maxAge.getName()).withStyle(ChatFormatting.RED);
+            }
+            if (minAge != null) {
+                return Component.translatable("trait.min_age", minAge.getName()).withStyle(ChatFormatting.RED);
+            }
+        }
+        if (!traits.canAdd(trait, age)) {
+            return Component.translatable("trait.full").withStyle(ChatFormatting.RED);
+        }
+        return null;
+    }
+
+    private void setTraitCategory(int step) {
+        TraitCategory[] categories = TraitCategory.values();
+        traitCategory = categories[Math.floorMod(traitCategory.ordinal() + step, categories.length)];
+        traitPage = 0;
+        setPage("traits");
     }
 
     private void updateClothingPageWidget() {
@@ -1541,7 +1647,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         if (villagerUUID.equals(playerUUID)) {
             return new String[]{"general", "body", "traits"};
         } else {
-            return new String[]{"general", "body", "personality", "traits", "schedule", "debug", "inspect"};
+            return new String[]{"general", "body", "traits", "schedule", "debug", "inspect"};
         }
     }
 
@@ -1727,7 +1833,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
     private void setTraitPage(int i) {
         Traits.Trait[] traits = getValidTraits();
-        int maxPage = Math.max(0, (int) Math.ceil((double) traits.length / TRAITS_PER_PAGE) - 1);
+        int maxPage = Math.max(0, (traits.length + TRAITS_PER_PAGE - 1) / TRAITS_PER_PAGE - 1);
         traitPage = Math.clamp(i, 0, maxPage);
         setPage("traits");
     }
@@ -1745,6 +1851,10 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     setFocused(null);
                 }
             }
+        }
+
+        if (event.button() == 0 && clickLookGrid(event.x(), event.y())) { // expansion: looks
+            return true;
         }
 
         if (page.equals("clothing") && (hoveredClothingId >= 0 && filteredClothing.size() > hoveredClothingId)) {
@@ -1772,7 +1882,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             String selectedSkin = filteredBodySkins.get(hoveredClothingId);
             villager.setSkin(selectedSkin);
             villagerVisualization.setSkin(selectedSkin);
-            setPage("body");
+            setPage("look_skin");
             eventCallback("skin");
             return true;
 
@@ -1782,7 +1892,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             String beard = filteredBeards.get(hoveredClothingId);
             Beards.set(villager, beard);
             Beards.set(villagerVisualization, beard);
-            setPage("hair_style");
+            setPage("beard_style");
             eventCallback("beard");
             return true;
         }
@@ -1977,7 +2087,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 if (villagerUUID.equals(playerUUID) && shouldUsePlayerModel() && Minecraft.getInstance().player != null) {
                     extractEntityPreview(context, x, y - 57, x + DATA_WIDTH, y + 95, 55, 0, mouseX, mouseY, delta, Minecraft.getInstance().player);
                 } else {
-                    extractEntityPreview(context, x, y - 57, x + DATA_WIDTH, y + 95, 55, 0, mouseX, mouseY, delta, villager);
+                    extractEntityPreview(context, x, y - 57, x + DATA_WIDTH, y + 95, 55, 0, mouseX, mouseY, delta, largePreviewEntity());
                 }
 
                 // hint for confused people
@@ -1996,6 +2106,10 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             drawInspectPage(context);
         } else if (page.equals("schedule")) {
             drawScheduleStatus(context);
+        }
+
+        if (lookGrid != null) { // expansion: looks
+            lookGrid.render(this, context, font, villagerVisualization, this::resetVisualization, mouseX, mouseY, delta);
         }
 
         if (isSelectionPage()) {
@@ -2080,7 +2194,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             return Component.translatable("gui.villager_editor.schedule.warning.job_site");
         } else if (activity == Activity.MEET && Boolean.TRUE.equals(scheduleNoMeetingPoint)) {
             return Component.translatable("gui.villager_editor.schedule.warning.meeting_point");
-        } else if (activity == Activity.PLAY && villager.getAgeState() == AgeState.ADULT) {
+        } else if (activity == Activity.PLAY && villager.getAgeState().isAdult()) {
             return Component.translatable("gui.villager_editor.schedule.warning.play");
         }
         return null;
@@ -2187,7 +2301,8 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
 
     private boolean isMainPageSelected(String mainPage) {
         return mainPage.equals(page)
-               || (mainPage.equals("body") && List.of("clothing_style", "hair_style", "head", "eyes", "hair_advanced").contains(page));
+               || (mainPage.equals("body") && List.of("clothing_style", "hair_style", "head", "eyes", "hair_advanced",
+                "look_skin", "hair_color", "beard_style", "eye_color").contains(page));
     }
 
     public void setVillagerName(String name) {

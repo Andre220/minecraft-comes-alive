@@ -3,6 +3,7 @@ package net.conczin.mca.expansion.minds;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Needs;
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
 import net.conczin.mca.server.property.PropertyRules;
 import net.conczin.mca.server.world.data.Building;
 import net.conczin.mca.server.world.data.Village;
@@ -125,11 +126,13 @@ public final class HomeQuality {
             return List.of();
         }
         int score = score(villager);
+        // neat villagers care twice as much about their home, slobs do not mind a cramped one
+        int weight = villager.getTraits().hasTrait(PersonalityTraits.NEAT) ? 2 : 1;
         if (score >= COZY) {
-            return List.of(new Needs.Thought(Needs.Need.ENERGY, "needs.thought.home.cozy", 2));
+            return List.of(new Needs.Thought(Needs.Need.ENERGY, "needs.thought.home.cozy", 2 * weight));
         }
-        if (score >= 0 && score < CRAMPED) {
-            return List.of(new Needs.Thought(Needs.Need.ENERGY, "needs.thought.home.cramped", -2));
+        if (score >= 0 && score < CRAMPED && !villager.getTraits().hasTrait(PersonalityTraits.SLOB)) {
+            return List.of(new Needs.Thought(Needs.Need.ENERGY, "needs.thought.home.cramped", -2 * weight));
         }
         return List.of();
     }

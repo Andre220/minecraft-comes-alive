@@ -1,5 +1,7 @@
 package net.conczin.mca.client.gui;
 
+import net.conczin.mca.api.addon.client.MapOverlay;
+
 /**
  * Immutable per-frame map viewport shared by every Blueprint render layer.
  *
@@ -14,7 +16,7 @@ record BlueprintMapViewport(int centerX,
                             int bottom,
                             double mapCenterX,
                             double mapCenterZ,
-                            float scale) {
+                            float scale) implements MapOverlay.MapView {
     static BlueprintMapViewport create(int centerX,
                                        int centerY,
                                        int halfSize,
@@ -38,11 +40,13 @@ record BlueprintMapViewport(int centerX,
         );
     }
 
-    double screenX(double worldX) {
+    @Override
+    public double screenX(double worldX) {
         return centerX + (worldX - mapCenterX) * scale;
     }
 
-    double screenY(double worldZ) {
+    @Override
+    public double screenY(double worldZ) {
         return centerY + (worldZ - mapCenterZ) * scale;
     }
 

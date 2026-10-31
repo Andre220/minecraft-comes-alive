@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain;
 
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.expansion.wardrobe.ChangeClothesTask;
 import net.conczin.mca.expansion.minds.ArcheryPracticeTask;
 import net.conczin.mca.expansion.minds.routine.DailyTogglesTask;
@@ -161,7 +162,7 @@ public class VillagerTasksMCA {
                 brain.addActivity(Activity.PANIC, VillagerTasksMCA.getPanicPackage(0.5F), ImmutableSet.of(), ImmutableSet.of());
             }
             noDefault = true;
-        } else if (profession == ProfessionsMCA.MERCENARY) {
+        } else if (profession == ProfessionsMCA.MERCENARY || Addons.fightsLikeMercenary(profession)) {
             brain.setSchedule(SchedulesMCA.GUESTS);
             brain.addActivity(Activity.CORE, VillagerTasksMCA.getImportantCorePackage(0.5F), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.IDLE, VillagerTasksMCA.getMercenaryPackage(0.5f), ImmutableSet.of(), ImmutableSet.of());
@@ -186,7 +187,7 @@ public class VillagerTasksMCA {
             brain.setSchedule(EnvironmentAttributes.BABY_VILLAGER_ACTIVITY);
             //todo babies may get a little bit more AI
             return brain;
-        } else if (age != AgeState.ADULT) {
+        } else if (!age.isAdult()) {
             brain.setSchedule(EnvironmentAttributes.BABY_VILLAGER_ACTIVITY);
             brain.addActivity(Activity.PLAY, VillagerTasksMCA.getPlayPackage(1.0F), ImmutableSet.of(), ImmutableSet.of());
             brain.addActivity(Activity.CORE, VillagerTasksMCA.getSelfDefencePackage(), ImmutableSet.of(), ImmutableSet.of());
@@ -306,6 +307,8 @@ public class VillagerTasksMCA {
                 Pair.of(5, GoToWantedItem.create(speedModifier, false, 4)),
                 // needs: hungry villagers fetch food from home, thirsty ones drink at a cauldron, lonely ones look for company
                 Pair.of(6, new NeedsFetchFoodTask()),
+                Pair.of(6, NeedsFetchFoodTask.forBaking()),
+                Pair.of(6, new NeedsBakeBreadTask()),
                 Pair.of(6, NeedsFetchFoodTask.forDrinks()),
                 Pair.of(6, new NeedsDrinkTask()),
                 Pair.of(6, new NeedsSocializeTask()),

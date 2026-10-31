@@ -1,0 +1,11 @@
+{
+  "color": "ffffaa00",
+  "visible": true,
+  "priority": 5,
+  "blocks": {
+    "minecraft:bell": 1,
+    "mca:city_records": 1
+  },
+  "iconU": 1,
+  "iconV": 0
+}

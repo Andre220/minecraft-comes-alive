@@ -1,5 +1,6 @@
 package net.conczin.mca.entity;
 
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.conczin.mca.expansion.looks.Beards;
 import com.mojang.serialization.JsonOps;
 import net.conczin.mca.Config;
@@ -125,6 +126,7 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
             if (spawnReason != EntitySpawnReason.BREEDING) {
                 getGenetics().randomize();
                 getTraits().randomize();
+                getTraits().fillSlots(getAgeState());
             }
 
             initializeSkin(false);
@@ -399,15 +401,15 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
 
     default void updateAttributes() {
         //set speed
-        float speed = 1.0f;
-        if (getTraits().hasTrait(Traits.ATHLETIC)) {
-            speed *= 1.1f;
-        }
+        float speed = getTraits().getSpeedMultiplier();
 
         speed /= (0.9f + getGenetics().getGene(Genetics.WIDTH) * 0.2f);
         speed *= (0.9f + getGenetics().getGene(Genetics.SIZE) * 0.2f);
 
         speed *= getAgeState().getSpeed();
+        if (this instanceof VillagerEntityMCA mca) { // expansion: minds
+            speed *= VillagerAttributes.speedFactor(mca);
+        }
 
         AttributeInstance entityAttributeInstance = asEntity().getAttribute(Attributes.MOVEMENT_SPEED);
         if (entityAttributeInstance != null) {
@@ -417,12 +419,9 @@ public interface VillagerLike<E extends Entity & VillagerLike<E>> extends CTrack
         }
 
         // damage
-        float damageMultiplier = 1.0f;
-        if (getTraits().hasTrait(Traits.WEAK)) {
-            damageMultiplier *= 0.75f;
-        }
-        if (getTraits().hasTrait(Traits.TOUGH)) {
-            damageMultiplier *= 1.5f;
+        float damageMultiplier = getTraits().getAttackDamageMultiplier();
+        if (this instanceof VillagerEntityMCA mca) { // expansion: minds
+            damageMultiplier *= VillagerAttributes.damageFactor(mca);
         }
         AttributeInstance attackAttributeInstance = asEntity().getAttribute(Attributes.ATTACK_DAMAGE);
         if (attackAttributeInstance != null) {

@@ -362,6 +362,11 @@ public final class Config extends CommonConfig {
      */
     public boolean villagerSpeechBubbles = false;
 
+    /**
+     * Buttons on MCA's screens use MCA's own dark sprites; off, they stay vanilla and follow resource packs.
+     */
+    public boolean mcaButtonStyle = true;
+
     /** Sound while a speech bubble's text appears: BEEP, MCA_VOICE (MCA's text to speech) or NONE. */
     public SpeechSound speechBubbleSound = SpeechSound.BEEP;
 

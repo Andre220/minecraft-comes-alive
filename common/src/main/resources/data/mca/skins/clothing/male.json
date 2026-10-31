@@ -610,5 +610,113 @@
   {
     "id": "mca:skins/clothing/normal/male/cultist/0.png",
     "profession": "mca:cultist"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/0.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/1.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/2.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/3.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/4.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/0.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/1.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/2.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/3.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/4.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/5.png",
+    "profession": "mca:bandit"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/cartographer/0.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/cartographer/1.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/cartographer/2.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/cartographer/3.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/cartographer/4.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/0.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/1.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/2.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/3.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/leatherworker/4.png",
+    "profession": "mca:caravaneer"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/0.png",
+    "profession": "mca:caravan_guard"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/1.png",
+    "profession": "mca:caravan_guard"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/2.png",
+    "profession": "mca:caravan_guard"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/3.png",
+    "profession": "mca:caravan_guard"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/4.png",
+    "profession": "mca:caravan_guard"
+  },
+  {
+    "id": "mca:skins/clothing/normal/male/guard/5.png",
+    "profession": "mca:caravan_guard"
   }
 ]

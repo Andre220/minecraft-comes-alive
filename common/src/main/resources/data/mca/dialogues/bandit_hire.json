@@ -1,0 +1,63 @@
+{
+  "silent": true,
+  "answers": [
+    {
+      "name": "short",
+      "results": [
+        {
+          "baseChance": 0,
+          "conditions": [
+            {
+              "chance": 10000000000,
+              "emeralds": 8
+            }
+          ],
+          "actions": {
+            "bandit_hire": 3,
+            "say": "bandit_hired"
+          }
+        },
+        {
+          "baseChance": 1,
+          "actions": {
+            "say": "no_money"
+          }
+        }
+      ]
+    },
+    {
+      "name": "long",
+      "results": [
+        {
+          "baseChance": 0,
+          "conditions": [
+            {
+              "chance": 10000000000,
+              "emeralds": 16
+            }
+          ],
+          "actions": {
+            "bandit_hire": 7,
+            "say": "bandit_hired"
+          }
+        },
+        {
+          "baseChance": 1,
+          "actions": {
+            "say": "no_money"
+          }
+        }
+      ]
+    },
+    {
+      "name": "cancel",
+      "results": [
+        {
+          "actions": {
+            "next": "main"
+          }
+        }
+      ]
+    }
+  ]
+}

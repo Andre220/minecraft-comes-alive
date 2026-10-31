@@ -1,5 +1,6 @@
 package net.conczin.mca.client.render.layer;
 
+import net.conczin.mca.client.render.voxel.VillagerParts;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.conczin.mca.Config;
 import net.conczin.mca.client.render.DynamicSkinCache;
@@ -42,6 +43,7 @@ public class Player3dLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         if (visuals == null) {
             return;
         }
+        VillagerParts.poseNow(getParentModel(), state);
         VoxelLayerRenderer.submit(getParentModel().root(), poseStack, submitNodeCollector, lightCoords,
                 LivingEntityRenderer.getOverlayCoords(state, 0.0F), DynamicSkinCache.getOrCreateStitchedSkin(visuals));
     }

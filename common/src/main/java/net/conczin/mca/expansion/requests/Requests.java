@@ -1,6 +1,5 @@
 package net.conczin.mca.expansion.requests;
 
-import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.server.world.data.VillageManager;
 import net.conczin.mca.server.world.data.Village;
 import net.minecraft.stats.Stats;
@@ -219,7 +218,7 @@ public final class Requests {
             return;
         }
         List<VillagerEntityMCA> free = residents.stream()
-                .filter(v -> v.isAlive() && v.getAgeState() == AgeState.ADULT && get(v).isEmpty())
+                .filter(v -> v.isAlive() && v.getAgeState().isAdult() && get(v).isEmpty())
                 .toList();
         if (free.isEmpty()) {
             player.sendSystemMessage(Component.translatable("request.board.empty"));

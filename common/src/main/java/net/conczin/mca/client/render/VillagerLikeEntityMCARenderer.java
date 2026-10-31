@@ -158,7 +158,8 @@ public class VillagerLikeEntityMCARenderer<T extends Mob & VillagerLike<T>>
         }
     }
 
-    private static ItemStack workItem(Identifier id) {
+    /** The item a work animation shows (a tool, a crate), by id. */
+    public static ItemStack workItem(Identifier id) {
         return WORK_TOOLS.computeIfAbsent(id, key -> new ItemStack(BuiltInRegistries.ITEM.getOptional(key).orElse(Items.AIR)));
     }
 

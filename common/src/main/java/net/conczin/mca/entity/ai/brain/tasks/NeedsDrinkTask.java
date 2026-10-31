@@ -1,5 +1,8 @@
 package net.conczin.mca.entity.ai.brain.tasks;
 
+import net.minecraft.world.InteractionHand;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.sounds.SoundEvents;
 import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Needs;
@@ -16,8 +19,9 @@ import net.minecraft.world.entity.schedule.Activity;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A thirsty villager walks to the nearest cauldron (or sink) with water and stays next to it until its
- * thirst is quenched (Needs refills thirst while it is within reach of one).
+ * A thirsty villager walks to the nearest cauldron, sink or well with water and stays next to it until its
+ * thirst is quenched (Needs refills thirst while it is within reach of one), drinking now and then: a sip at a
+ * cauldron, a bucket drawn at a well.
  */
 public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
     private static final float THIRSTY = 30.0F;
@@ -51,7 +55,7 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
             return false;
         }
         cauldron = BlockPos.findClosestMatch(villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT,
-                pos -> Needs.isDrinkingWater(level.getBlockState(pos))).map(BlockPos::immutable).orElse(null);
+                pos -> Needs.isDrinkingWater(level, pos)).map(BlockPos::immutable).orElse(null);
         if (cauldron == null) {
             nextAttempt = level.getGameTime() + RETRY_COOLDOWN;
             return false;
@@ -69,7 +73,7 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
         return cauldron != null
                && villager.getNeeds().get(Needs.Need.THIRST) < QUENCHED
                && (!ActionQueue.isEnabled() || villager.getActionQueue().isCurrent(ActionType.DRINK))
-               && Needs.isDrinkingWater(level.getBlockState(cauldron))
+               && Needs.isDrinkingWater(level, cauldron)
                && villager.getBrain().getMemoryInternal(MemoryModuleType.ATTACK_TARGET).isEmpty()
                && !villager.getVillagerBrain().isPanicking();
     }
@@ -83,6 +87,12 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
             // Drinking: stay put and look at the water.
             villager.getBrain().eraseMemory(MemoryModuleType.WALK_TARGET);
             villager.getBrain().setMemory(MemoryModuleType.LOOK_TARGET, new BlockPosTracker(cauldron));
+            if (time % 40 == 0) {
+                boolean well = !Needs.isDrinkingWater(level.getBlockState(cauldron));
+                villager.swing(InteractionHand.MAIN_HAND);
+                level.playSound(null, villager.blockPosition(), well ? SoundEvents.BUCKET_FILL : SoundEvents.GENERIC_DRINK.value(),
+                        SoundSource.NEUTRAL, 0.5F, 1.0F);
+            }
         } else if (villager.getBrain().getMemoryInternal(MemoryModuleType.WALK_TARGET).isEmpty()) {
             walk(villager);
         }

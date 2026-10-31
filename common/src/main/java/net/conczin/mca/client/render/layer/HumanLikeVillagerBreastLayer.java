@@ -60,6 +60,7 @@ public class HumanLikeVillagerBreastLayer extends RenderLayer<VillagerRenderStat
         if (size <= 0.0F) {
             return;
         }
+        VillagerParts.poseNow(getParentModel(), state);
         VillagerParts.Placement body = VillagerParts.placement(VillagerParts.placements(getParentModel().root(), poseStack), BODY);
         if (body == null) {
             return;

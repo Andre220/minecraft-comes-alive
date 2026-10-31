@@ -1,5 +1,6 @@
 package net.conczin.mca.mixin.client;
 
+import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.conczin.mca.client.gui.PreviewEntityAnimation;
@@ -32,7 +33,9 @@ public class MixinLivingEntityRenderer {
     private void mca$scaleHumanLikeVillager(LivingEntityRenderState state, PoseStack poseStack, CallbackInfo ci) {
         if (state instanceof VanillaVillagerLookHolder holder && holder.mca$getLookVisuals() != null) {
             float[] scale = VanillaVillagerLook.modelScale(holder.mca$getLookVisuals());
-            poseStack.scale(scale[0], scale[1], scale[0]);
+            // the villager renderer scales its mesh to 15/16 itself; the zombie villager's player-sized mesh is not
+            float mesh = state instanceof ZombieVillagerRenderState ? VanillaVillagerLook.MESH_SCALE : 1.0F;
+            poseStack.scale(scale[0] * mesh, scale[1] * mesh, scale[0] * mesh);
         }
     }
 

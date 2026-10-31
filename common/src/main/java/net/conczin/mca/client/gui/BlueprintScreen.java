@@ -1,5 +1,7 @@
 package net.conczin.mca.client.gui;
 
+import net.conczin.mca.api.addon.client.MapOverlay;
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.expansion.progression.ProgressPage;
 import net.conczin.mca.MCA;
 import net.conczin.mca.client.gui.widget.IconButtonWidget;
@@ -25,6 +27,7 @@ import net.conczin.mca.server.world.data.StructureFloor;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.util.compat.ButtonWidget;
 import net.conczin.mca.util.localization.FlowingText;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -141,9 +144,52 @@ public class BlueprintScreen extends ExtendedScreen {
     private int mouseY;
 
     private Map<Rank, List<Task>> tasks;
+    private final String startPage;
+    /** Opened from a section of the town hall: no tabs, and Back goes to the town hall. */
+    private final boolean focused;
+    private static final int BORDER_DASH = 4;
+    private static final int BORDER_COLOR = 0xc0f0c040;
 
     public BlueprintScreen() {
+        this("map", false);
+    }
+
+    /**
+     * One section of the town hall: opens on its page and shows only that, without the column of tabs; Back returns
+     * to the town hall's radial menu.
+     */
+    public BlueprintScreen(String startPage) {
+        this(startPage, true);
+    }
+
+    private BlueprintScreen(String startPage, boolean focused) {
         super(Component.literal("Blueprint"));
+        this.startPage = startPage;
+        this.focused = focused;
+    }
+
+    /** The area villagers count as the village: its buildings and a margin around, dashed over the map. */
+    private void renderVillageBorder(GuiGraphicsExtractor context, BlueprintMapViewport viewport) {
+        if (village == null || village.getBox().getMaxBlockCount() <= 1) {
+            return;
+        }
+        BoundingBox border = village.getBox().inflatedBy(Village.BORDER_MARGIN);
+        int x0 = (int) viewport.screenX(border.minX());
+        int x1 = (int) viewport.screenX(border.maxX() + 1);
+        int y0 = (int) viewport.screenY(border.minZ());
+        int y1 = (int) viewport.screenY(border.maxZ() + 1);
+        context.enableScissor(viewport.left() + 1, viewport.top() + 1, viewport.right() - 1, viewport.bottom() - 1);
+        for (int x = x0; x < x1; x += BORDER_DASH * 2) {
+            int end = Math.min(x + BORDER_DASH, x1);
+            context.fill(x, y0, end, y0 + 1, BORDER_COLOR);
+            context.fill(x, y1 - 1, end, y1, BORDER_COLOR);
+        }
+        for (int y = y0; y < y1; y += BORDER_DASH * 2) {
+            int end = Math.min(y + BORDER_DASH, y1);
+            context.fill(x0, y, x0 + 1, end, BORDER_COLOR);
+            context.fill(x1 - 1, y, x1, end, BORDER_COLOR);
+        }
+        context.disableScissor();
     }
 
     static void onClientLevelChanged(Object levelIdentity) {
@@ -203,6 +249,8 @@ public class BlueprintScreen extends ExtendedScreen {
     public void init() {
         if (needsVillageRequestOnInit()) {
             Network.sendToServer(new GetVillageRequest());
+            Addons.clientBootstrap(); // the addons' overlays on the map (a band's land...)
+            MapOverlay.all().forEach(MapOverlay::onOpen);
             setPage("waiting");
             return;
         }
@@ -216,7 +264,13 @@ public class BlueprintScreen extends ExtendedScreen {
     private void setPage(String page) {
         if (page.equals("close")) {
             assert minecraft != null;
-            minecraft.gui.setScreen(null);
+            minecraft.gui.setScreen(focused ? new TownHallScreen() : null);
+            return;
+        }
+        if (page.equals("villagers")) {
+            // the residents have a screen of their own: a grid of faces and an inspector (expansion: town hall)
+            assert minecraft != null;
+            minecraft.gui.setScreen(new ResidentsScreen());
             return;
         }
 
@@ -238,13 +292,17 @@ public class BlueprintScreen extends ExtendedScreen {
         removeBuildingButton = null;
 
         // back button
-        addRenderableWidget(new ButtonWidget(5, 5, 20, 20, Component.translatable("gui.button.backarrow"), b -> setPage("close")));
+        if (focused) {
+            addRenderableWidget(new ButtonWidget(5, 5, 60, 20, Component.translatable("gui.back"), b -> setPage("close")));
+        } else {
+            addRenderableWidget(new ButtonWidget(5, 5, 20, 20, Component.translatable("gui.button.backarrow"), b -> setPage("close")));
+        }
 
         //page selection
         int layoutY = layoutBaseY();
         int bx = width / 2 - MAP_NAVIGATION_OFFSET;
         int by = height / 2 - 56;
-        if (!page.equals("rename") && (!page.equals("empty") && !page.equals("waiting"))) {
+        if (!focused && !page.equals("rename") && (!page.equals("empty") && !page.equals("waiting"))) {
             for (String p : ProgressPage.pages(new String[]{"map", "rank", "catalog", "villagers", "rules"})) { // expansion: progression
                 ButtonWidget widget = new ButtonWidget(bx, by, NAVIGATION_WIDTH, 20, Component.translatable("gui.blueprint." + p), b -> setPage(p));
                 addRenderableWidget(widget);
@@ -521,7 +579,10 @@ public class BlueprintScreen extends ExtendedScreen {
             case "catalog" -> renderCatalog(context);
             case "villagers" -> renderVillagers(context);
             case "rules" -> renderRules(context);
-            case ProgressPage.PAGE -> ProgressPage.render(context, font, width, layoutBaseY() - 70); // expansion: progression
+            // expansion: progression, right of the tabs so it never runs under them
+            case ProgressPage.PAGE -> ProgressPage.render(context, font,
+                    focused ? Math.max(8, width / 2 - 160) : width / 2 - MAP_NAVIGATION_OFFSET + NAVIGATION_WIDTH + 10,
+                    focused ? 32 : height / 2 - 56, focused ? Math.min(width - 8, width / 2 + 160) : width - 8, height - 8);
         }
 
     }
@@ -751,10 +812,20 @@ public class BlueprintScreen extends ExtendedScreen {
                 mouseX,
                 mouseY
         );
+        renderVillageBorder(context, viewport);
+        List<Component> overlayTooltip = null;
+        for (MapOverlay overlay : MapOverlay.all()) {
+            List<Component> tooltip = overlay.render(context, viewport, mouseX, mouseY);
+            overlayTooltip = overlayTooltip == null ? tooltip : overlayTooltip;
+        }
         renderPlayerHeadButtonIcon(context, player);
 
         List<BlueprintMapRenderer.HoverTarget> hoverTargets = tooltipTargets(
                 renderResult.hoverTargets(), renderResult.hoveredLogicalBuildingId());
+        if (overlayTooltip != null) {
+            WidgetUtils.drawTooltip(context, font, overlayTooltip, mouseX, mouseY);
+            return;
+        }
         if (hoverTargets.isEmpty()) return;
 
         BlueprintMapRenderer.HoverTarget active = hoverTargets.getFirst();
@@ -1454,7 +1525,7 @@ public class BlueprintScreen extends ExtendedScreen {
         if (village == null) {
             setPage("empty");
         } else if (page.equals("waiting") || page.equals("empty")) {
-            setPage("map");
+            setPage(startPage);
         }
     }
 

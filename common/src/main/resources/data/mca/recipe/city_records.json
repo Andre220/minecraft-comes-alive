@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "B",
+    "L"
+  ],
+  "key": {
+    "B": "minecraft:writable_book",
+    "L": "minecraft:lectern"
+  },
+  "result": {
+    "id": "mca:city_records"
+  }
+}

@@ -12,6 +12,16 @@ Data: 2026-10-18. Continua `vilas-consolidado.md` e `bountiful-producao-coletor.
 | 2 | Missões com o Bountiful | ideal | **núcleo pronto** (`villagerRequests`, 4 GameTests); Bountiful sem versão 26.2 |
 | 3 | Migrar as features antigas para `expansion.*` | ideal, não obrigatório | aos poucos |
 | 4 | Árvore de evolução de prédios e níveis da vila | depois | falta modelar |
+| 5 | Traços estilo The Sims, idoso, relações, jeito de andar | feito | sem commit, sem teste em jogo: [tracos-sims.md](tracos-sims.md) |
+| 6 | Prefeitura, painel da vila, chefe, empregos, questline do ancião, placas | fase 1 feita | WIP: [gestao-da-vila.md](gestao-da-vila.md) |
+| 7 | Atributos e níveis (Força, Percepção, Vigor, Destreza, Sabedoria, Social) | feito, sem teste em jogo | [atributos-e-niveis.md](atributos-e-niveis.md) |
+| 8 | Informação atrás das conversas e visual editável da UI | conversas feitas, falta o visual | WIP: [interface-e-conversas.md](interface-e-conversas.md) |
+| 9 | Traços do RimWorld e crise mental | feito, sem teste em jogo | [tracos-rimworld.md](tracos-rimworld.md) |
+| 10 | Facções: saqueadores do MCA, bandeiras, reputação, caminho fora da lei | fases 1 a 3, mapa e guerras feitos | WIP: [faccoes.md](faccoes.md) |
+| 11 | Caravanas de 3 a 5 pessoas com animais, viajando e comerciando entre as vilas | feito, sem teste em jogo (falta encomendas) | [caravanas.md](caravanas.md) |
+| 12 | MCA Reborn: catálogo e separação em addons instaláveis (Sentimentos, Fome e Sede…) | fase 0 (catálogo) feita | [addons.md](addons.md) |
+
+Arte pendente (modelos e texturas de tudo isso): [todo-arte.md](todo-arte.md).
 
 Regras de sempre:
 - **Código novo:** fica em `net.conczin.mca.expansion.<tema>`. O core só recebe ganchos curtos marcados

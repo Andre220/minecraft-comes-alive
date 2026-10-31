@@ -13,7 +13,12 @@ public enum AgeState implements VillagerDimensions {
     TODDLER(0.6F, 0.55F, 0, 1.3F, 0.65f, 1.4f),
     CHILD(0.7F, 0.65F, 0, 1.2F, 0.9f, 1.2f),
     TEEN(0.85F, 0.85F, 0.5F, 1, 1.05f, 1.0f),
-    ADULT(1, 1, 1, 1, 1.0f, 1.0f);
+    ADULT(1, 1, 1, 1, 1.0f, 1.0f),
+    /**
+     * Old age. Not part of the age counter, which ends with adulthood: it comes from the time a
+     * villager has been an adult (see VillagerEntityMCA#isElder). Kept last so saved ids stay.
+     */
+    ELDER(1, 0.96F, 1, 1, 0.85f, 0.9f);
 
     private static final AgeState[] VALUES = values();
 
@@ -100,14 +105,23 @@ public enum AgeState implements VillagerDimensions {
         return speed;
     }
 
+    /** Adults and elders: grown up, for everything that is about adults. */
+    public boolean isAdult() {
+        return this == ADULT || this == ELDER;
+    }
+
+    /** The next stage of growing up; adults and elders do not grow up any further. */
     public AgeState getNext() {
-        if (this == ADULT) {
+        if (isAdult()) {
             return this;
         }
         return byId(ordinal() + 1);
     }
 
     public int toAge() {
+        if (this == ELDER) {
+            return 0;
+        }
         return (ordinal() - 1) * getStageDuration() - getMaxAge();
     }
 }

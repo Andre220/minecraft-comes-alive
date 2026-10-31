@@ -1,6 +1,7 @@
 """Builds the developer guide at docs/dev/index.html.
 
-It reads the repository (building types, production recipes, the guide book texts) and the
+It reads the repository (building types, production recipes, the guide book texts, the planning
+docs in docs/planning, rendered with the markdown package when installed) and the
 Minecraft client jar from the Gradle cache (village structures for the biome matrix, textures for
 the icon grid). Textures are copied to docs/dev/_assets/, which is git-ignored: Mojang's textures
 must not be redistributed with the fork.
@@ -9,6 +10,7 @@ usage: python -I scripts/dev_docs.py [path to minecraft-client.jar]
 """
 import gzip
 import html
+import re
 import io
 import json
 import os
@@ -20,6 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 RES = ROOT / "common/src/main/resources"
+PLANNING = ROOT / "docs/planning"
 OUT = ROOT / "docs/dev"
 ASSETS = OUT / "_assets"
 DEFAULT_JAR = Path.home() / ".gradle/caches/fabric-loom/26.2/minecraft-client.jar"
@@ -290,6 +293,28 @@ transition:transform .15s,border-color .15s,box-shadow .15s}
 .tabs button{padding:5px 13px;border:1px solid var(--line);border-radius:99px;background:var(--bg2);color:var(--fg);cursor:pointer;font:inherit;font-size:13px;transition:all .15s}
 .tabs button:hover{border-color:var(--c)}
 .tabs button.on{background:var(--c);color:#fff;border-color:var(--c);box-shadow:0 3px 10px color-mix(in srgb,var(--c) 40%,transparent)}
+.plans{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:12px}
+.plan{background:var(--bg2);border:1px solid var(--line);border-radius:14px;padding:14px 18px;border-left:5px solid var(--k);
+display:flex;flex-direction:column;gap:6px;transition:transform .2s,box-shadow .2s;color:var(--fg);text-decoration:none}
+.plan:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.plan b{font-size:16px;color:var(--k)}.plan p{margin:0;font-size:13px;color:var(--muted)}
+.state{align-self:flex-start;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 10px;border-radius:99px;
+background:color-mix(in srgb,var(--k) 20%,transparent);color:color-mix(in srgb,var(--k) 75%,var(--fg))}
+details.doc{background:var(--bg2);border:1px solid var(--line);border-radius:14px;margin:12px 0;border-left:5px solid var(--k);scroll-margin-top:16px}
+details.doc>summary{cursor:pointer;padding:12px 18px;font-weight:600;font-size:16px;list-style:none;display:flex;align-items:center;gap:10px}
+details.doc>summary::-webkit-details-marker{display:none}
+details.doc>summary:before{content:"▸";color:var(--k);transition:transform .2s}details.doc[open]>summary:before{transform:rotate(90deg)}
+details.doc .body{padding:0 22px 16px;--c:var(--k)}details.doc .body h1{display:none}
+details.doc .body h2{font-size:20px;margin:18px 0 8px}details.doc .body h2 .ic,details.doc .body h2:after{display:none}
+details.doc .body blockquote{margin:10px 0;padding:8px 14px;border-left:4px solid var(--k);background:color-mix(in srgb,var(--k) 8%,transparent);border-radius:8px}
+details.doc .body blockquote p{margin:0}
+details.doc .body pre{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;overflow:auto}
+details.doc .body pre code{background:none;padding:0}
+.art td .tag{font-size:11px}
+.tag[data-g=provisório]{background:color-mix(in srgb,var(--rose) 22%,transparent);color:color-mix(in srgb,var(--rose) 70%,var(--fg))}
+.tag[data-g=programador]{background:color-mix(in srgb,var(--gold) 24%,transparent);color:color-mix(in srgb,var(--gold) 70%,var(--fg))}
+.tag[data-g=revisar]{background:color-mix(in srgb,var(--sky) 22%,transparent);color:color-mix(in srgb,var(--sky) 70%,var(--fg))}
+.tag[data-g=planejado]{background:color-mix(in srgb,var(--violet) 22%,transparent);color:color-mix(in srgb,var(--violet) 70%,var(--fg))}
 @media (max-width:860px){nav{position:static;width:auto;border-right:0;border-bottom:1px solid var(--line)}main{margin:0;padding:16px}
 section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26px}.hero .cube{display:none}}
 @media (prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}html{scroll-behavior:auto}
@@ -313,10 +338,13 @@ function onScroll(){const h=document.documentElement;bar.style.width=(h.scrollTo
 let cur=secs[0];secs.forEach(s=>{if(s.getBoundingClientRect().top<innerHeight*.3)cur=s;});
 links.forEach(a=>a.classList.toggle('on',a.hash==='#'+cur.id));}
 addEventListener('scroll',onScroll,{passive:true});onScroll();
+function openDoc(){const d=location.hash&&document.querySelector('details'+location.hash);if(d){d.open=true;d.scrollIntoView();}}
+addEventListener('hashchange',openDoc);openDoc();
 """
 
 # anchor, nav label, icon, section color
 SECTIONS = [
+    ("planning", "Planejamento", "🗺️", "var(--sky)"),
     ("mca", "MCA original", "🏡", "var(--grass)"),
     ("features", "Features da expansão", "✨", "var(--violet)"),
     ("behavior", "Comportamento", "🧠", "var(--sky)"),
@@ -325,6 +353,21 @@ SECTIONS = [
     ("buildings", "Tipos de prédio", "🏛️", "var(--gold)"),
     ("icons", "Ícones e balões", "💬", "var(--rose)"),
 ]
+# planning doc -> (state, color); docs not listed are shown as references
+PLAN_STATES = {
+    "proximos-passos.md": ("índice", "var(--grass)"),
+    "addons.md": ("catálogo", "var(--gold)"),
+    "tracos-sims.md": ("feito", "var(--grass)"),
+    "gestao-da-vila.md": ("WIP", "var(--violet)"),
+    "atributos-e-niveis.md": ("feito", "var(--grass)"),
+    "interface-e-conversas.md": ("WIP", "var(--violet)"),
+    "tracos-rimworld.md": ("feito", "var(--grass)"),
+    "faccoes.md": ("em andamento", "var(--sky)"),
+    "caravanas.md": ("feito", "var(--grass)"),
+    "todo-arte.md": ("TODO", "var(--rose)"),
+    "espelho-estudo.md": ("feito", "var(--grass)"),
+}
+ART_STATES = ("provisório", "programador", "revisar", "planejado")
 CHAPTER_COLORS = ["var(--grass)", "var(--sky)", "var(--violet)", "var(--rose)", "var(--gold)", "var(--teal)", "var(--ember)"]
 
 MCA_ORIGINAL = """
@@ -443,6 +486,58 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 """
 
 
+LIST_ITEM = re.compile(r"^\s*(?:[-*]|\d+\.)\s")
+
+
+def md_lists(text):
+    """Python-Markdown wants 4-space nested lists and a blank line before a list; the docs use 2 spaces."""
+    out, fenced, prev = [], False, ""
+    for line in text.splitlines():
+        if line.lstrip().startswith("```"):
+            fenced = not fenced
+        if not fenced:
+            indent = len(line) - len(line.lstrip(" "))
+            if indent and (LIST_ITEM.match(line) or LIST_ITEM.match(prev) or prev.startswith(" ")):
+                line = " " * (indent * 2) + line.lstrip(" ")
+            if LIST_ITEM.match(line) and not line.startswith(" ") and prev.strip() and not LIST_ITEM.match(prev) \
+                    and not prev.startswith(" "):
+                out.append("")
+        out.append(line)
+        prev = line if line.strip() else ""
+    return "\n".join(out)
+
+
+def planning_docs():
+    """The planning docs as (file, title, summary, html), the index first, then by state."""
+    try:
+        import markdown
+    except ImportError:
+        markdown = None
+    docs = []
+    for path in sorted(PLANNING.glob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        title = next((l[2:].strip() for l in text.splitlines() if l.startswith("# ")), path.stem)
+        title = re.sub(r"\s*\(WIP\)$", "", title)
+        summary = next((l.strip("> ").strip() for l in text.splitlines()[1:]
+                        if l.strip() and not l.startswith("#") and not l.startswith("|")), "")
+        summary = re.sub(r"\*\*Status: [^*]*\*\*\s*", "", summary)
+        summary = re.sub(r"[*`]|\[([^]]*)\]\([^)]*\)", lambda m: m.group(1) or "", summary)
+        # links between planning docs jump to their card on this page
+        text = re.sub(r"\]\(([\w-]+)\.md\)", r"](#doc-\1)", text)
+        if markdown:
+            body = markdown.markdown(md_lists(text), extensions=["tables", "fenced_code", "sane_lists"])
+        else:
+            body = "<pre>" + html.escape(text) + "</pre>"
+        if path.name == "todo-arte.md":
+            for state in ART_STATES:
+                body = re.sub(rf"(<td>)({state})", rf"\1<span class='tag' data-g='{state}'>\2</span>", body)
+            body = body.replace("<table>", "<table class='art'>")
+        docs.append((path.name, title, summary[:220] + ("…" if len(summary) > 220 else ""), body))
+    order = {"índice": 0, "WIP": 1, "TODO": 2, "feito": 3}
+    docs.sort(key=lambda d: (order.get(PLAN_STATES.get(d[0], ("referência",))[0], 4), d[1]))
+    return docs
+
+
 def page(chapters, building_types, building_names, production, biome_blocks, groups, opportunities, toggles):
     out = []
     w = out.append
@@ -464,6 +559,20 @@ def page(chapters, building_types, building_names, production, biome_blocks, gro
         if anchor != SECTIONS[0][0]:
             w("</section>")
         w(f"<section class='sec' id='{anchor}' style='--c:{color}'><h2><span class='ic'>{icon}</span>{title}</h2>")
+
+    section("planning", "Planejamento")
+    docs = planning_docs()
+    w(f"<p>Os {len(docs)} documentos de <code>docs/planning</code>: o que está em discussão (WIP), o que falta de arte (TODO) "
+      "e os planos já feitos. Clique num cartão para abrir o documento.</p><div class='plans'>")
+    for name, title, summary, _ in docs:
+        state, color = PLAN_STATES.get(name, ("referência", "var(--gold)"))
+        w(f"<a class='plan' href='#doc-{name[:-3]}' style='--k:{color}'><span class='state'>{state}</span>"
+          f"<b>{html.escape(title)}</b><p>{html.escape(summary)}</p></a>")
+    w("</div>")
+    for name, title, _, body in docs:
+        state, color = PLAN_STATES.get(name, ("referência", "var(--gold)"))
+        w(f"<details class='doc' id='doc-{name[:-3]}' style='--k:{color}'><summary><span class='state'>{state}</span>"
+          f"{html.escape(title)} <span class='muted'>· {name}</span></summary><div class='body'>{body}</div></details>")
 
     section("mca", "MCA original")
     w(MCA_ORIGINAL)

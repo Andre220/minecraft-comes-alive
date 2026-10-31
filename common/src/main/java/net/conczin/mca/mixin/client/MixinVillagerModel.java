@@ -1,5 +1,8 @@
 package net.conczin.mca.mixin.client;
 
+import java.util.List;
+import net.conczin.mca.client.model.HumanLikeVillagerMesh;
+import net.conczin.mca.client.model.WorkAnimationPlayer;
 import net.conczin.mca.client.render.VanillaVillagerLookHolder;
 import net.conczin.mca.client.render.voxel.VillagerParts;
 import net.conczin.mca.client.render.voxel.VoxelLayer;
@@ -31,6 +34,24 @@ public abstract class MixinVillagerModel extends EntityModel<VillagerRenderState
             headPart.xScale = head;
             headPart.yScale = head;
             headPart.zScale = head;
+        }
+
+        // work animations; with EMF, Fresh Animations' model plays them from the mca_work variables instead
+        if (!VillagerParts.isEmf(this.root) && state instanceof VanillaVillagerLookHolder holder && holder.mca$getWorkPose() != null) {
+            ModelPart head = ((VillagerModel) (Object) this).getHead();
+            ModelPart body = this.root.getChild("body");
+            ModelPart rightLeg = this.root.getChild("right_leg");
+            ModelPart leftLeg = this.root.getChild("left_leg");
+            // the arms sit in the body here, so the clip's root movement moves the body and they go along
+            WorkAnimationPlayer.apply(holder.mca$getWorkPose(), bone -> switch (bone) {
+                case "head" -> head;
+                case "body" -> body;
+                case "right_arm" -> VillagerParts.exact(this.root, HumanLikeVillagerMesh.RIGHT_ARM);
+                case "left_arm" -> VillagerParts.exact(this.root, HumanLikeVillagerMesh.LEFT_ARM);
+                case "right_leg" -> rightLeg;
+                case "left_leg" -> leftLeg;
+                default -> null;
+            }, List.of(head, body, rightLeg, leftLeg));
         }
 
         if (VillagerParts.isEmf(this.root)) {

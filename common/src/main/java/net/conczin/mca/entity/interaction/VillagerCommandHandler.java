@@ -145,7 +145,7 @@ public class VillagerCommandHandler extends EntityCommandHandler<VillagerEntityM
             }
             case "trade" -> {
                 entity.getInteractions().stopInteracting();
-                entity.startTrading(player);
+                entity.openTrade(player);
                 return false;
             }
             case "inventory" -> {

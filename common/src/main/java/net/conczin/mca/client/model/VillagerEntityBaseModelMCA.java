@@ -80,6 +80,8 @@ public class VillagerEntityBaseModelMCA extends HumanoidModel<VillagerRenderStat
 
         state.walkAnimationPos /= 0.2F + visuals.rawVerticalScaleFactor();
         super.setupAnim(state);
+        float walkPos = state.walkAnimationPos;
+        float walkSpeed = state.walkAnimationSpeed;
 
         state.walkAnimationPos = originalWalkAnimationPos;
         state.walkAnimationSpeed = originalWalkAnimationSpeed;
@@ -102,8 +104,24 @@ public class VillagerEntityBaseModelMCA extends HumanoidModel<VillagerRenderStat
         }
 
         WorkAnimationPlayer.apply(this, state);
+        // A work clip leans the torso, but a humanoid's body turns about its neck: the hips would swing away from the
+        // legs and the head stay behind. Take the lean off and bend the upper body about the hips instead.
+        boolean working = state.workAnimationClip != null && state.workAnimationBlend > 0.0F;
+        float workLean = working ? body.xRot - body.getInitialPose().xRot() : 0.0F;
+        body.xRot -= workLean;
 
         applyVillagerDimensions(visuals);
+        if (workLean != 0.0F) {
+            ElderPosture.bend(this, getBreastParts(), workLean);
+        }
+        if (!visuals.sleeping() && !state.isPassenger && !state.isCrouching) {
+            if (state.swimAmount <= 0.0F && !state.isFallFlying && !working) {
+                WalkPosture.apply(this, getBreastParts(), visuals.walk(), walkPos, walkSpeed, state.speedValue);
+            }
+            if (visuals.elder()) {
+                ElderPosture.apply(this, getBreastParts());
+            }
+        }
         if (receivesDeferredAnimationPose && state instanceof VillagerStateHolder holder && holder.mca$getHumanoidModelPose() != null) {
             holder.mca$getHumanoidModelPose().applyTo(this);
         }

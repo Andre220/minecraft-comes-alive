@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.conczin.mca.Config;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Genetics;
+import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.util.network.datasync.CDataManager;
 import net.conczin.mca.util.network.datasync.CDataParameter;
 import net.conczin.mca.util.network.datasync.CParameter;
@@ -36,6 +37,8 @@ public final class Skills {
     public static final float GAIN_GATHER = 0.6F;
     public static final float GAIN_DELIVERY = 0.4F;
     public static final float GAIN_BLOCK = 0.05F;
+    /** Elders learn more slowly; wisdom makes up for it. */
+    private static final float ELDER_LEARNING = 0.8F;
 
     private Skills() {
     }
@@ -86,7 +89,7 @@ public final class Skills {
 
     /** The highest skill this villager can reach: 40 for the dullest, 100 for the brightest. */
     public static float cap(VillagerEntityMCA villager) {
-        return 40.0F + 60.0F * intelligence(villager);
+        return Math.clamp(40.0F + 60.0F * intelligence(villager) + VillagerAttributes.skillCapBonus(villager), 10.0F, MAX);
     }
 
     /**
@@ -94,6 +97,7 @@ public final class Skills {
      * so getting good is quick and mastering it slow.
      */
     public static void gain(VillagerEntityMCA villager, float amount) {
+        VillagerAttributes.gainExperience(villager, amount);
         if (!enabled() || villager.isBaby()) {
             return;
         }
@@ -102,7 +106,8 @@ public final class Skills {
         if (skill >= cap) {
             return;
         }
-        float rate = 0.5F + intelligence(villager);
+        float rate = (0.5F + intelligence(villager)) * villager.getTraits().getSkillGainMultiplier()
+                     * (villager.getAgeState() == AgeState.ELDER ? ELDER_LEARNING : 1.0F) * VillagerAttributes.learnFactor(villager);
         set(villager, villager.getProfession(), Math.min(cap, skill + amount * rate * (1.0F - skill / cap)));
     }
 
@@ -119,7 +124,8 @@ public final class Skills {
 
     /** How much faster the villager works: up to twice as fast at 100. */
     public static float speed(VillagerEntityMCA villager) {
-        return enabled() ? 1.0F + get(villager) / MAX : 1.0F;
+        return (enabled() ? 1.0F + get(villager) / MAX : 1.0F) * VillagerAttributes.workFactor(villager)
+               * villager.getTraits().getWorkSpeedMultiplier();
     }
 
     /** Working time for a task that takes {@code ticks} for a novice. */
@@ -129,12 +135,12 @@ public final class Skills {
 
     /** Chance to make one more of something: up to 50% at 100. */
     public static boolean rollExtra(VillagerEntityMCA villager, RandomSource random) {
-        return enabled() && random.nextFloat() < get(villager) / MAX * 0.5F;
+        return enabled() && random.nextFloat() < get(villager) / MAX * 0.5F * VillagerAttributes.extraFactor(villager);
     }
 
     /** Factor on the chance of rare finds: up to three times at 100. */
     public static double rareFactor(VillagerEntityMCA villager) {
-        return enabled() ? 1.0 + 2.0 * get(villager) / MAX : 1.0;
+        return (enabled() ? 1.0 + 2.0 * get(villager) / MAX : 1.0) * VillagerAttributes.rareFactor(villager);
     }
 
     /** One more of the first item now and then, for a skilled hand. */

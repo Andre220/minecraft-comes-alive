@@ -116,6 +116,68 @@ public class CommonConfig {
     public boolean villagerRequests = false;
 
     /**
+     * Information behind conversation: the interaction screen shows a villager's feelings, work, traits and friends
+     * only once asked in the conversation ("How are you?", "Where do you work?"...).
+     */
+    public boolean villagerInfoInTalk = false;
+
+    /**
+     * Villager attributes: strength, perception, vigor, dexterity, wisdom and social, 1 to 10. Work gives experience
+     * and levels; the village chief spends the points. How well they fit a profession speeds up its work.
+     */
+    public boolean villagerAttributes = false;
+
+    /**
+     * Mental breaks (from RimWorld): a villager whose mood stays very low for long snaps, throws a tantrum, sulks,
+     * binges or picks a fist fight with someone it dislikes. Iron-willed and volatile traits move the line.
+     */
+    public boolean villagerMentalBreaks = false;
+    /** Whether a fight of a mental break may go on until someone dies; otherwise it stops before. */
+    public boolean villagerMentalBreakLethal = false;
+
+    /** Whether each village gets its City Records next to its bell when first seen, so the town hall is there from the start. */
+    public boolean villageTownHallAtStart = true;
+
+    /**
+     * Caravans: three to five villagers with pack animals roam between the villages players know, trading on the way.
+     * With them on, the wandering trader comes only one time in {@link #wanderingTraderRarity}.
+     */
+    public boolean villagerCaravans = false;
+    /** How many caravans can be on the roads of a world at once. */
+    public int caravanMaxActive = 2;
+    /** Chance per minute, at a known village with a player in it, that a caravan turns up. */
+    public float caravanChancePerMinute = 0.05F;
+    /** How long a caravan stays at a village, in ticks (24000 = one day). */
+    public int caravanStayTime = 24000;
+    /** How far a caravan travels to its next village, in blocks. */
+    public int caravanMaxDistance = 2000;
+    /** With caravans on, the wandering trader comes only one time in this many. */
+    public int wanderingTraderRarity = 4;
+
+    /**
+     * Factions: the pillagers come in bands with a name, a banner and outposts; raiding villages wins their respect,
+     * killing their people loses it, and a band that respects a player leaves them alone.
+     */
+    public boolean villagerFactions = false;
+    /** How many factions a world starts with. */
+    public int factionCount = 5;
+    /** The most factions there can be; outposts far from every band start new ones up to this. */
+    public int factionMax = 8;
+    /** How far around an outpost its faction's land reaches, in blocks. */
+    public int factionTerritoryRadius = 96;
+    /** What every player starts at with every faction (below 0 is hostile). */
+    public int factionStartReputation = -15;
+    /** Reputation lost with a faction for killing one of its people. */
+    public int factionKillPenalty = 15;
+    /** Whether pillagers outside raids become MCA people of their band (bandits), to look and talk like villagers. */
+    public boolean factionPillagersAsPeople = true;
+    /** Whether factions go to war with each other, take outposts and send war parties. */
+    public boolean factionWars = true;
+    /** Emeralds a band asks to leave a village alone, and for how many days. */
+    public int factionTruceCost = 24;
+    public int factionTruceDays = 7;
+
+    /**
      * Haggling: any villager sells what it carries and buys what it needs, whatever the
      * friendship (friends get better prices); anyone may ask what it carries.
      */
@@ -143,6 +205,20 @@ public class CommonConfig {
      * Maximum villager lifetime in ticks (Time to grow fully up).
      */
     public int villagerMaxAgeTime = 384000;
+
+    /**
+     * Time (in ticks) a villager lives as an adult before it becomes an elder: slower, a little
+     * shorter, no more children. 0 turns elders off.
+     */
+    public int villagerElderAfterTime = 480000;
+
+    /**
+     * Whether very old villagers may die of old age, peacefully in their sleep. After
+     * villagerOldAgeDeathAfterTime ticks as an elder, each night has villagerOldAgeDeathChance.
+     */
+    public boolean villagerOldAgeDeath = false;
+    public int villagerOldAgeDeathAfterTime = 480000;
+    public float villagerOldAgeDeathChance = 0.1f;
 
     /**
      * Permission level required to add or remove skins from the server wide pool.
@@ -223,5 +299,16 @@ public class CommonConfig {
      * Map of enabled traits. Keys are trait IDs, values are true/false.
      */
     public Map<String, Boolean> enabledTraits = new HashMap<>();
+
+    /**
+     * Personality traits (in the style of The Sims) a villager has per age. Genetic traits
+     * such as albinism or left handedness do not count. Babies and toddlers have none.
+     */
+    /** Toddler traits (wild, clingy, ...) are left behind when growing up; none by default. */
+    public int traitSlotsToddler = 0;
+    public int traitSlotsChild = 1;
+    public int traitSlotsTeen = 3;
+    public int traitSlotsAdult = 5;
+    public int traitSlotsElder = 5;
 
 }

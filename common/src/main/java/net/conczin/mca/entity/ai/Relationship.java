@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.entity.ai.traits.PersonalityTraits;
 import net.conczin.mca.Config;
 import net.conczin.mca.block.TombstoneBlock;
 import net.conczin.mca.entity.Status;
@@ -214,7 +215,9 @@ public class Relationship<T extends Mob & VillagerLike<T>> implements EntityRela
 
     @Override
     public void onTragedy(DamageSource cause, @Nullable BlockPos burialSite, RelationshipType type, Entity with) {
-        if (!cause.is(DamageTypes.FELL_OUT_OF_WORLD)) {
+        // psychopaths do not grieve (a trait from RimWorld)
+        if (!cause.is(DamageTypes.FELL_OUT_OF_WORLD) && !entity.getTraits().hasTrait(PersonalityTraits.PSYCHOPATH)
+            && !entity.getTraits().hasTrait(PersonalityTraits.BLOODLUST)) {
             int moodAffect = 5 * type.getProximityAmplifier();
             entity.level().broadcastEntityEvent(entity, Status.MCA_VILLAGER_TRAGEDY);
             entity.getVillagerBrain().modifyMoodValue(-moodAffect);

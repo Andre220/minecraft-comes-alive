@@ -1,7 +1,6 @@
 package net.conczin.mca.expansion.minds;
 
 import net.conczin.mca.entity.VillagerEntityMCA;
-import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.expansion.economy.EconomyRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -35,7 +34,7 @@ public class AptitudeJobTask extends Behavior<VillagerEntityMCA> {
 
     @Override
     protected boolean checkExtraStartConditions(ServerLevel level, VillagerEntityMCA villager) {
-        if (!Skills.enabled() || level.getGameTime() < nextTry || villager.getAgeState() != AgeState.ADULT
+        if (!Skills.enabled() || level.getGameTime() < nextTry || !villager.getAgeState().isAdult()
             || !villager.getVillagerData().profession().is(VillagerProfession.NONE)) {
             return false;
         }

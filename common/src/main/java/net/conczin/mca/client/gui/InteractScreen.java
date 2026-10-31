@@ -2,6 +2,8 @@ package net.conczin.mca.client.gui;
 
 import net.conczin.mca.expansion.speech.SpeechBubbles;
 import net.conczin.mca.expansion.minds.Skills;
+import net.conczin.mca.expansion.minds.AttributeMessages;
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -9,11 +11,16 @@ import net.conczin.mca.entity.VillagerLike;
 import net.conczin.mca.entity.ai.Genetics;
 import net.conczin.mca.entity.ai.Memories;
 import net.conczin.mca.entity.ai.Needs;
+import net.conczin.mca.entity.ai.SchedulesMCA;
+import net.conczin.mca.expansion.talk.TalkPanels;
+import net.conczin.mca.client.gui.widget.ScheduleTimelineWidget;
 import net.conczin.mca.entity.ai.queue.ActionQueue;
 import net.conczin.mca.entity.ai.queue.QueuedAction;
 import net.conczin.mca.entity.ai.Traits;
 import net.conczin.mca.entity.ai.brain.VillagerBrain;
 import net.conczin.mca.entity.ai.relationship.CompassionateEntity;
+import net.conczin.mca.entity.ai.relationship.Opinions;
+import net.conczin.mca.entity.ai.relationship.Personality;
 import net.conczin.mca.entity.ai.relationship.RelationshipState;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.network.c2s.*;
@@ -22,6 +29,7 @@ import net.conczin.mca.resources.data.dialogue.Question;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -29,13 +37,13 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.schedule.Activity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class InteractScreen extends AbstractDynamicScreen {
     public static final Identifier ICON_TEXTURES = MCA.locate("textures/gui.png");
@@ -125,6 +133,15 @@ public class InteractScreen extends AbstractDynamicScreen {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        // Clicking an attribute spends a point on it (expansion: minds).
+        if (event.button() == 0 && villager instanceof VillagerEntityMCA mca && VillagerAttributes.points(mca) > 0) {
+            for (AttributeCell cell : attributeCells) {
+                if (event.x() >= cell.x() && event.x() < cell.x() + cell.size() && event.y() >= cell.y() && event.y() < cell.y() + cell.size()) {
+                    Network.sendToServer(new AttributeMessages.Spend(mca.getId(), cell.stat().id()));
+                    return true;
+                }
+            }
+        }
         // Clicking one of your own orders in the queue cancels it.
         for (QueueCell cell : queueCells) {
             if (cell.entry() != null && isOwnOrder(cell.entry())
@@ -203,54 +220,172 @@ public class InteractScreen extends AbstractDynamicScreen {
         matrices.popMatrix();
     }
 
-    private void drawTextPopups(GuiGraphicsExtractor context) {
-        //name or state tip (gifting, ...)
-        int h = 17;
-        if (inGiftMode) {
-            drawTooltip(context, Component.translatable("gui.interact.label.giveGift"), 10, 28);
-        } else {
-            drawTooltip(context, villager.asEntity().getName(), 10, 28);
+    /**
+     * The sprites behind the screen's blocks of information, nine-slice so they stretch: a resource pack can restyle
+     * them at assets/mca/textures/gui/sprites/interact/ (see scripts/claude-tools/gui_sprites.py for the defaults).
+     */
+    private static final Identifier PANEL = MCA.locate("interact/panel");
+    private static final Identifier CELL = MCA.locate("interact/cell");
+    private static final Identifier CELL_EMPTY = MCA.locate("interact/cell_empty");
+    private static final Identifier CELL_LOCKED = MCA.locate("interact/cell_locked");
+
+    private static void panel(GuiGraphicsExtractor context, int x0, int y0, int x1, int y1) {
+        sprite(context, PANEL, x0, y0, x1, y1);
+    }
+
+    private static void sprite(GuiGraphicsExtractor context, Identifier sprite, int x0, int y0, int x1, int y1) {
+        if (x1 > x0 && y1 > y0) {
+            context.blitSprite(RenderPipelines.GUI_TEXTURED, sprite, x0, y0, x1 - x0, y1 - y0);
         }
+    }
 
-        //age or profession
-        drawTooltip(context, villager.asEntity().isBaby() ? villager.getAgeState().getName()
-                : villager instanceof VillagerEntityMCA mca ? Skills.describe(mca, villager.getProfessionText()) // expansion: minds
-                : villager.getProfessionText(), 10, 30 + h);
+    /** Panels each villager has told about, kept while the game runs (expansion: talk). */
+    private static final Map<UUID, Set<String>> REVEALED = new HashMap<>();
+    private static final int SCHEDULE_CELL = 5;
 
-        VillagerBrain<?> brain = villager.getVillagerBrain();
+    /** Whether a panel is shown: always, unless the information waits for the conversation and was not told yet. */
+    private boolean shows(String panel) {
+        return !TalkPanels.enabled() || REVEALED.getOrDefault(villager.asEntity().getUUID(), Set.of()).contains(panel);
+    }
 
-        //mood
-        drawTooltip(context,
-                Component.translatable("gui.interact.label.mood", brain.getMood().getText())
-                        .withStyle(brain.getMood().getColor()), 10, 30 + h * 2);
-
-        //personality
-        if (hoveringOverText(10, 30 + h * 3, 128)) {
-            drawTooltip(context, brain.getPersonality().getDescription(), 10, 30 + h * 3);
-        } else {
-            //White as we don't know if a personality is negative
-            drawTooltip(context, Component.translatable("gui.interact.label.personality", brain.getPersonality().getName()).withStyle(ChatFormatting.WHITE), 10, 30 + h * 3);
+    /** The villager in the open interaction screen told about a panel. */
+    public static void reveal(String panel) {
+        if (Minecraft.getInstance().gui.screen() instanceof InteractScreen screen) {
+            REVEALED.computeIfAbsent(screen.villager.asEntity().getUUID(), id -> new HashSet<>()).add(panel);
         }
+    }
 
-        //traits
-        Set<Traits.Trait> traits = villager.getTraits().getTraits();
-        if (!traits.isEmpty()) {
-            if (hoveringOverText(10, 30 + h * 4, 128)) {
-                //details
-                List<Component> traitText = traits.stream().map(Traits.Trait::getDescription).collect(Collectors.toList());
-                traitText.addFirst(Component.translatable("traits.title"));
-                drawTooltip(context, traitText, 10, 30 + h * 4);
-            } else {
-                //list
-                MutableComponent traitText = Component.translatable("traits.title");
-                traits.stream().map(Traits.Trait::getName).forEach(t -> {
-                    if (!traitText.getSiblings().isEmpty()) {
-                        traitText.append(Component.literal(", "));
-                    }
-                    traitText.append(t);
-                });
-                drawTooltip(context, traitText, 10, 30 + h * 4);
+    /** A cell of the attribute strip, clickable to spend a point. */
+    private record AttributeCell(VillagerAttributes.Stat stat, int x, int y, int size) {
+    }
+
+    private final List<AttributeCell> attributeCells = new ArrayList<>();
+
+    /**
+     * Level, points and aptitude for the profession on a line, then a cell per attribute with its value; hovering one
+     * explains it, clicking spends a point on it (the server checks the player is the village chief).
+     */
+    private void drawAttributes(GuiGraphicsExtractor context, VillagerEntityMCA villager, int x, int y) {
+        int points = VillagerAttributes.points(villager);
+        int level = VillagerAttributes.level(villager);
+        int stars = VillagerAttributes.stars(VillagerAttributes.aptitude(villager, villager.getProfession()));
+        MutableComponent header = Component.translatable("attribute.mca.level", level);
+        if (points > 0) {
+            header.append(Component.literal(" · ")).append(Component.translatable("attribute.mca.points", points).withStyle(ChatFormatting.YELLOW));
+        }
+        header.append(Component.literal(" · ")).append(Component.translatable("attribute.mca.aptitude",
+                Component.literal("●".repeat(stars) + "○".repeat(5 - stars)).withStyle(ChatFormatting.GOLD)));
+        context.text(font, header, x, y, 0xFFFFFFFF);
+
+        int cell = 18;
+        int top = y + 11;
+        VillagerAttributes.Stat[] stats = VillagerAttributes.Stat.values();
+        float xp = VillagerAttributes.experience(villager) / VillagerAttributes.needed(level);
+        panel(context, x, top, x + stats.length * (cell + 6) + 2, top + cell + 5);
+        context.fill(x + 1, top + cell + 2, x + 1 + Math.round((stats.length * (cell + 6)) * xp), top + cell + 4, 0xFF7FD35A);
+        VillagerAttributes.Fit fit = VillagerAttributes.fit(villager.getProfession());
+        List<Component> tooltip = null;
+        for (int i = 0; i < stats.length; i++) {
+            VillagerAttributes.Stat stat = stats[i];
+            int cellX = x + 1 + i * (cell + 6);
+            boolean used = fit != null && (fit.primary() == stat || fit.others().contains(stat));
+            context.fill(cellX, top + 1, cellX + cell, top + 1 + cell, used ? 0xFFC9A227 : 0xFF3A3A3A);
+            sprite(context, CELL, cellX + 1, top + 2, cellX + cell - 1, top + cell);
+            context.item(stat.icon(), cellX + 1, top + 2);
+            context.text(font, Component.literal(String.valueOf(VillagerAttributes.get(villager, stat))), cellX + cell + 1, top + 6, stat.color());
+            attributeCells.add(new AttributeCell(stat, cellX, top, cell + 6));
+            if (hoveringOver(cellX, top, cell + 6, cell + 2)) {
+                tooltip = new ArrayList<>();
+                tooltip.add(stat.getName().copy().withStyle(ChatFormatting.BOLD));
+                for (String line : stat.getDescription().getString().split("\n")) {
+                    tooltip.add(Component.literal(line).withStyle(ChatFormatting.GRAY));
+                }
+                if (used) {
+                    tooltip.add(Component.translatable(fit.primary() == stat ? "attribute.mca.main_for" : "attribute.mca.used_for",
+                            villager.getProfessionText()).withStyle(ChatFormatting.GOLD));
+                }
+                if (points > 0) {
+                    tooltip.add(Component.translatable("attribute.mca.click_to_spend").withStyle(ChatFormatting.YELLOW));
+                }
             }
+        }
+        if (tooltip != null) {
+            drawTooltip(context, tooltip, x + stats.length * (cell + 6), top + cell);
+        }
+    }
+
+    /** A strip of the 24 hours of the day, colored by what the schedule asks for, the current hour marked. */
+    private void drawSchedule(GuiGraphicsExtractor context, VillagerEntityMCA villager, int x, int y) {
+        int now = SchedulesMCA.currentSlot(villager.level());
+        Activity current = SchedulesMCA.plannedAt(villager, now);
+        context.text(font, Component.translatable("gui.interact.label.schedule", ScheduleTimelineWidget.name(current)), x, y, 0xFFFFFFFF);
+        int top = y + 11;
+        panel(context, x - 1, top - 1, x + SchedulesMCA.SLOTS * SCHEDULE_CELL + 1, top + 7);
+        for (int slot = 0; slot < SchedulesMCA.SLOTS; slot++) {
+            context.fill(x + slot * SCHEDULE_CELL, top, x + (slot + 1) * SCHEDULE_CELL - 1, top + 6,
+                    ScheduleTimelineWidget.color(SchedulesMCA.plannedAt(villager, slot)));
+        }
+        context.fill(x + now * SCHEDULE_CELL, top + 6, x + (now + 1) * SCHEDULE_CELL - 1, top + 8, 0xFFFFFFFF);
+    }
+
+    /** Where the villager's card starts; its icons (assets/mca/api/gui/icons.json) sit in a row right below it. */
+    private static final int CARD_X = 10;
+    private static final int CARD_Y = 8;
+    private static final int CARD_HEIGHT = 44;
+    /** Where the blocks of information start, below the card and its icons. */
+    private static final int INFO_Y = CARD_Y + CARD_HEIGHT + 30;
+    private static final int GAP = 6;
+
+    /** The villager's card: name (or what a click does now), age or profession, mood once told. */
+    private void drawCard(GuiGraphicsExtractor context, VillagerBrain<?> brain) {
+        List<Component> lines = new ArrayList<>();
+        lines.add(inGiftMode
+                ? Component.translatable("gui.interact.label.giveGift").withStyle(ChatFormatting.YELLOW)
+                : villager.asEntity().getName().copy().withStyle(ChatFormatting.BOLD));
+        //age or profession; the skill only once told (expansion: talk)
+        lines.add(villager.asEntity().isBaby() ? villager.getAgeState().getName()
+                : villager instanceof VillagerEntityMCA mca && shows(TalkPanels.WORK) ? Skills.describe(mca, villager.getProfessionText()) // expansion: minds
+                : villager.getProfessionText());
+        if (shows(TalkPanels.FEELINGS)) {
+            lines.add(Component.translatable("gui.interact.label.mood", brain.getMood().getText()).withStyle(brain.getMood().getColor()));
+        }
+        int width = 0;
+        for (Component line : lines) {
+            width = Math.max(width, font.width(line));
+        }
+        panel(context, CARD_X, CARD_Y, CARD_X + Math.max(150, width + 12), CARD_Y + CARD_HEIGHT);
+        for (int i = 0; i < lines.size(); i++) {
+            context.text(font, lines.get(i), CARD_X + 6, CARD_Y + 5 + i * 12, 0xFFFFFFFF);
+        }
+    }
+
+    private void drawTextPopups(GuiGraphicsExtractor context) {
+        VillagerBrain<?> brain = villager.getVillagerBrain();
+        drawCard(context, brain);
+
+        // the blocks of information, one below the other
+        int below = INFO_Y;
+
+        //traits, in place of the former personality line
+        if (shows(TalkPanels.TRAITS)) {
+            drawTraits(context, brain.getPersonality(), CARD_X, below);
+            below += 20 + GAP;
+        }
+
+        //friends and rivals among the villagers
+        if (villager instanceof VillagerEntityMCA mca && shows(TalkPanels.FRIENDS) && !mca.getOpinions().all().isEmpty()) {
+            drawOpinions(context, mca.getOpinions(), CARD_X, below);
+            below += 16 + GAP;
+        }
+
+        //attributes and level (expansion: minds), then the day's schedule once asked where they work (expansion: talk)
+        attributeCells.clear();
+        if (villager instanceof VillagerEntityMCA mca && VillagerAttributes.enabled() && VillagerAttributes.isRolled(mca) && shows(TalkPanels.SKILLS)) {
+            drawAttributes(context, mca, CARD_X, below);
+            below += 36 + GAP;
+        }
+        if (villager instanceof VillagerEntityMCA mca && TalkPanels.enabled() && shows(TalkPanels.WORK)) {
+            drawSchedule(context, mca, CARD_X, below);
         }
 
         //action queue
@@ -260,7 +395,7 @@ public class InteractScreen extends AbstractDynamicScreen {
         }
 
         //needs
-        if (villager instanceof VillagerEntityMCA mca && Needs.isEnabled() && mca.getNeeds().hasNeeds()) {
+        if (villager instanceof VillagerEntityMCA mca && Needs.isEnabled() && mca.getNeeds().hasNeeds() && shows(TalkPanels.FEELINGS)) {
             // Bottom left, below MCA's own icons.
             drawNeeds(context, mca.getNeeds(), 10, height - 28 - 10);
         }
@@ -327,7 +462,7 @@ public class InteractScreen extends AbstractDynamicScreen {
         if (dialogQuestionText != null && useRadialLayout()) {
             int bottom = height / 2 - radialRadius - 22;
             int top = bottom - 10 * dialogQuestionText.size() - 6;
-            context.fill(width / 2 - 88, top, width / 2 + 88, bottom, 0x99000000);
+            panel(context, width / 2 - 88, top, width / 2 + 88, bottom);
             int lineY = top + 4;
             for (FormattedCharSequence t : SpeechBubbles.typed(getVillagerUUID(), dialogQuestionText)) { // expansion: speech
                 context.text(font, t, width / 2 - font.width(t) / 2, lineY, 0xFFFFFFFF);
@@ -336,8 +471,8 @@ public class InteractScreen extends AbstractDynamicScreen {
             dialogAnswerHover = null;
         } else if (dialogQuestionText != null && dialogAnswers != null) {
             //background
-            context.fill(width / 2 - 85, height / 2 - 50 - 10 * dialogQuestionText.size(), width / 2 + 85,
-                    height / 2 - 30 + 10 * dialogAnswers.size(), 0x77000000);
+            panel(context, width / 2 - 85, height / 2 - 50 - 10 * dialogQuestionText.size(), width / 2 + 85,
+                    height / 2 - 30 + 10 * dialogAnswers.size());
 
             //question
             int i = -dialogQuestionText.size();
@@ -392,14 +527,14 @@ public class InteractScreen extends AbstractDynamicScreen {
         int total = big + (entries.size() - 1) * (small + gap) + upcoming.size() * (small + gap) + (upcoming.isEmpty() ? 0 : 6);
         int x = width / 2 - total / 2;
         int top = 6;
-        context.fill(x - 4, top - 3, x + total + 4, top + big + 14, 0x77000000);
+        panel(context, x - 4, top - 3, x + total + 4, top + big + 14);
 
         final Matrix3x2fStack matrices = context.pose();
         for (int i = 0; i < entries.size(); i++) {
             ActionQueue.Entry entry = entries.get(i);
             int size = i == 0 ? big : small;
             int y = top + (big - size) / 2;
-            context.fill(x, y, x + size, y + size, 0xAA000000);
+            sprite(context, CELL, x, y, x + size, y + size);
             if (i == 0) {
                 context.outline(x, y, size, size, 0xFFFFDD55);
             } else if (isOwnOrder(entry)) {
@@ -495,7 +630,7 @@ public class InteractScreen extends AbstractDynamicScreen {
         Needs.Need[] all = Needs.Need.values();
         int cell = 22;
         int height = 28;
-        context.fill(x, y, x + all.length * cell + 2, y + height, 0x88000000);
+        panel(context, x, y, x + all.length * cell + 2, y + height);
 
         final Matrix3x2fStack matrices = context.pose();
         Needs.Need hovered = null;
@@ -534,10 +669,96 @@ public class InteractScreen extends AbstractDynamicScreen {
         }
     }
 
-    //checks if the mouse hovers over a tooltip
-    //tooltips are not rendered on the given coordinates, so we need an offset
-    private boolean hoveringOverText(int x, int y, int w) {
-        return hoveringOver(x + 8, y - 16, w, 16);
+    /**
+     * A row of item icons, one per personality slot of the age (locked ones dimmed), then the
+     * genetic traits. The icon border shows the category, a star the trait giving the voice.
+     * Hovering a trait lists its effects.
+     */
+    private void drawTraits(GuiGraphicsExtractor context, Personality voice, int x, int y) {
+        Traits traits = villager.getTraits();
+        List<Traits.Trait> personality = traits.getPersonalityTraits();
+        List<Traits.Trait> genetic = traits.getTraits().stream().filter(t -> !t.getCategory().usesSlot()).toList();
+        int open = Math.max(Traits.getSlots(villager.getAgeState()), personality.size());
+        int slots = Math.max(open, TraitTooltips.maxSlots());
+        if (slots == 0 && genetic.isEmpty()) {
+            return;
+        }
+        int cell = 18;
+        int gap = genetic.isEmpty() || slots == 0 ? 0 : 6;
+        int width = (slots + genetic.size()) * cell + gap + 2;
+        panel(context, x, y, x + width, y + cell + 2);
+
+        final Matrix3x2fStack matrices = context.pose();
+        List<Component> tooltip = null;
+        for (int i = 0; i < slots + genetic.size(); i++) {
+            int cellX = x + 1 + i * cell + (i >= slots ? gap : 0);
+            Traits.Trait trait = i < personality.size() ? personality.get(i) : i >= slots ? genetic.get(i - slots) : null;
+            if (trait != null) {
+                context.fill(cellX, y + 1, cellX + cell, y + 1 + cell, trait.getCategory().color());
+                sprite(context, CELL, cellX + 1, y + 2, cellX + cell - 1, y + cell);
+                context.item(trait.getIcon(), cellX + 1, y + 2);
+                if (trait.getVoice() == voice) {
+                    matrices.pushMatrix();
+                    matrices.translate(cellX + cell - 5, y + 1);
+                    matrices.scale(0.75F, 0.75F);
+                    context.text(font, Component.literal("★"), 0, 0, 0xFFFFDD55);
+                    matrices.popMatrix();
+                }
+            } else {
+                // a free slot of this age, or one that opens later
+                sprite(context, i < open ? CELL_EMPTY : CELL_LOCKED, cellX + 1, y + 2, cellX + cell - 1, y + cell);
+                if (i >= open) {
+                    context.centeredText(font, Component.literal("-"), cellX + cell / 2, y + 6, 0xFF555555);
+                }
+            }
+            if (hoveringOver(cellX, y, cell, cell + 2)) {
+                tooltip = trait != null ? TraitTooltips.lines(trait, voice)
+                        : List.of(i < open ? Component.translatable("trait.slot.empty").withStyle(ChatFormatting.GRAY) : TraitTooltips.lockedSlot(i));
+            }
+        }
+        if (tooltip != null) {
+            drawTooltip(context, tooltip, x + width, y + cell);
+        }
+    }
+
+    /** A line with the best friends and the worst rivals; hovering it lists everyone remembered. */
+    private void drawOpinions(GuiGraphicsExtractor context, Opinions opinions, int x, int y) {
+        List<Opinions.Entry> all = opinions.all();
+        if (all.isEmpty()) {
+            return;
+        }
+        MutableComponent line = Component.empty();
+        List<Opinions.Entry> friends = opinions.friends();
+        List<Opinions.Entry> rivals = opinions.rivals();
+        if (!friends.isEmpty()) {
+            line.append(Component.translatable("opinion.friends", names(friends)).withStyle(ChatFormatting.GREEN));
+        }
+        if (!rivals.isEmpty()) {
+            if (!friends.isEmpty()) {
+                line.append(Component.literal(" · ").withStyle(ChatFormatting.GRAY));
+            }
+            line.append(Component.translatable("opinion.rivals", names(rivals)).withStyle(ChatFormatting.RED));
+        }
+        if (friends.isEmpty() && rivals.isEmpty()) {
+            line.append(Component.translatable("opinion.title").withStyle(ChatFormatting.GRAY));
+        }
+        int width = font.width(line) + 12;
+        panel(context, x, y, x + width, y + 16);
+        context.text(font, line, x + 6, y + 4, 0xFFFFFFFF);
+        if (hoveringOver(x, y, width, 16)) {
+            List<Component> lines = new ArrayList<>();
+            lines.add(Component.translatable("opinion.title").withStyle(ChatFormatting.BOLD));
+            for (Opinions.Entry entry : all) {
+                lines.add(Component.literal(entry.name() + " ").append(entry.label())
+                        .append(Component.literal(" " + (entry.value() > 0 ? "+" : "") + entry.value()).withStyle(ChatFormatting.DARK_GRAY)));
+            }
+            drawTooltip(context, lines, x + width, y + 16);
+        }
+    }
+
+    /** The first names, at most three. */
+    private static String names(List<Opinions.Entry> entries) {
+        return String.join(", ", entries.stream().limit(3).map(Opinions.Entry::name).toList());
     }
 
     private boolean canDrawParentsIcon() {

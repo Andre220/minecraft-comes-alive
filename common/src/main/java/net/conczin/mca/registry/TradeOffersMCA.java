@@ -9,6 +9,7 @@ import net.minecraft.world.item.trading.TradeSet;
 public final class TradeOffersMCA {
     public static final ResourceKey<TradeSet> ADVENTURER_LEVEL_1 = createTradeSet("adventurer/level_1");
     public static final ResourceKey<TradeSet> CULTIST_LEVEL_1 = createTradeSet("cultist/level_1");
+    public static final ResourceKey<TradeSet> CARAVANEER_LEVEL_1 = createTradeSet("caravaneer/level_1"); // expansion: caravans
     public static final Int2ObjectMap<ResourceKey<TradeSet>> ADVENTURER_TRADES = Int2ObjectMap.ofEntries(
             Int2ObjectMap.entry(1, ADVENTURER_LEVEL_1)
     );

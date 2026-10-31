@@ -41,6 +41,8 @@ public class ArcheryPracticeTask extends Behavior<VillagerEntityMCA> {
     private static final int MAX_DISTANCE = 12;
     private static final int DRAW_TICKS = 20;
     private static final int BETWEEN_SHOTS = 30;
+    /** Attribute experience for one practice shot (expansion: minds). */
+    private static final float PRACTICE_EXPERIENCE = 0.2F;
     private static final int SHOTS = 10;
     private static final int WALK_TIMEOUT = 400;
     /** A day ends at dusk, in ticks of the day clock. */
@@ -171,6 +173,7 @@ public class ArcheryPracticeTask extends Behavior<VillagerEntityMCA> {
                 villager.stopUsingItem();
                 shoot(level, villager, villager.getItemInHand(hand), BowItem.getPowerForTime(drawn));
                 shots++;
+                VillagerAttributes.gainExperience(villager, PRACTICE_EXPERIENCE);
                 pause = BETWEEN_SHOTS + villager.getRandom().nextInt(20);
             }
         } else if (pause-- <= 0) {

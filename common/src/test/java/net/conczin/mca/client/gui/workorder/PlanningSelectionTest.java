@@ -28,30 +28,31 @@ class PlanningSelectionTest {
     }
 
     @Test
-    void diggingGoesDownAndBuildingGoesUp() {
-        PlanningSelection dig = new PlanningSelection();
-        dig.setTool(PlanningTool.DIG);
-        dig.start(new BlockPos(0, 64, 0));
-        dig.adjustHeight(2);
+    void stretchingReachesUpOrDownFromTheClickedLayer() {
+        PlanningSelection down = new PlanningSelection();
+        down.start(new BlockPos(0, 64, 0));
+        down.adjustExtent(-2);
 
-        PlanningSelection build = new PlanningSelection();
-        build.setTool(PlanningTool.BUILD);
-        build.start(new BlockPos(0, 64, 0));
-        build.adjustHeight(2);
+        PlanningSelection up = new PlanningSelection();
+        up.setTool(PlanningTool.BUILD);
+        up.start(new BlockPos(0, 64, 0));
+        up.adjustExtent(2);
 
-        assertEquals(new WorkArea(0, 62, 0, 0, 64, 0), dig.area().orElseThrow());
-        assertEquals(new WorkArea(0, 64, 0, 0, 66, 0), build.area().orElseThrow());
+        assertEquals(new WorkArea(0, 62, 0, 0, 64, 0), down.area().orElseThrow());
+        assertEquals(new WorkArea(0, 64, 0, 0, 66, 0), up.area().orElseThrow());
     }
 
     @Test
-    void heightIsClamped() {
+    void stretchingIsClamped() {
         PlanningSelection selection = new PlanningSelection();
         selection.start(BlockPos.ZERO);
-        selection.adjustHeight(-5);
-        assertEquals(1, selection.getHeight());
+        selection.adjustExtent(1000);
+        WorkArea up = selection.area().orElseThrow();
+        assertEquals(new WorkArea(0, 0, 0, 0, PlanningSelection.MAX_HEIGHT - 1, 0), up, "at most MAX_HEIGHT layers tall");
 
-        selection.adjustHeight(1000);
-        assertEquals(PlanningSelection.MAX_HEIGHT, selection.getHeight());
+        selection.adjustExtent(-5000);
+        WorkArea down = selection.area().orElseThrow();
+        assertEquals(new WorkArea(0, -(PlanningSelection.MAX_HEIGHT - 1), 0, 0, 0, 0), down);
     }
 
     @Test

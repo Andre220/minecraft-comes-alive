@@ -1,5 +1,6 @@
 package net.conczin.mca.client.debug;
 
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.conczin.mca.expansion.minds.Skills;
 import net.conczin.mca.Config;
 import net.conczin.mca.KeyBindings;
@@ -70,6 +71,19 @@ public final class VillagerDebugInfo {
         }
         List<String> traits = mca.getTraits().getTraits().stream().map(Traits.Trait::getName).map(Component::getString).toList();
         lines.add(Line.text("Traits: " + (traits.isEmpty() ? "none" : String.join(", ", traits))));
+        Traits t = mca.getTraits();
+        lines.add(Line.text(String.format(Locale.ROOT, "Trait effects: speed x%.2f  damage x%.2f  taken x%.2f  work x%.2f  skill x%.2f  infection x%.2f  charm %+.2f  will %+d  walk %s",
+                t.getSpeedMultiplier(), t.getAttackDamageMultiplier(), t.getDamageTakenMultiplier(), t.getWorkSpeedMultiplier(),
+                t.getSkillGainMultiplier(), t.getInfectionMultiplier(), t.getCharm(), t.getWillpower(),
+                t.getWalkStyle(mca.getAgeState()).name().toLowerCase(Locale.ROOT))));
+        if (villager instanceof VillagerEntityMCA full && VillagerAttributes.enabled() && VillagerAttributes.isRolled(full)) { // expansion: minds
+            StringBuilder attributes = new StringBuilder("Attributes: level " + VillagerAttributes.level(full) + ", " + VillagerAttributes.points(full) + " points;");
+            for (VillagerAttributes.Stat stat : VillagerAttributes.Stat.values()) {
+                attributes.append(' ').append(stat.id(), 0, 3).append(' ').append(VillagerAttributes.get(full, stat));
+            }
+            attributes.append(String.format(Locale.ROOT, "; aptitude %.2f", VillagerAttributes.aptitude(full, full.getProfession())));
+            lines.add(Line.text(attributes.toString()));
+        }
         return lines;
     }
 

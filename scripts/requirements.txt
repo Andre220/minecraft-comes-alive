@@ -10,3 +10,4 @@ requests~=2.32.3
 openai~=1.58.1
 scipy~=1.14.1
 opencv-python~=4.10.0.84
+markdown~=3.10

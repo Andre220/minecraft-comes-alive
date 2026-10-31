@@ -1,0 +1,26 @@
+{
+  "display": {
+    "title": {
+      "translate": "advancement.mca.grow_elder"
+    },
+    "description": {
+      "translate": "advancement.mca.grow_elder.description"
+    },
+    "icon": {
+      "id": "minecraft:white_wool"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "parent": "mca:grow_adult",
+  "criteria": {
+    "elder": {
+      "trigger": "mca:child_age_state_change",
+      "conditions": {
+        "state": "ELDER"
+      }
+    }
+  }
+}

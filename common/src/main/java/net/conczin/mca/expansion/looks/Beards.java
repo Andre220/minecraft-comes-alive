@@ -3,7 +3,6 @@ package net.conczin.mca.expansion.looks;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerLike;
-import net.conczin.mca.entity.ai.relationship.AgeState;
 import net.conczin.mca.entity.ai.relationship.Gender;
 import net.conczin.mca.util.network.datasync.CDataManager;
 import net.conczin.mca.util.network.datasync.CDataParameter;
@@ -72,9 +71,21 @@ public final class Beards {
         set(villager, beard ? texture(STYLES.get(random.nextInt(STYLES.size()))) : "");
     }
 
+    /** Chance for a man without a beard to grow one when he gets old. */
+    private static final float ELDERS_GROWING_BEARDS = 0.5F;
+
+    /** Old age: half the men without a beard grow one. */
+    public static void growOld(VillagerLike<?> villager) {
+        String beard = get(villager);
+        if (enabled() && villager.getGenetics().getGender() == Gender.MALE && (beard == null || beard.isEmpty())
+            && villager.asEntity().getRandom().nextFloat() < ELDERS_GROWING_BEARDS) {
+            set(villager, texture(STYLES.get(villager.asEntity().getRandom().nextInt(STYLES.size()))));
+        }
+    }
+
     /** What to draw: the beard of a grown up, when beards are on. */
     public static String forVisuals(VillagerLike<?> villager) {
-        if (!enabled() || villager.getAgeState() != AgeState.ADULT) {
+        if (!enabled() || !villager.getAgeState().isAdult()) {
             return "";
         }
         String beard = get(villager);

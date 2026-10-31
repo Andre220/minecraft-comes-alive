@@ -1,5 +1,8 @@
 package net.conczin.mca.client.render;
 
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.monster.zombie.ZombieVillager;
+import net.minecraft.world.entity.LivingEntity;
 import net.conczin.mca.Config;
 import net.conczin.mca.client.render.voxel.VoxelLayerRenderer;
 import net.conczin.mca.client.resources.ClientSkinCatalog;
@@ -45,6 +48,15 @@ public final class VanillaVillagerLook {
      * vanilla villagers get a look seeded by their UUID, babies with toddler proportions.
      */
     public static @Nullable VillagerVisuals visualsFor(Villager villager) {
+        return visualsFor(villager, professionKey(villager.getVillagerData()));
+    }
+
+    /** The same for zombie villagers: MCA's with their own data (and zombie clothes), vanilla ones seeded by UUID. */
+    public static @Nullable VillagerVisuals visualsFor(ZombieVillager zombie) {
+        return visualsFor(zombie, professionKey(zombie.getVillagerData()));
+    }
+
+    private static @Nullable VillagerVisuals visualsFor(LivingEntity villager, String profession) {
         if (!isEnabled()) {
             return null;
         }
@@ -54,7 +66,7 @@ public final class VanillaVillagerLook {
 
         Genome genome = GENOMES.computeIfAbsent(villager.getUUID(), Genome::create);
         AgeState age = villager.isBaby() ? AgeState.TODDLER : AgeState.ADULT;
-        String clothes = genome.clothesFor(professionKey(villager));
+        String clothes = genome.clothesFor(profession);
         return new VillagerVisuals(
                 genome.gender.getDataName(),
                 genome.gender == Gender.FEMALE,
@@ -97,7 +109,7 @@ public final class VanillaVillagerLook {
 
     // The human-like mesh already carries the vanilla villager scale; genetic sizes are relative to
     // MCA's unscaled player-sized model, as in MCA's own renderer.
-    private static final float MESH_SCALE = 0.9375F;
+    public static final float MESH_SCALE = 0.9375F;
     // Height of the unscaled player-sized model in blocks.
     private static final float MODEL_HEIGHT = 2.0F;
 
@@ -125,18 +137,21 @@ public final class VanillaVillagerLook {
         return DynamicSkinCache.getOrCreateStitchedSkin(visuals, Config.getInstance().freshAnimationsIntegration, outerLayers);
     }
 
-    /** Whether the outer layers are drawn as cubes for this villager (close enough and enabled). */
+    /**
+     * Whether the outer layers are drawn as cubes for this villager (close enough and enabled). Screen previews too,
+     * like the editor's: the layer poses the model right before placing the cubes (VillagerParts.poseNow), so they
+     * follow a preview standing and turning towards the mouse.
+     */
     public static boolean use3dLayers(net.minecraft.client.renderer.entity.state.VillagerRenderState state) {
         Config config = Config.getInstance();
+        boolean preview = state instanceof VillagerStateHolder holder && holder.mca$getPreviewEntityAnimationState() != null;
         return config.useSquidwardModels && config.squidward3dLayers
                && state instanceof VanillaVillagerLookHolder holder && holder.mca$getLookVisuals() != null
-               && VoxelLayerRenderer.inRange(state.distanceToCameraSq)
-               // Screen previews pose the model at draw time, after the cubes are placed.
-               && !(state instanceof VillagerStateHolder preview && preview.mca$getPreviewEntityAnimationState() != null);
+               && (preview || VoxelLayerRenderer.inRange(state.distanceToCameraSq));
     }
 
-    private static String professionKey(Villager villager) {
-        return BuiltInRegistries.VILLAGER_PROFESSION.getKey(villager.getVillagerData().profession().value()).toString();
+    private static String professionKey(VillagerData data) {
+        return BuiltInRegistries.VILLAGER_PROFESSION.getKey(data.profession().value()).toString();
     }
 
     private static <T extends SkinListEntry> @Nullable T pickWeighted(List<T> entries, Random random) {

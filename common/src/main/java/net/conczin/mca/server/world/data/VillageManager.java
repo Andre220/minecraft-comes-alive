@@ -1,5 +1,6 @@
 package net.conczin.mca.server.world.data;
 
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
 import net.conczin.mca.registry.CriterionMCA;
@@ -147,6 +148,7 @@ public class VillageManager extends SavedData implements Iterable<Village> {
     }
 
     public void tick() {
+        Addons.levelTick(world);
         PadlockDisplays.tick(world);
         PropertyCrimes.tickForcing(world);
         if (world.getOverworldClockTime() % 100 == 0) {

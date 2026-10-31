@@ -1,5 +1,8 @@
 package net.conczin.mca.client.render.voxel;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import java.lang.reflect.Method;
+import net.minecraft.client.model.EntityModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelPart;
 import org.jspecify.annotations.Nullable;
@@ -21,6 +24,47 @@ public final class VillagerParts {
     private static final Map<ModelPart, Function<String, @Nullable ModelPart>> LOOKUPS = new WeakHashMap<>();
 
     private VillagerParts() {
+    }
+
+    /**
+     * Poses the shared model for this render state now, as it will be drawn: vanilla's pose, then the EMF (Fresh
+     * Animations) animation on top. Minecraft only poses a submitted model later, when it draws it, so a layer reading
+     * the parts during submit would see whatever was drawn last (another villager, the previous frame). EMF meant to do
+     * this itself ({@code falseAnimation}), but hooks a {@code setupAnim} call that 26.2's submit no longer makes.
+     */
+    public static <S extends EntityRenderState> void poseNow(EntityModel<S> model, S state) {
+        model.setupAnim(state);
+        if (emfRoot == null) {
+            return;
+        }
+        try {
+            if ((boolean) emfIsModel.invoke(model)) {
+                Object root = emfRoot.invoke(model);
+                if (root != null && (boolean) emfHasAnimation.invoke(root)) {
+                    emfAnimate.invoke(root);
+                }
+            }
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            emfRoot = null; // give up on EMF rather than fail every frame
+        }
+    }
+
+    private static @Nullable Method emfIsModel;
+    private static @Nullable Method emfRoot;
+    private static @Nullable Method emfHasAnimation;
+    private static @Nullable Method emfAnimate;
+
+    static {
+        try {
+            Class<?> model = Class.forName("traben.entity_model_features.models.IEMFModel");
+            Class<?> root = Class.forName("traben.entity_model_features.models.parts.EMFModelPartRoot");
+            emfIsModel = model.getMethod("emf$isEMFModel");
+            emfHasAnimation = root.getMethod("hasAnimation");
+            emfAnimate = root.getMethod("animateNoPause");
+            emfRoot = model.getMethod("emf$getEMFRootModel");
+        } catch (ReflectiveOperationException | LinkageError e) {
+            emfRoot = null; // EMF not installed (or changed): vanilla posing only
+        }
     }
 
     /** The part with exactly this name, or null. */

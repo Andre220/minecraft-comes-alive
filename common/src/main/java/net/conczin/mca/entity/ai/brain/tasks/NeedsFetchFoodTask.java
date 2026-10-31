@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai.brain.tasks;
 
+import net.minecraft.world.item.Items;
 import net.conczin.mca.expansion.minds.Provisions;
 import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.entity.VillagerEntityMCA;
@@ -51,21 +52,30 @@ public class NeedsFetchFoodTask extends Behavior<VillagerEntityMCA> {
     private final float threshold;
     private final Predicate<ItemStack> wanted;
     private final int amount;
+    /** When the villager needs nothing from the chest: by default, when it already carries something wanted. */
+    private final @Nullable Predicate<VillagerEntityMCA> enough;
 
     private @Nullable BlockPos container;
     private long nextAttempt;
     private boolean done;
 
     public NeedsFetchFoodTask() {
-        this(Needs.Need.HUNGER, HUNGRY, VillagerEntityMCA::isEdible, FOOD_TO_TAKE);
+        this(Needs.Need.HUNGER, HUNGRY, VillagerEntityMCA::isEdible, FOOD_TO_TAKE, null);
     }
 
     /** A thirsty villager with nothing to drink fetches drinks from home the same way. */
     public static NeedsFetchFoodTask forDrinks() {
-        return new NeedsFetchFoodTask(Needs.Need.THIRST, THIRSTY, VillagerDrinks::isDrink, DRINKS_TO_TAKE);
+        return new NeedsFetchFoodTask(Needs.Need.THIRST, THIRSTY, VillagerDrinks::isDrink, DRINKS_TO_TAKE, null);
     }
 
-    private NeedsFetchFoodTask(Needs.Need need, float threshold, Predicate<ItemStack> wanted, int amount) {
+    /** A hungry villager with no food left takes wheat from home, to bake bread ({@link NeedsBakeBreadTask}). */
+    public static NeedsFetchFoodTask forBaking() {
+        return new NeedsFetchFoodTask(Needs.Need.HUNGER, HUNGRY, stack -> stack.is(Items.WHEAT), NeedsBakeBreadTask.WHEAT_PER_BREAD * 3,
+                villager -> NeedsBakeBreadTask.hasFood(villager) || NeedsBakeBreadTask.canBake(villager));
+    }
+
+    private NeedsFetchFoodTask(Needs.Need need, float threshold, Predicate<ItemStack> wanted, int amount,
+                               @Nullable Predicate<VillagerEntityMCA> enough) {
         super(ImmutableMap.of(
                 MemoryModuleType.WALK_TARGET, MemoryStatus.REGISTERED,
                 MemoryModuleType.ATTACK_TARGET, MemoryStatus.VALUE_ABSENT
@@ -74,6 +84,7 @@ public class NeedsFetchFoodTask extends Behavior<VillagerEntityMCA> {
         this.threshold = threshold;
         this.wanted = wanted;
         this.amount = amount;
+        this.enough = enough;
     }
 
     @Override
@@ -88,7 +99,8 @@ public class NeedsFetchFoodTask extends Behavior<VillagerEntityMCA> {
         }
         Activity activity = villager.getBrain().getActiveNonCoreActivity().orElse(Activity.IDLE);
         if (activity != Activity.IDLE && activity != Activity.WORK && activity != Activity.MEET
-            || villager.isSleeping() || villager.getVillagerBrain().isPanicking() || has(villager.getInventory())) {
+            || villager.isSleeping() || villager.getVillagerBrain().isPanicking()
+            || (enough != null ? enough.test(villager) : has(villager.getInventory()))) {
             return false;
         }
         container = findFoodContainer(level, villager);

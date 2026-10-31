@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -68,8 +69,8 @@ public class Needs {
         }
     }
 
-    /** A low (or high) need pulling the mood, with its translation key. */
-    public record Thought(Need need, String key, int mood) {
+    /** A low (or high) need pulling the mood, with its translation key; without a need it is a mood of a trait. */
+    public record Thought(@Nullable Need need, String key, int mood) {
     }
 
     public static final float MAX = 100.0F;
@@ -82,6 +83,8 @@ public class Needs {
     private static final float HUNGRY = 40.0F;
     private static final float EXHAUSTED = 15.0F;
     private static final float RESTED = 60.0F;
+    /** Elders tire faster. */
+    private static final float ELDER_TIREDNESS = 1.2F;
     private static final float SCARED = 20.0F;
     private static final float CALM = 45.0F;
 
@@ -222,6 +225,9 @@ public class Needs {
     public List<Thought> thoughts() {
         List<Thought> thoughts = new ArrayList<>();
         if (!hasNeeds()) {
+            // the moods of the traits and of friends and enemies work without needs as well
+            thoughts.addAll(entity.getTraits().thoughts(entity));
+            thoughts.addAll(entity.getOpinions().thoughts());
             return thoughts;
         }
         thought(thoughts, Need.HUNGER, -2, -5);
@@ -235,6 +241,8 @@ public class Needs {
         }
         thoughts.addAll(Diet.thoughts(entity)); // expansion: minds
         thoughts.addAll(HomeQuality.thoughts(entity)); // expansion: minds
+        thoughts.addAll(entity.getTraits().thoughts(entity));
+        thoughts.addAll(entity.getOpinions().thoughts());
         return thoughts;
     }
 
@@ -278,8 +286,8 @@ public class Needs {
         NeedIndicators.tick(entity);
         if (!hasNeeds() || entity.isNoAi()) {
             if (!hasNeeds()) {
-                // Turned off: give back the mood the thoughts were holding, and the speed.
-                updateMood(0);
+                // Turned off: give back the mood the thoughts were holding, and the speed; the traits still count.
+                updateMood(entity.isNoAi() ? 0 : thoughts().stream().mapToInt(Thought::mood).sum());
                 updateSpeed(false, false, false);
                 exhausted = scared = napping = false;
             }
@@ -291,14 +299,16 @@ public class Needs {
         boolean working = activity == Activity.WORK;
         List<LivingEntity> nearby = level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(12.0), e -> e != entity && e.isAlive());
 
+        Traits traits = entity.getTraits();
+
         // Hunger
-        add(Need.HUNGER, -config.needsHungerPerDay * DAY_FRACTION * (working ? 1.5F : 1.0F));
+        add(Need.HUNGER, -config.needsHungerPerDay * DAY_FRACTION * (working ? 1.5F : 1.0F) * traits.getNeedRateMultiplier(Need.HUNGER));
 
         // Thirst: drinking means standing next to a cauldron with water, or a drink from the inventory.
         if (isNextToWater(level)) {
             add(Need.THIRST, DRINK_PER_SECOND * TICK_INTERVAL / 20.0F);
         } else {
-            add(Need.THIRST, -config.needsThirstPerDay * DAY_FRACTION * (working ? 1.3F : 1.0F));
+            add(Need.THIRST, -config.needsThirstPerDay * DAY_FRACTION * (working ? 1.3F : 1.0F) * traits.getNeedRateMultiplier(Need.THIRST));
             if (get(Need.THIRST) < DRINK_FROM_INVENTORY) {
                 drinkFromInventory(level);
             }
@@ -317,11 +327,13 @@ public class Needs {
         } else if (napping) {
             add(Need.ENERGY, MAX / 16.0F * HOUR_FRACTION);
         } else {
-            add(Need.ENERGY, -MAX / Math.max(1.0F, config.needsEnergyAwakeHours) * HOUR_FRACTION);
+            add(Need.ENERGY, -MAX / Math.max(1.0F, config.needsEnergyAwakeHours) * HOUR_FRACTION * traits.getNeedRateMultiplier(Need.ENERGY)
+                             * (entity.getAgeState() == AgeState.ELDER ? ELDER_TIREDNESS : 1.0F)
+                             * VillagerAttributes.tirednessFactor(entity)); // expansion: minds
         }
 
         // Social: company at the meeting point.
-        float social = -config.needsSocialPerDay;
+        float social = -config.needsSocialPerDay * traits.getNeedRateMultiplier(Need.SOCIAL);
         if (activity == Activity.MEET) {
             long neighbours = nearby.stream().filter(e -> e instanceof VillagerEntityMCA && e.distanceToSqr(entity) < 36.0).limit(3).count();
             social += neighbours * 60.0F;
@@ -329,7 +341,7 @@ public class Needs {
         add(Need.SOCIAL, social * DAY_FRACTION);
 
         // Fun: work drains it, free time and favored buildings refill it.
-        float fun = working ? -config.needsFunWorkPerDay : -config.needsFunWorkPerDay / 3.0F;
+        float fun = (working ? -config.needsFunWorkPerDay : -config.needsFunWorkPerDay / 3.0F) * traits.getNeedRateMultiplier(Need.FUN);
         if (activity == Activity.IDLE || activity == Activity.PLAY) {
             fun += 40.0F;
         }
@@ -370,7 +382,7 @@ public class Needs {
             for (LivingEntity monster : visible.get().findAll(e -> e instanceof Enemy && e.distanceToSqr(entity) < MONSTER_RANGE * MONSTER_RANGE)) {
                 threatened = true;
                 if (seenMonsters.put(monster.getUUID(), time) == null) {
-                    add(Need.SAFETY, -perMonster);
+                    add(Need.SAFETY, -perMonster * entity.getTraits().getNeedRateMultiplier(Need.SAFETY));
                 }
             }
         }
@@ -466,11 +478,16 @@ public class Needs {
     public boolean isNextToWater(ServerLevel level) {
         BlockPos feet = entity.blockPosition();
         for (BlockPos pos : BlockPos.betweenClosed(feet.offset(-2, -1, -2), feet.offset(2, 1, 2))) {
-            if (isDrinkingWater(level.getBlockState(pos))) {
+            if (isDrinkingWater(level, pos)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /** Water to drink at a place: a cauldron or sink with water, or the mouth of a well ({@link Wells}). */
+    public static boolean isDrinkingWater(ServerLevel level, BlockPos pos) {
+        return isDrinkingWater(level.getBlockState(pos)) || Wells.isMouth(level, pos);
     }
 
     /** A cauldron with water, or anything else in the {@code mca:drinking_water} tag with water in it (its "level" above 0). */

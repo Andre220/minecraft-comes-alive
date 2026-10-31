@@ -1,5 +1,7 @@
 package net.conczin.mca.client.gui;
 
+import net.conczin.mca.api.addon.client.DialogueIcons;
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.entity.ai.queue.ActionType;
 import net.conczin.mca.registry.ItemsMCA;
 import net.minecraft.world.item.Item;
@@ -38,6 +40,15 @@ final class RadialIcons {
             Map.entry("ridehorse", Items.SADDLE),
             Map.entry("sethome", Items.BED.red()),
             Map.entry("setworkplace", Items.CRAFTING_TABLE),
+            Map.entry("town_hall.overview", Items.BELL), // expansion: town hall
+            Map.entry("town_hall.jobs", Items.SMITHING_TABLE),
+            Map.entry("town_hall.map", Items.FILLED_MAP),
+            Map.entry("town_hall.residents", Items.VILLAGER_SPAWN_EGG),
+            Map.entry("town_hall.works", Items.BRICKS),
+            Map.entry("town_hall.rules", Items.GOLD_INGOT),
+            Map.entry("town_hall.progress", Items.EXPERIENCE_BOTTLE),
+            Map.entry("town_hall.catalog", Items.BOOKSHELF),
+            Map.entry("town_hall.rank", Items.GOLDEN_HELMET),
             Map.entry("gohome", Items.OAK_DOOR),
             Map.entry("fishing", Items.FISHING_ROD),
             Map.entry("harvesting", Items.WHEAT),
@@ -53,6 +64,13 @@ final class RadialIcons {
     private static final Map<String, Item> DIALOGUE_ICONS = Map.ofEntries(
             Map.entry("rumors", Items.SPYGLASS),
             Map.entry("chat", Items.BOOK),
+            Map.entry("how_are_you", Items.APPLE), // expansion: talk
+            Map.entry("where_work", Items.CLOCK),
+            Map.entry("about_you", Items.NAME_TAG),
+            Map.entry("friends", Items.CAKE),
+            Map.entry("good_at", Items.EXPERIENCE_BOTTLE),
+            Map.entry("caravan_from", Items.LEAD), // expansion: caravans
+            Map.entry("caravan_news", Items.FILLED_MAP),
             Map.entry("joke", Items.SLIME_BALL),
             Map.entry("story", Items.WRITTEN_BOOK),
             Map.entry("hug", Items.WOOL.pink()),
@@ -92,7 +110,9 @@ final class RadialIcons {
     }
 
     static ItemStack dialogueIcon(String answer) {
-        return new ItemStack(DIALOGUE_ICONS.getOrDefault(answer, Items.PAPER));
+        Addons.clientBootstrap();
+        Item addonIcon = DialogueIcons.get(answer);
+        return new ItemStack(addonIcon != null ? addonIcon : DIALOGUE_ICONS.getOrDefault(answer, Items.PAPER));
     }
 
     static ItemStack iconFor(String identifier) {

@@ -22,7 +22,8 @@ public enum DialogueType {
     SPOUSE(ADULT),
     TEEN(ADULT),
     TEENP(TEEN),
-    ENGAGED(ADULT);
+    ENGAGED(ADULT),
+    ELDER(ADULT); // lines of its own where there are some, else those of adults
 
     private static final RandomSource random = RandomSource.create();
     private static final DialogueType[] VALUES = values();
@@ -141,7 +142,7 @@ public enum DialogueType {
             case TODDLER -> TODDLERP;
             case CHILD -> CHILDP;
             case TEEN -> TEENP;
-            case ADULT -> ADULTP;
+            case ADULT, ELDER -> ADULTP;
             default -> UNASSIGNED;
         };
     }
