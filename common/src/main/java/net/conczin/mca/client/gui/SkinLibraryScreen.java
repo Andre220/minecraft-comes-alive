@@ -878,6 +878,8 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
                 textFieldWidget.setMaxLength(1024);
 
                 addRenderableWidget(new ButtonWidget(width / 2 - 50, height / 2 + 5, 100, 20, Component.translatable("gui.skin_library.load_image"), sender -> loadImage(textFieldWidget.getValue())));
+                // expansion: looks - or start from the clothes the edited villager wears, no file or link needed
+                addRenderableWidget(new ButtonWidget(width / 2 - 70, height / 2 + 30, 140, 20, Component.translatable("gui.skin_library.edit_worn"), sender -> loadWornClothes()));
             }
             case EDITOR_TYPE -> {
                 addRenderableWidget(new ButtonWidget(width / 2 - 100, height / 2, 95, 20,
@@ -1206,11 +1208,15 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
                             setPage(Page.LIBRARY);
                         }));
 
-                // publish
+                // publish, or without an account save the picture here (expansion: looks)
                 addRenderableWidget(new ButtonWidget(width / 2 + 5, height / 2 + 80, 75, 20,
-                        Component.translatable("gui.skin_library.publish"),
+                        Component.translatable(authenticated ? "gui.skin_library.publish" : "gui.skin_library.save_png"),
                         v -> {
-                            publish();
+                            if (authenticated) {
+                                publish();
+                            } else {
+                                saveLocally();
+                            }
                         }));
             }
         }
@@ -1371,11 +1377,6 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
         }
 
         clearError();
-
-        if ((page == Page.EDITOR_TYPE || page == Page.EDITOR_PREPARE) && !authenticated) {
-            setPage(Page.EDITOR_LOCKED);
-            return;
-        }
 
         if (page == Page.HELP) {
             openHelp();
@@ -1609,6 +1610,53 @@ public class SkinLibraryScreen extends Screen implements SkinListUpdateListener 
             }
         } catch (IOException e) {
             MCA.LOGGER.error(e);
+        }
+    }
+
+    /** Opens the editor on the texture of the clothes the edited villager wears (expansion: looks). */
+    private void loadWornClothes() {
+        String clothes = villagerVisualization.getClothes();
+        Identifier id = MCA.isBlankString(clothes) ? null : Identifier.tryParse(clothes);
+        var resource = id == null ? java.util.Optional.<net.minecraft.server.packs.resources.Resource>empty()
+                : Minecraft.getInstance().getResourceManager().getResource(id);
+        if (resource.isEmpty()) {
+            setError(Component.translatable("gui.skin_library.no_worn"));
+            return;
+        }
+        try (InputStream stream = resource.get().open()) {
+            NativeImage image = NativeImage.read(stream);
+            if (image.getWidth() != 64 || image.getHeight() != 64) {
+                image.close();
+                setError(Component.translatable("gui.skin_library.not_64"));
+                return;
+            }
+            workspace = new Workspace(image);
+            workspace.skinType = SkinType.CLOTHING;
+            if (workspace.title.equals("Unnamed Asset")) {
+                workspace.title = id.getPath().replaceAll(".*/clothing/[^/]+/", "").replace(".png", "").replace('/', '_');
+            }
+            setPage(Page.EDITOR);
+        } catch (IOException e) {
+            MCA.LOGGER.error("Could not read clothes {}", id, e);
+            setError(Component.translatable("gui.skin_library.no_worn"));
+        }
+    }
+
+    /** Saves the picture being edited to {@code mca_skins/<hair or clothing>/} in the game folder (expansion: looks). */
+    private void saveLocally() {
+        String name = workspace.title.equals("Unnamed Asset") ? "skin_" + System.currentTimeMillis()
+                : workspace.title.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9_-]+", "_");
+        String type = workspace.skinType == SkinType.HAIR ? "hair" : "clothing";
+        Path file = Minecraft.getInstance().gameDirectory.toPath().resolve("mca_skins").resolve(type).resolve(name + ".png");
+        try {
+            Files.createDirectories(file.getParent());
+            workspace.currentImage.writeToFile(file);
+            net.minecraft.client.gui.components.toasts.SystemToast.addOrUpdate(Minecraft.getInstance().gui.toastManager(),
+                    net.minecraft.client.gui.components.toasts.SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
+                    Component.translatable("gui.skin_library.saved"), Component.literal(file.toString()));
+        } catch (IOException e) {
+            MCA.LOGGER.error("Could not save {}", file, e);
+            setError(Component.translatable("gui.skin_library.save_failed"));
         }
     }
 

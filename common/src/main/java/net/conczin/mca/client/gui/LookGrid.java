@@ -27,7 +27,8 @@ final class LookGrid {
     /** What a card shows: how much of the villager's height, centered how far above its middle, and the card size. */
     enum Frame {
         BODY(1.08F, 0.0F, 35, 52),
-        HEAD(0.46F, 0.25F, 43, 50),
+        // the whole head with the hair on it, the top of it not cut off
+        HEAD(0.50F, 0.29F, 43, 50),
         FACE(0.24F, 0.37F, 43, 50);
 
         final float visible;
@@ -119,8 +120,10 @@ final class LookGrid {
             float height = Math.max(0.5F, preview.getBbHeight());
             int inner = frame.height - 6;
             int size = Math.round(inner / (height * frame.visible) * (over ? 1.06F : 1.0F));
+            // faces stay still, straight on, so the eyes can be told apart; the rest turn towards the mouse
+            boolean still = frame == Frame.FACE;
             screen.extractLookPreview(context, x + 3, y + 3, x + frame.width - 3, y + frame.height - 3, size,
-                    height * frame.center, mouseX, mouseY, delta, preview, rotation);
+                    height * frame.center, still ? x + frame.width / 2.0F : mouseX, still ? y + frame.height / 2.0F : mouseY, delta, preview, rotation);
 
             if (Objects.equals(choice, worn)) {
                 context.outline(x + 1, y + 1, frame.width - 2, frame.height - 2, WORN);

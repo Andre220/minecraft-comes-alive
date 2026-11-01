@@ -48,6 +48,7 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
@@ -85,15 +86,17 @@ import java.util.function.Supplier;
 public class VillagerEditorScreen extends Screen implements SkinListUpdateListener {
     protected static final int DATA_WIDTH = 175;
 
-    private static final int TRAITS_PER_PAGE = 16;
+    private static final int TRAITS_PER_PAGE = 14;
     private static final int LAYERED_HAIR_PER_PAGE = 6;
+    /** Rows of cards a look grid makes room for. */
+    private static final int LOOK_GRID_ROWS = 2;
 
     private static final float MIN_PREVIEW_ZOOM = 0.7F;
     private static final float MAX_PREVIEW_ZOOM = 1.4F;
     private static final Identifier PREVIEW_MOUSE_FOLLOW_TEXTURE = MCA.locate("textures/gui/preview_mouse_follow.png");
 
     private static final int VOICE_PREVIEW_BUTTON_WIDTH = 22;
-    private static final int STEVE_PROPORTIONS_BUTTON_WIDTH = 22;
+    private static final int STEVE_PROPORTIONS_BUTTON_WIDTH = 50;
     private static final float STEVE_RAW_WIDTH_SCALE = 1.0F;
     private static final float STEVE_RAW_HEIGHT_SCALE = 0.9F;
 
@@ -139,6 +142,10 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
     private @Nullable LookGrid lookGrid;
     private @Nullable ButtonWidget lookGridPageButton;
     private int lookGridPage = -1;
+    /** The hair layer the advanced hair page shows the choices of. */
+    private LayeredHair.Category layeredHairTab = LayeredHair.Category.BASE;
+    /** The clothes' category the clothes grid shows, or all of them. */
+    private @Nullable String clothingCategory;
     private String lookSearch = "";
     private ButtonWidget villagerSkinWidget;
     private ButtonWidget playerSkinWidget;
@@ -268,7 +275,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 y,
                 STEVE_PROPORTIONS_BUTTON_WIDTH,
                 20,
-                Component.literal("V"),
+                Component.translatable("gui.villager_editor.steve_proportions"),
                 Component.translatable("gui.villager_editor.steve_proportions.tooltip"),
                 b -> {
                     setSteveProportions();
@@ -523,8 +530,12 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     y += 24;
                 }
 
-                addGeneSlider(width / 2, y, DATA_WIDTH / 2, Genetics.BREAST);
-                addRenderableWidget(new TooltipButtonWidget(width / 2 + DATA_WIDTH / 2, y, DATA_WIDTH / 2, 20,
+                // men have no breast to size: the skin colour button takes the whole row
+                boolean breast = genetics.getGender() != Gender.MALE;
+                if (breast) {
+                    addGeneSlider(width / 2, y, DATA_WIDTH / 2, Genetics.BREAST);
+                }
+                addRenderableWidget(new TooltipButtonWidget(breast ? width / 2 + DATA_WIDTH / 2 : width / 2, y, breast ? DATA_WIDTH / 2 : DATA_WIDTH, 20,
                         Component.translatable("gui.villager_editor.skin_color_selection", Component.translatable(hsvColoredSkin ? "gui.villager_editor.color_mode_rgb" : "gui.villager_editor.color_mode_natural")),
                         Component.translatable("gui.villager_editor.skin_color_mode.tooltip"),
                         b -> {
@@ -580,13 +591,14 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 y += 44;
 
                 addRenderableWidget(new ButtonWidget(width / 2, y, 50, 20, Component.translatable("gui.button.random"), b -> randomClothing()));
-                addLookSearch(width / 2 + 50, y, DATA_WIDTH - 110);
+                addClothingCategoryButton(width / 2 + 50, y, DATA_WIDTH - 110);
                 addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 60, y, 60, 20, Component.translatable("gui.button.library"), b ->
                         Minecraft.getInstance().gui.setScreen(new SkinLibraryScreen(this, villagerVisualization))));
                 y += 22;
 
-                addLookGrid(y, LookGrid.Frame.BODY, searched(getClothingChoices().stream()
-                                .map(Clothing::getIdentifier).distinct().sorted(SkinListEntry::compareIdentifiers).toList()),
+                addLookGrid(y, LookGrid.Frame.BODY, getClothingChoices().stream()
+                                .filter(clothing -> clothingCategory == null || clothingCategory.equals(clothing.profession))
+                                .map(Clothing::getIdentifier).distinct().sorted(SkinListEntry::compareIdentifiers).toList(),
                         villager.getClothes(), VillagerEntityMCA::setClothes, 0.0F);
             }
             case "look_skin" -> {
@@ -594,7 +606,11 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 y += 44;
                 addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.randSkin"), b -> randomSkin()));
                 y += 22;
-                addLookGrid(y, LookGrid.Frame.BODY, getBodySkinIdsForCurrentGender(), villager.getSkin(), VillagerEntityMCA::setSkin, 0.0F);
+                // the cards show the skin bare, clothes off, so all of it is seen
+                addLookGrid(y, LookGrid.Frame.BODY, getBodySkinIdsForCurrentGender(), villager.getSkin(), (look, skin) -> {
+                    look.setSkin(skin);
+                    look.setClothes("");
+                }, 0.0F);
             }
             case "beard_style" -> {
                 addCharacterSubpageTabs(y, "beard_style");
@@ -652,9 +668,15 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             case "eyes" -> {
                 addCharacterSubpageTabs(y, "eyes");
                 y += 44;
+                // the cards show the face without hair, which so often covers the eyes
                 addLookGrid(y, LookGrid.Frame.FACE, faceChoices(),
                         String.valueOf((int) Math.clamp(genetics.getGene(Genetics.FACE) * getFaceCount(), 0, getFaceCount() - 1)),
-                        (look, face) -> wearFace(look, face, getFaceCount()), 0.0F);
+                        (look, face) -> {
+                            wearFace(look, face, getFaceCount());
+                            look.setHair("");
+                            look.clearLayeredHair();
+                            look.setHairStyleId("");
+                        }, 0.0F);
             }
             case "eye_color" -> {
                 addCharacterSubpageTabs(y, "eye_color");
@@ -722,16 +744,23 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 }
             }
             case "traits" -> {
-                //traits, one category at a time: < > switch the category, the middle button the page
+                // traits, one category at a time: a tab per category, in its colour, the open one pressed in
                 Traits.Trait[] traits = getValidTraits();
                 int traitPages = Math.max(1, (traits.length + TRAITS_PER_PAGE - 1) / TRAITS_PER_PAGE);
-                MutableComponent header = traitCategory.getName().copy();
-                if (traitPages > 1) {
-                    header.append(" " + (traitPage + 1) + "/" + traitPages);
+                TraitCategory[] categories = TraitCategory.values();
+                int tabWidth = DATA_WIDTH / categories.length;
+                for (int i = 0; i < categories.length; i++) {
+                    TraitCategory category = categories[i];
+                    long owned = villager.getTraits().getTraits().stream().filter(trait -> trait.getCategory() == category).count();
+                    Component label = Component.translatable("trait.category_tab." + category.id()).withColor(category.color() & 0xFFFFFF);
+                    Component tooltip = Component.translatable("trait.category_tab.tooltip", category.getName(), owned);
+                    ButtonWidget tab = addRenderableWidget(new TooltipButtonWidget(width / 2 + i * tabWidth, y, tabWidth, 20, label, tooltip, b -> {
+                        traitCategory = category;
+                        traitPage = 0;
+                        setPage("traits");
+                    }));
+                    tab.active = category != traitCategory;
                 }
-                addRenderableWidget(new ButtonWidget(width / 2, y, 32, 20, Component.literal("<"), b -> setTraitCategory(-1)));
-                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 32, y, 32, 20, Component.literal(">"), b -> setTraitCategory(1)));
-                addRenderableWidget(new ButtonWidget(width / 2 + 32, y, DATA_WIDTH - 32 * 2, 20, header, b -> setTraitPage(traitPage + 1 < traitPages ? traitPage + 1 : 0)));
                 y += 22;
 
                 // slots, voice and reroll
@@ -787,6 +816,17 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                     }, ComponentUtils.formatList(lines, Component.literal("\n"))));
                     // the player may bypass the restrictions, villagers keep to conflicts, age and slots
                     button.active = owned || reason == null || villagerUUID.equals(playerUUID) && Config.getInstance().bypassTraitRestrictions;
+                }
+
+                // the category's pages, under its traits
+                if (traitPages > 1) {
+                    int pagerY = y + 20 * (TRAITS_PER_PAGE / 2) + 2;
+                    addRenderableWidget(new ButtonWidget(width / 2, pagerY, 30, 20, Component.literal("<"),
+                            b -> setTraitPage(Math.floorMod(traitPage - 1, traitPages))));
+                    addRenderableWidget(new ButtonWidget(width / 2 + 30, pagerY, DATA_WIDTH - 60, 20,
+                            Component.translatable("trait.page", traitPage + 1, traitPages), b -> setTraitPage(Math.floorMod(traitPage + 1, traitPages))));
+                    addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 30, pagerY, 30, 20, Component.literal(">"),
+                            b -> setTraitPage(Math.floorMod(traitPage + 1, traitPages))));
                 }
             }
             case "debug" -> {
@@ -889,18 +929,28 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 }
             }
             case "hair_advanced" -> {
-                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.villager_editor.randLayeredHair"), b -> randomLayeredHair()));
-                y += 24;
-
-                for (LayeredHair.Category category : LayeredHair.Category.values()) {
-                    addLayeredHairCyclerRow(y, category);
-                    y += 22;
-                }
-
-                y += 4;
-                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH, 20, Component.translatable("gui.button.back"), b -> {
+                // expansion: looks - a tab per hair layer, its choices in a grid of heads (none first, for optional ones)
+                addRenderableWidget(new ButtonWidget(width / 2, y, DATA_WIDTH - 62, 20, Component.translatable("gui.villager_editor.randLayeredHair"), b -> randomLayeredHair()));
+                addRenderableWidget(new ButtonWidget(width / 2 + DATA_WIDTH - 60, y, 60, 20, Component.translatable("gui.button.back"), b -> {
                     setPage(this instanceof CombScreen ? "hair" : "hair_style");
                 }));
+                y += 22;
+                LayeredHair.Category[] layers = LayeredHair.Category.values();
+                int tabWidth = DATA_WIDTH / layers.length;
+                for (int i = 0; i < layers.length; i++) {
+                    LayeredHair.Category layer = layers[i];
+                    ButtonWidget tab = addRenderableWidget(new TooltipButtonWidget(width / 2 + i * tabWidth, y, tabWidth, 20,
+                            Component.translatable("gui.villager_editor.hair_layer_tab." + layer.getId()), getLayerDisplayName(layer), b -> {
+                        layeredHairTab = layer;
+                        lookGridPage = -1;
+                        init();
+                    }));
+                    tab.active = layer != layeredHairTab;
+                }
+                y += 22;
+                LayeredHair.Category shown = layeredHairTab;
+                addLookGrid(y, LookGrid.Frame.HEAD, getLayeredHairIdsForCurrentGender(shown), villager.getLayeredHair(shown),
+                        (look, layer) -> wearLayeredHair(look, shown, layer), 0.0F);
             }
             case "clothing", "hair", "skin", "hair_base", "hair_bangs", "hair_back", "hair_front", "hair_extra", "beard" -> {
                 filterGender = villager.getGenetics().getGender();
@@ -1192,10 +1242,13 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         }
     }
 
-    /** Where the grid of a look tab goes: below the tabs and its row of buttons, above its page row. */
+    /**
+     * Where the grid of a look tab goes: below the tabs and its row of buttons, above its page row. The page row moves
+     * down as far as it takes to fit two rows of cards, while the screen has room.
+     */
     private void addLookGrid(int y, LookGrid.Frame frame, List<String> choices, @Nullable String worn,
                              java.util.function.BiConsumer<VillagerEntityMCA, String> wear, float rotation) {
-        int bottom = height / 2 + 96;
+        int bottom = Math.min(height - 4, Math.max(height / 2 + 96, y + LOOK_GRID_ROWS * frame.height + 22));
         lookGrid = new LookGrid(frame, choices, worn, wear, rotation, width / 2, y, DATA_WIDTH, bottom - 22 - y, lookGridPage);
         lookGridPage = lookGrid.page();
         int row = bottom - 20;
@@ -1218,6 +1271,45 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         if (lookGrid != null && lookGridPageButton != null) {
             lookGridPageButton.setMessage(Component.literal((lookGrid.page() + 1) + " / " + lookGrid.pages()));
         }
+    }
+
+    /**
+     * The clothes' category to show (their profession folder, an age like child, or none), cycled through those the
+     * villager's gender has: a click goes on, a click with Shift goes back. Null shows them all.
+     */
+    private void addClothingCategoryButton(int x, int y, int w) {
+        List<String> categories = getClothingChoices().stream()
+                .map(clothing -> clothing.profession)
+                .filter(Objects::nonNull)
+                .distinct()
+                .sorted(Comparator.comparing(category -> clothingCategoryName(category).getString()))
+                .toList();
+        if (clothingCategory != null && !categories.contains(clothingCategory)) {
+            clothingCategory = null;
+        }
+        Component name = clothingCategory == null ? Component.translatable("gui.villager_editor.clothing_category.all") : clothingCategoryName(clothingCategory);
+        addRenderableWidget(new TooltipButtonWidget(x, y, w, 20, name, Component.translatable("gui.villager_editor.clothing_category.tooltip"), b -> {
+            if (categories.isEmpty()) {
+                return;
+            }
+            // positions: -1 is "all", then the categories in order
+            int at = clothingCategory == null ? -1 : categories.indexOf(clothingCategory);
+            int step = Minecraft.getInstance().hasShiftDown() ? -1 : 1;
+            int next = Math.floorMod(at + 1 + step, categories.size() + 1) - 1;
+            clothingCategory = next < 0 ? null : categories.get(next);
+            lookGridPage = 0;
+            init();
+        }));
+    }
+
+    /** A clothes' category by its profession's name ("minecraft:farmer" is the farmer, "mca:child" the child). */
+    private static Component clothingCategoryName(String category) {
+        Identifier id = Identifier.tryParse(category);
+        if (id == null) {
+            return Component.literal(category);
+        }
+        String key = "entity.minecraft.villager." + (id.getNamespace().equals("minecraft") ? id.getPath() : id.getNamespace() + "." + id.getPath());
+        return Language.getInstance().has(key) ? Component.translatable(key) : Component.literal(id.getPath());
     }
 
     /** A search box for the clothes and hair grids. */
@@ -1301,12 +1393,22 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 eventCallback("beard");
             }
             case "eyes" -> wearFace(villager, choice, getFaceCount());
+            case "hair_advanced" -> {
+                wearLayeredHair(villager, layeredHairTab, choice);
+                eventCallback("hair_" + layeredHairTab.getId());
+            }
             default -> {
                 return false;
             }
         }
         init();
         return true;
+    }
+
+    /** One layer of hair put on, which leaves the single hair texture for the layers. */
+    private static void wearLayeredHair(VillagerEntityMCA look, LayeredHair.Category category, String layer) {
+        look.setHair("");
+        look.setLayeredHair(category, layer);
     }
 
     /** The editor's own preview of a grid card: facing front, without the large preview's turn and zoom. */
@@ -1337,6 +1439,7 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             case "hair_style" -> applyHairStyle(villagerVisualization, hovered);
             case "beard_style" -> Beards.set(villagerVisualization, hovered);
             case "eyes" -> wearFace(villagerVisualization, hovered, getFaceCount());
+            case "hair_advanced" -> wearLayeredHair(villagerVisualization, layeredHairTab, hovered);
             default -> {
                 return villager;
             }
@@ -1350,19 +1453,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
                 b -> setPage(page)));
         button.active = !page.equals(selectedPage);
         return button;
-    }
-
-    private void addLayeredHairCyclerRow(int y, LayeredHair.Category category) {
-        int arrowWidth = 20;
-        int selectWidth = 45;
-        int labelWidth = DATA_WIDTH - arrowWidth * 2 - selectWidth;
-        addRenderableWidget(new ButtonWidget(width / 2, y, arrowWidth, 20, Component.literal("<"), b -> cycleLayeredHair(category, -1)));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth, y, labelWidth, 20, getLayeredHairText(category), b -> {
-        }));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth + labelWidth, y, arrowWidth, 20, Component.literal(">"), b -> cycleLayeredHair(category, 1)));
-        addRenderableWidget(new ButtonWidget(width / 2 + arrowWidth * 2 + labelWidth, y, selectWidth, 20, Component.translatable("gui.villager_editor.select"), b -> {
-            setPage("hair_" + category.getId());
-        }));
     }
 
     private List<Clothing> getClothingChoices() {
@@ -1506,34 +1596,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
         return optionalLayers;
     }
 
-    private void cycleLayeredHair(LayeredHair.Category category, int offset) {
-        List<String> layers = getLayeredHairIdsForCurrentGender(category);
-        if (layers.isEmpty()) {
-            return;
-        }
-
-        int index = layers.indexOf(villager.getLayeredHair(category));
-        int next = index < 0 ? (offset < 0 ? layers.size() - 1 : 0) : Math.floorMod(index + offset, layers.size());
-        villager.setHair("");
-        villager.setLayeredHair(category, layers.get(next));
-        eventCallback("hair_" + category.getId());
-        setPage(page);
-    }
-
-    private Component getLayeredHairText(LayeredHair.Category category) {
-        String selected = villager.getLayeredHair(category);
-        Component layerName = getLayerDisplayName(category);
-        if (MCA.isBlankString(selected)) {
-            return Component.translatable("gui.villager_editor.hair_layer_value", layerName, Component.translatable("gui.villager_editor.none"));
-        }
-        List<String> displayLayers = getLayeredHairIdsForCurrentGender(category).stream()
-                .filter(layer -> !MCA.isBlankString(layer))
-                .toList();
-        int index = displayLayers.indexOf(selected);
-        int displayIndex = index < 0 ? 1 : index + 1;
-        return Component.translatable("gui.villager_editor.hair_layer_index", layerName, displayIndex, Math.max(1, displayLayers.size()));
-    }
-
     private Component getLayerDisplayName(LayeredHair.Category category) {
         return Component.translatable("gui.villager_editor.hair_layer_display." + category.getId());
     }
@@ -1573,13 +1635,6 @@ public class VillagerEditorScreen extends Screen implements SkinListUpdateListen
             return Component.translatable("trait.full").withStyle(ChatFormatting.RED);
         }
         return null;
-    }
-
-    private void setTraitCategory(int step) {
-        TraitCategory[] categories = TraitCategory.values();
-        traitCategory = categories[Math.floorMod(traitCategory.ordinal() + step, categories.length)];
-        traitPage = 0;
-        setPage("traits");
     }
 
     private void updateClothingPageWidget() {
