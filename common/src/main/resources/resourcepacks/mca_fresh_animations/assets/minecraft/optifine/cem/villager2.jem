@@ -258,17 +258,17 @@
               "boxes": [
                 {
                   "coordinates": [
-                    -2,
-                    -2,
+                    -1,
+                    -1,
                     -0.002,
-                    4,
+                    2,
                     1,
                     0
                   ],
                   "uvNorth": [
-                    2,
+                    3,
                     0,
-                    6,
+                    5,
                     1
                   ]
                 }
@@ -279,14 +279,14 @@
                   "invertAxis": "xy",
                   "translate": [
                     0,
-                    -2,
+                    0,
                     0
                   ],
                   "boxes": [
                     {
                       "coordinates": [
                         -1,
-                        0,
+                        -1,
                         -0.003,
                         2,
                         1,
@@ -306,17 +306,17 @@
                   "invertAxis": "xy",
                   "translate": [
                     0,
-                    -2,
+                    0,
                     0
                   ],
                   "boxes": [
                     {
                       "coordinates": [
                         -0.5,
-                        0,
+                        -1,
                         -0.004,
                         1,
-                        1,
+                        0.5,
                         0
                       ],
                       "uvNorth": [
@@ -570,7 +570,7 @@
           "mca_tongue.tx": "sin(age*0.37 +random(id)*6)*0.25*mca_talk",
           "mca_mouth_inside.sy": "(1 +mca_talk)/(1 +0.5*mca_talk_wide*mca_talk)/max(mouth.sy, 0.1)",
           "mca_tongue.sx": "1/max(mouth.sx, 0.1)",
-          "mca_tongue.sy": "0.75/max(mouth.sy, 0.1)",
+          "mca_tongue.sy": "(1 +mca_talk)/(1 +0.5*mca_talk_wide*mca_talk)/max(mouth.sy, 0.1)",
           "mca_mouth_inside.rz": "-mouth.rz",
           "mca_tongue.rz": "-mouth.rz",
           "body.rx": "lerp(mca_work, body.rx, mca_work_body_rx)",
