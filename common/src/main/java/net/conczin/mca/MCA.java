@@ -1,5 +1,7 @@
 package net.conczin.mca;
 
+import net.conczin.mca.entity.ai.navigation.AsyncPathfinding;
+import net.conczin.mca.server.world.BlockIndex;
 import net.conczin.mca.server.AsyncStructureLocator;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -67,6 +69,8 @@ public final class MCA {
     public static void finishServerStop(MinecraftServer server) {
         // A failed startup/crashed run can reach STOPPED without the normal STOPPING hook.
         stopServer(server);
+        BlockIndex.clear();
+        AsyncPathfinding.shutdown();
         if (MCA.server == null && structureLocator != null && structureLocator.finishStopping(server)) {
             structureLocator = null;
         }

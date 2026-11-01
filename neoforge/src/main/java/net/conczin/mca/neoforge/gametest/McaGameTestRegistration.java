@@ -13,6 +13,7 @@ import net.conczin.mca.entity.ai.ChoreToolMatchingGameTests;
 import net.conczin.mca.entity.ai.ResidencyGoHomeGameTests;
 import net.conczin.mca.entity.ai.VillagerDrinksGameTests;
 import net.conczin.mca.expansion.mirror.MirrorGameTests;
+import net.conczin.mca.server.world.PerformanceGameTests;
 import net.conczin.mca.expansion.wardrobe.WardrobeGameTests;
 import net.conczin.mca.entity.ai.ResidencySetHomeGameTests;
 import net.conczin.mca.entity.ai.brain.ForcedHomeOccupiedBedGameTests;
@@ -157,7 +158,8 @@ public final class McaGameTestRegistration {
             ArcheryGameTests.class,
             VillagerDrinksGameTests.class,
             WardrobeGameTests.class,
-            MirrorGameTests.class
+            MirrorGameTests.class,
+            PerformanceGameTests.class
     );
 
     private McaGameTestRegistration() {

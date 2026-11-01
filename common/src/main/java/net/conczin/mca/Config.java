@@ -684,6 +684,26 @@ public final class Config extends CommonConfig {
     public int workOrderBlocksPerTick = 4096;
 
     /**
+     * Villagers find cauldrons, wells, crafting tables, wardrobes and archery targets in a list of where those blocks are,
+     * kept as blocks change, instead of scanning thousands of blocks around them each time.
+     */
+    public boolean villagerBlockIndex = true;
+
+    /**
+     * Villagers far from every player think less often: their brain runs every 2nd tick beyond
+     * {@link #villagerBrainNearDistance} blocks, every 4th beyond twice that and every 8th beyond four times that (each
+     * on its own tick, so they do not all think at once). Their walking, and anyone fighting or panicking, keep the full
+     * rate. 0 turns it off.
+     */
+    public int villagerBrainNearDistance = 32;
+
+    /**
+     * Villagers work out their paths on a background thread, from a copy of the blocks around them, so long paths do
+     * not hold up the server. Off by default while it is being tried out.
+     */
+    public boolean villagerAsyncPathfinding = false;
+
+    /**
      * Largest number of open work orders per village.
      */
     public int workOrderMaxPerVillage = 16;

@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.behavior.BlockPosTracker;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
@@ -36,6 +37,22 @@ public class MCAGroundPathNavigation extends GroundPathNavigation {
     private FailedExtendedSearch failedExtendedSearch;
     private boolean recomputingPath;
     private Detour detour;
+    /** The background search for the path about to be walked, if any (see {@link AsyncPathfinding}). */
+    private AsyncPathfinding.Job asyncJob;
+    /** While {@link #prepareAsyncPath} finds out what the search will be: the search is not run but caught. */
+    private boolean capturingSearch;
+
+    /** Thrown from the path finder while capturing, with what it was asked. */
+    private static final class CapturedSearch extends RuntimeException {
+        private final AsyncPathfinding.Request request;
+        private final PathNavigationRegion region;
+
+        private CapturedSearch(AsyncPathfinding.Request request, PathNavigationRegion region) {
+            super(null, null, false, false);
+            this.request = request;
+            this.region = region;
+        }
+    }
 
     private enum DetourPhase { FLANKING, CROSSING }
 
@@ -138,6 +155,14 @@ public class MCAGroundPathNavigation extends GroundPathNavigation {
             @Override
             public Path findPath(PathNavigationRegion region, Mob mob, Set<BlockPos> targets,
                                  float maxPathLength, int reachRange, float visitedNodesMultiplier) {
+                AsyncPathfinding.Request request = new AsyncPathfinding.Request(targets, maxPathLength, reachRange, visitedNodesMultiplier);
+                if (capturingSearch) {
+                    throw new CapturedSearch(request, region);
+                }
+                AsyncPathfinding.Job ready = takeAsyncPath(request);
+                if (ready != null) {
+                    return ready.path();
+                }
                 if (!PathRequestDiagnostics.enabled()) {
                     return super.findPath(region, mob, targets, maxPathLength, reachRange, visitedNodesMultiplier);
                 }
@@ -149,6 +174,71 @@ public class MCAGroundPathNavigation extends GroundPathNavigation {
                 return result;
             }
         };
+    }
+
+    /**
+     * Before walking to {@code target}: starts the search for the path in the background, or tells whether it is done.
+     * False while the villager should wait for it; true when the path request can go ahead (the path is ready, none is
+     * needed, background searches are off, or the search took too long and is done on the spot instead).
+     */
+    public boolean prepareAsyncPath(BlockPos target) {
+        if (!AsyncPathfinding.isEnabled()) {
+            return true;
+        }
+        long now = this.level.getGameTime();
+        AsyncPathfinding.Job job = this.asyncJob;
+        if (job != null && job.target.equals(target) && this.mob.blockPosition().distSqr(job.from) <= AsyncPathfinding.MOVED_SQR) {
+            long age = now - job.submittedAt;
+            if (job.isDone() && age <= AsyncPathfinding.KEEP) {
+                return true;
+            }
+            if (!job.isDone() && age < AsyncPathfinding.MAX_WAIT) {
+                return false;
+            }
+            if (!job.isDone()) {
+                // too slow: search on the spot
+                job.cancel();
+                this.asyncJob = null;
+                return true;
+            }
+        }
+        if (job != null) {
+            job.cancel();
+            this.asyncJob = null;
+        }
+        // Ask for the path as the walk would, but catch the search instead of running it: so the background search is
+        // the very one the walk will ask for, whatever the navigation decides about the target and the range.
+        this.capturingSearch = true;
+        try {
+            this.createPath(target, 0);
+            return true; // nothing to search: the current path is kept, or there is no way to start
+        } catch (CapturedSearch search) {
+            Profiler.get().pop(); // the "pathfind" section the search ran in
+            this.asyncJob = AsyncPathfinding.submit(target, search.request, search.region, this.mob, createBackgroundPathFinder(), now);
+            return false;
+        } finally {
+            this.capturingSearch = false;
+        }
+    }
+
+    private AsyncPathfinding.Job takeAsyncPath(AsyncPathfinding.Request request) {
+        AsyncPathfinding.Job job = this.asyncJob;
+        if (job == null || !job.isDone() || !job.request.equals(request)
+                || this.mob.blockPosition().distSqr(job.from) > AsyncPathfinding.MOVED_SQR) {
+            return null;
+        }
+        this.asyncJob = null;
+        return job;
+    }
+
+    /** A path finder of its own for one background search, set up like this navigation's. */
+    private PathFinder createBackgroundPathFinder() {
+        MCAWalkNodeEvaluator evaluator = new MCAWalkNodeEvaluator(true);
+        evaluator.setCanPassDoors(this.nodeEvaluator.canPassDoors());
+        evaluator.setCanOpenDoors(this.nodeEvaluator.canOpenDoors());
+        evaluator.setCanFloat(this.nodeEvaluator.canFloat());
+        evaluator.setCanWalkOverFences(this.nodeEvaluator.canWalkOverFences());
+        return new PathFinder(evaluator, Mth.floor(this.getMaxPathLength() * 16.0F));
     }
 
     @Override

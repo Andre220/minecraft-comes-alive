@@ -1,5 +1,6 @@
 package net.conczin.mca.entity.ai;
 
+import net.conczin.mca.server.world.BlockIndex;
 import net.conczin.mca.expansion.minds.VillagerAttributes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
@@ -477,12 +478,44 @@ public class Needs {
     /** Whether a cauldron with water is within reach (2 blocks). */
     public boolean isNextToWater(ServerLevel level) {
         BlockPos feet = entity.blockPosition();
+        if (BlockIndex.isEnabled()) {
+            return findDrinkingWater(level, feet, 2, 1) != null;
+        }
         for (BlockPos pos : BlockPos.betweenClosed(feet.offset(-2, -1, -2), feet.offset(2, 1, 2))) {
             if (isDrinkingWater(level, pos)) {
                 return true;
             }
         }
         return false;
+    }
+
+    /**
+     * The nearest water to drink within {@code radius} blocks across and {@code height} up and down: a cauldron or sink
+     * with water, or the mouth of a well.
+     */
+    public static @Nullable BlockPos findDrinkingWater(ServerLevel level, BlockPos center, int radius, int height) {
+        if (!BlockIndex.isEnabled()) {
+            return BlockPos.findClosestMatch(center, radius, height, pos -> isDrinkingWater(level, pos)).map(BlockPos::immutable).orElse(null);
+        }
+        BlockPos cauldron = BlockIndex.findClosest(level, center, radius, height, BlockIndex.Kind.DRINKING_WATER, pos -> true).orElse(null);
+        // a well's mouth is beside its rim: rims a block further out may have their mouth inside
+        BlockPos well = BlockIndex.findClosest(level, center, radius + 1, height, BlockIndex.Kind.WELL_RIM,
+                rim -> wellMouthBeside(level, rim, center, radius, height) != null).map(rim -> wellMouthBeside(level, rim, center, radius, height)).orElse(null);
+        if (cauldron == null || well == null) {
+            return cauldron == null ? well : cauldron;
+        }
+        return cauldron.distSqr(center) <= well.distSqr(center) ? cauldron : well;
+    }
+
+    private static @Nullable BlockPos wellMouthBeside(ServerLevel level, BlockPos rim, BlockPos center, int radius, int height) {
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            BlockPos mouth = rim.relative(side);
+            if (Math.abs(mouth.getX() - center.getX()) <= radius && Math.abs(mouth.getZ() - center.getZ()) <= radius
+                && Math.abs(mouth.getY() - center.getY()) <= height && Wells.isMouth(level, mouth)) {
+                return mouth;
+            }
+        }
+        return null;
     }
 
     /** Water to drink at a place: a cauldron or sink with water, or the mouth of a well ({@link Wells}). */

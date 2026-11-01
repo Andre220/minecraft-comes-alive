@@ -2,6 +2,7 @@ package net.conczin.mca.entity.ai.brain.tasks;
 
 import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.entity.VillagerEntityMCA;
+import net.conczin.mca.server.world.BlockIndex;
 import net.conczin.mca.entity.ai.Needs;
 import net.conczin.mca.entity.ai.queue.ActionQueue;
 import net.conczin.mca.entity.ai.queue.ActionType;
@@ -76,8 +77,10 @@ public class NeedsBakeBreadTask extends Behavior<VillagerEntityMCA> {
             || villager.isSleeping() || villager.getVillagerBrain().isPanicking()) {
             return false;
         }
-        table = BlockPos.findClosestMatch(villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT,
-                pos -> level.getBlockState(pos).is(Blocks.CRAFTING_TABLE)).map(BlockPos::immutable).orElse(null);
+        table = (BlockIndex.isEnabled()
+                ? BlockIndex.findClosest(level, villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT, BlockIndex.Kind.CRAFTING_TABLE, pos -> true)
+                : BlockPos.findClosestMatch(villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT,
+                        pos -> level.getBlockState(pos).is(Blocks.CRAFTING_TABLE))).map(BlockPos::immutable).orElse(null);
         if (table == null) {
             nextAttempt = level.getGameTime() + RETRY_COOLDOWN;
             return false;

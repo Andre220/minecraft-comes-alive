@@ -5,19 +5,24 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.brain.WalkTargetFailureMemory;
+import net.conczin.mca.entity.ai.navigation.AsyncPathfinding;
 import net.conczin.mca.entity.ai.navigation.CombatEscapePositionTracker;
+import net.conczin.mca.entity.ai.navigation.MCAGroundPathNavigation;
 import net.conczin.mca.entity.ai.navigation.MultiTargetPositionTracker;
 import net.conczin.mca.entity.ai.navigation.PathRequestDiagnostics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.behavior.MoveToTargetSink;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -33,6 +38,36 @@ abstract class MixinMoveToTargetSink {
     @Unique
     private static final String MCA_REACHED_TARGET =
             "reachedTarget(Lnet/minecraft/world/entity/Mob;Lnet/minecraft/world/entity/ai/memory/WalkTarget;)Z";
+
+    @Shadow
+    private int remainingCooldown;
+
+    @Shadow
+    private boolean reachedTarget(Mob body, WalkTarget walkTarget) {
+        throw new AssertionError();
+    }
+
+    /**
+     * Background pathfinding: the path is searched for off the server thread before the walk starts, and the walk
+     * waits for it (keeping its target) instead of searching on the spot. See {@link AsyncPathfinding}.
+     */
+    @Inject(method = "checkExtraStartConditions(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/Mob;)Z",
+            at = @At("HEAD"), cancellable = true)
+    private void mca$waitForBackgroundPath(ServerLevel level, Mob body, CallbackInfoReturnable<Boolean> cir) {
+        if (this.remainingCooldown > 0 || !AsyncPathfinding.isEnabled() || !(body.getNavigation() instanceof MCAGroundPathNavigation navigation)) {
+            return;
+        }
+        WalkTarget walkTarget = body.getBrain().getMemory(MemoryModuleType.WALK_TARGET).orElse(null);
+        if (walkTarget == null
+            || walkTarget.getTarget() instanceof MultiTargetPositionTracker
+            || walkTarget.getTarget() instanceof CombatEscapePositionTracker
+            || this.reachedTarget(body, walkTarget)) {
+            return;
+        }
+        if (!navigation.prepareAsyncPath(walkTarget.getTarget().currentBlockPosition())) {
+            cir.setReturnValue(false);
+        }
+    }
 
     @Inject(method = MCA_TRY_COMPUTE_PATH, at = @At("HEAD"))
     private void mca$clearFailureFromPreviousTarget(

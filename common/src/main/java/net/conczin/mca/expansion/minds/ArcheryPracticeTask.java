@@ -3,6 +3,7 @@ package net.conczin.mca.expansion.minds;
 import com.google.common.collect.ImmutableMap;
 import net.conczin.mca.Config;
 import net.conczin.mca.entity.VillagerEntityMCA;
+import net.conczin.mca.server.world.BlockIndex;
 import net.conczin.mca.entity.ai.RangedWeaponHelper;
 import net.conczin.mca.registry.ProfessionsMCA;
 import net.minecraft.core.BlockPos;
@@ -92,6 +93,9 @@ public class ArcheryPracticeTask extends Behavior<VillagerEntityMCA> {
 
     static @Nullable BlockPos findTarget(ServerLevel level, VillagerEntityMCA villager) {
         BlockPos origin = villager.blockPosition();
+        if (BlockIndex.isEnabled()) {
+            return BlockIndex.findClosest(level, origin, SEARCH_RADIUS, 4, BlockIndex.Kind.ARCHERY_TARGET, pos -> true).orElse(null);
+        }
         BlockPos best = null;
         for (BlockPos pos : BlockPos.betweenClosed(origin.offset(-SEARCH_RADIUS, -4, -SEARCH_RADIUS), origin.offset(SEARCH_RADIUS, 4, SEARCH_RADIUS))) {
             if (level.getBlockState(pos).is(Blocks.TARGET) && (best == null || pos.distSqr(origin) < best.distSqr(origin))) {

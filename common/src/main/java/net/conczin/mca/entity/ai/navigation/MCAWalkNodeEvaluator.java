@@ -31,6 +31,8 @@ public class MCAWalkNodeEvaluator extends WalkNodeEvaluator {
     private static final double FLOOR_EPSILON = 1.0E-3D;
     private static final double BOX_EPSILON = 1.0E-7D;
     private static final double RAISED_START_EPSILON = 1.0E-3D;
+    /** Looks path types up itself instead of in the level's shared cache, which only the server thread may touch. */
+    private final boolean background;
     private final Long2BooleanMap clearanceCache = new Long2BooleanOpenHashMap();
     private final Long2BooleanMap climbableCache = new Long2BooleanOpenHashMap();
     private final BlockPos.MutableBlockPos climbablePos = new BlockPos.MutableBlockPos();
@@ -39,11 +41,36 @@ public class MCAWalkNodeEvaluator extends WalkNodeEvaluator {
     private boolean countExpandedNodes;
     private int expandedNodes;
 
+    public MCAWalkNodeEvaluator() {
+        this(false);
+    }
+
+    /** With {@code background}, for searches off the server thread (see {@link AsyncPathfinding}). */
+    MCAWalkNodeEvaluator(boolean background) {
+        this.background = background;
+    }
+
     @Override
     public void prepare(PathNavigationRegion region, Mob mob) {
         this.expandedNodes = 0;
-        this.countExpandedNodes = PathRequestDiagnostics.enabled();
+        this.countExpandedNodes = !background && PathRequestDiagnostics.enabled();
         super.prepare(region, mob);
+        if (background) {
+            this.currentContext = new UncachedContext(region, mob);
+        }
+    }
+
+    private static final class UncachedContext extends PathfindingContext {
+        private final BlockPos.MutableBlockPos at = new BlockPos.MutableBlockPos();
+
+        private UncachedContext(PathNavigationRegion region, Mob mob) {
+            super(region, mob);
+        }
+
+        @Override
+        public PathType getPathTypeFromState(int x, int y, int z) {
+            return WalkNodeEvaluator.getPathTypeFromState(level(), at.set(x, y, z));
+        }
     }
 
     /** Neighbor expansions, not heap pops: reached goals and range-cutoff nodes are excluded. */

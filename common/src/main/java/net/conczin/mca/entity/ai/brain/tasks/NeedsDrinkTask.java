@@ -54,8 +54,7 @@ public class NeedsDrinkTask extends Behavior<VillagerEntityMCA> {
             || villager.isSleeping() || villager.getVillagerBrain().isPanicking()) {
             return false;
         }
-        cauldron = BlockPos.findClosestMatch(villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT,
-                pos -> Needs.isDrinkingWater(level, pos)).map(BlockPos::immutable).orElse(null);
+        cauldron = Needs.findDrinkingWater(level, villager.blockPosition(), SEARCH_RADIUS, SEARCH_HEIGHT);
         if (cauldron == null) {
             nextAttempt = level.getGameTime() + RETRY_COOLDOWN;
             return false;

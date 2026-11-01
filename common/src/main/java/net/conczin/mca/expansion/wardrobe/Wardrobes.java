@@ -9,6 +9,7 @@ import net.conczin.mca.resources.WeightedPool;
 import net.conczin.mca.block.BlockEntityTypesMCA;
 import net.conczin.mca.MCA;
 import net.conczin.mca.entity.VillagerEntityMCA;
+import net.conczin.mca.server.world.BlockIndex;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.network.s2c.PlayerDataMessage;
 import net.conczin.mca.registry.BlocksMCA;
@@ -156,12 +157,18 @@ public final class Wardrobes {
                 .filter(home -> home.dimension() == level.dimension())
                 .map(GlobalPos::pos)
                 .orElse(villager.blockPosition());
-        Optional<BlockPos> found = BlockPos.findClosestMatch(around, HOME_RADIUS, 4, pos -> level.getBlockState(pos).is(WARDROBES));
+        Optional<BlockPos> found = BlockIndex.isEnabled()
+                ? BlockIndex.findClosest(level, around, HOME_RADIUS, 4, BlockIndex.Kind.WARDROBE, pos -> true)
+                : BlockPos.findClosestMatch(around, HOME_RADIUS, 4, pos -> level.getBlockState(pos).is(WARDROBES));
         return found.map(BlockPos::immutable).orElse(null);
     }
 
     public static boolean isNextToWardrobe(ServerLevel level, VillagerEntityMCA villager) {
         BlockPos feet = villager.blockPosition();
+        if (BlockIndex.isEnabled()) {
+            // two blocks up, one down
+            return BlockIndex.any(level, feet, 2, 2, BlockIndex.Kind.WARDROBE, pos -> pos.getY() >= feet.getY() - 1);
+        }
         for (BlockPos pos : BlockPos.betweenClosed(feet.offset(-2, -1, -2), feet.offset(2, 2, 2))) {
             if (level.getBlockState(pos).is(WARDROBES)) {
                 return true;

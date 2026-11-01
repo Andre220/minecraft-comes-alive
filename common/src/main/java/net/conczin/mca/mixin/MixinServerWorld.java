@@ -1,6 +1,8 @@
 package net.conczin.mca.mixin;
 
 import net.conczin.mca.server.SpawnQueue;
+import net.conczin.mca.server.world.BlockIndex;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -8,11 +10,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.WritableLevelData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ServerLevel.class)
@@ -29,5 +33,10 @@ abstract class MixinServerWorld extends Level implements WorldGenLevel {
         if (SpawnQueue.getInstance().addVillager(entity)) {
             info.setReturnValue(false);
         }
+    }
+
+    @Inject(method = "updatePOIOnBlockStateChange", at = @At("HEAD"))
+    private void mca$updateBlockIndex(BlockPos pos, BlockState oldState, BlockState newState, CallbackInfo info) {
+        BlockIndex.onBlockChanged((ServerLevel) (Object) this, pos, oldState, newState);
     }
 }
