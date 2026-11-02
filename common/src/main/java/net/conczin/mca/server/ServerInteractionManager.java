@@ -49,8 +49,9 @@ public class ServerInteractionManager {
         Network.sendToPlayer(new OpenDestinyGuiRequest(player), player);
     }
 
-    public void tick() {
+    public void tick(net.minecraft.server.MinecraftServer server) {
         CreativeWork.tick(); // expansion: work orders
+        net.conczin.mca.server.world.DayLength.tick(server);
         List<UUID> removals = new ArrayList<>();
         procreateMap.keySet().stream()
                 .filter((k) -> procreateMap.getLong(k) < System.currentTimeMillis())

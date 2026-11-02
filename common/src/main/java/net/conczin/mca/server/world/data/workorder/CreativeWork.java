@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -31,22 +32,38 @@ public final class CreativeWork {
         final ServerLevel level;
         final WorkOrderType type;
         final @Nullable BlockState block;
+        final boolean demolish;
+        final @Nullable Map<BlockPos, BlockState> plan;
         final UUID player;
         final Iterator<BlockPos> next;
         int changed;
 
-        Job(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block, UUID player) {
+        Job(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block, boolean demolish,
+            @Nullable Map<BlockPos, BlockState> plan, UUID player) {
             this.level = level;
             this.type = type;
             this.block = block;
+            this.demolish = demolish;
+            this.plan = plan;
             this.player = player;
-            this.next = BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()).iterator();
+            this.next = plan != null ? plan.keySet().iterator()
+                    : BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()).iterator();
         }
     }
 
     /** Queues the area; work starts this tick. */
     public static void add(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block, ServerPlayer player) {
-        JOBS.add(new Job(level, type, area, block, player.getUUID()));
+        add(level, type, area, block, false, player);
+    }
+
+    /** Queues the area; with {@code demolish} digging takes chests and the like too, contents and all. */
+    public static void add(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block, boolean demolish, ServerPlayer player) {
+        JOBS.add(new Job(level, type, area, block, demolish, null, player.getUUID()));
+    }
+
+    /** Queues blocks planned one by one, each with its exact state. */
+    public static void addPlan(ServerLevel level, Map<BlockPos, BlockState> plan, ServerPlayer player) {
+        JOBS.add(new Job(level, WorkOrderType.BLUEPRINT, WorkArea.around(plan.keySet()), null, false, plan, player.getUUID()));
     }
 
     /** Whether any creative work is still going on. */
@@ -64,7 +81,17 @@ public final class CreativeWork {
             while (budget > 0 && job.next.hasNext()) {
                 BlockPos pos = job.next.next();
                 budget--;
-                if (job.type == WorkOrderType.DIG && WorkOrderBlocks.needsDigging(job.level, pos)) {
+                if (job.plan != null) {
+                    BlockState target = job.plan.get(pos);
+                    if (target != null && job.level.getBlockState(pos) != target
+                        && (!target.isAir() || WorkOrderBlocks.needsDigging(job.level, pos))) {
+                        job.level.setBlock(pos, target, Block.UPDATE_CLIENTS);
+                        job.changed++;
+                    }
+                } else if (job.type == WorkOrderType.DIG && WorkOrderBlocks.needsDigging(job.level, pos, job.demolish)) {
+                    if (job.demolish) {
+                        WorkOrderBlocks.emptyContainer(job.level, pos);
+                    }
                     job.level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                     job.changed++;
                 } else if (job.type == WorkOrderType.BUILD && job.block != null && WorkOrderBlocks.needsBuilding(job.level, pos, job.block)) {

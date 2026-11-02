@@ -15,7 +15,7 @@
     },
     {
       "name": "bandit_hire",
-      "constraints": "bandit,bandit_friend",
+      "constraints": "bandit,bandit_friend,!bandit_member",
       "results": [
         {
           "actions": {
@@ -56,6 +56,90 @@
           "actions": {
             "next": "main",
             "caravan_news": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_join",
+      "constraints": "bandit,bandit_can_join",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_join": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_rally",
+      "constraints": "bandit,bandit_member",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_rally": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_leave",
+      "constraints": "bandit,bandit_member",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_leave": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "village_fine_ask",
+      "constraints": "village_debt,!village_sentenced",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "village_fine": "ask"
+          }
+        }
+      ]
+    },
+    {
+      "name": "village_fine_pay",
+      "constraints": "village_debt,!village_sentenced",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "village_fine": "pay"
+          }
+        }
+      ]
+    },
+    {
+      "name": "caravan_order",
+      "constraints": "caravan,!caravan_ordered",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "caravan_order": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "caravan_pickup",
+      "constraints": "caravan,caravan_ordered",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "caravan_pickup": "x"
           }
         }
       ]
@@ -347,6 +431,78 @@
         {
           "actions": {
             "next": "adopt"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_lodge",
+      "constraints": "bandit,bandit_member",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_lodge": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "bandit_raid",
+      "constraints": "bandit,bandit_member",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "bandit_raid": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "faction_found",
+      "constraints": "bandit,faction_can_found",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "faction_found": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "faction_recruit",
+      "constraints": "faction_recruitable",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "faction_recruit": "x"
+          }
+        }
+      ]
+    },
+    {
+      "name": "village_jail",
+      "constraints": "village_debt,village_prison,!village_sentenced",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "village_sentence": "jail"
+          }
+        }
+      ]
+    },
+    {
+      "name": "village_service",
+      "constraints": "village_debt,!village_sentenced",
+      "results": [
+        {
+          "actions": {
+            "next": "main",
+            "village_sentence": "service"
           }
         }
       ]

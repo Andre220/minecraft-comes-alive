@@ -43,12 +43,12 @@ public interface MessagesMCA {
         c.register(VillagerNameRequest.TYPE, VillagerNameRequest.STREAM_CODEC, true);
         c.register(ConfirmBuildingPolymorphMessage.TYPE, ConfirmBuildingPolymorphMessage.STREAM_CODEC, true);
         c.register(WorkOrdersRequest.TYPE, WorkOrdersRequest.STREAM_CODEC, true);
-        c.register(CreateWorkOrderMessage.TYPE, CreateWorkOrderMessage.STREAM_CODEC, true);
+        c.register(CommitPlanMessage.TYPE, CommitPlanMessage.STREAM_CODEC, true);
         c.register(ManageWorkOrderMessage.TYPE, ManageWorkOrderMessage.STREAM_CODEC, true);
         c.register(ProgressMessages.Request.TYPE, ProgressMessages.Request.STREAM_CODEC, true); // expansion: progression
         c.register(BlueprintRequest.TYPE, BlueprintRequest.STREAM_CODEC, true);
         c.register(CaptureBlueprintMessage.TYPE, CaptureBlueprintMessage.STREAM_CODEC, true);
-        c.register(PlaceBlueprintMessage.TYPE, PlaceBlueprintMessage.STREAM_CODEC, true);
+        c.register(BlueprintCatalogMessage.TYPE, BlueprintCatalogMessage.STREAM_CODEC, true);
 
         c.register(AnalysisResults.TYPE, AnalysisResults.STREAM_CODEC, false);
         c.register(BabyNameResponse.TYPE, BabyNameResponse.STREAM_CODEC, false);

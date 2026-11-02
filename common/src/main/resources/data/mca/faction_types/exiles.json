@@ -1,0 +1,29 @@
+{
+  "weight": 0,
+  "names": 3,
+  "strength": 0.7,
+  "mainhand": [
+    {
+      "item": "minecraft:stone_sword",
+      "weight": 4
+    },
+    {
+      "item": "minecraft:wooden_axe",
+      "weight": 3
+    },
+    {
+      "item": "minecraft:bow",
+      "weight": 3
+    }
+  ],
+  "armor": [
+    {
+      "item": "minecraft:leather_helmet",
+      "chance": 0.2
+    },
+    {
+      "item": "minecraft:leather_chestplate",
+      "chance": 0.3
+    }
+  ]
+}

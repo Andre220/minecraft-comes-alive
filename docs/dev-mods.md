@@ -11,6 +11,7 @@ or download the versions below for Minecraft 26.2 (Fabric). The jars are not in 
 | `grounded_villages-fabric-0.1.0+26.2.jar` | `grounded_villages` | `../grounded-villages` | Village houses fitted to the terrain, with flattening and smoothing |
 | `tabletop-fabric-0.1.0+26.2.jar` | `tabletop` | `../tabletop` | Put any item down on a block, drawn in 3D with its item model |
 | `village_furnishings-fabric-0.1.0+26.2.jar` | `village_furnishings` | `../village-furnishings` | Swinging shutters, casement windows, and iron/copper/gold sinks |
+| `tactical_combat-fabric-0.1.0+26.2.jar` | `tactical_combat` | `../tactical-combat` | Slash, blunt and pierce damage per weapon, mob and armor; weight (needs Spell Engine) |
 
 To rebuild one: run `./gradlew :fabric:build` in its repo and copy `fabric/build/libs/<mod>-fabric-*.jar` here.
 Only do this with the dev client closed.
@@ -56,6 +57,9 @@ Only do this with the dev client closed.
 | `libraryferret-fabric-26.2-5.0.1.jar` | `libraryferret` | 5.0.1 | Better Villages |
 | `puzzleslib-v26.2.5-mc26.2.x+fabric.jar` | `puzzleslib` | 26.2.5 | Diagonal Walls, Visual Workbench |
 | `ForgeConfigAPIPort-v26.2.1-mc26.2.x-Fabric.jar` | `forgeconfigapiport` | 26.2.1 | Puzzles Lib, Diagonal Walls, Visual Workbench |
+| `spell_engine-fabric-1.10.9+26.2.jar` | `spell_engine` | 1.10.9 | Tactical Combat (bleed and stun effects) |
+| `spell_power-fabric-1.6.2+26.2.jar` | `spell_power` | 1.6.2 | Spell Engine |
+| `PlayerAnimationLibMerged-1.2.8+mc.26.2.jar` | `player_animation_library` | 1.2.8 | Spell Engine, Better Combat |
 
 ## Outside this folder
 

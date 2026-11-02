@@ -1,6 +1,7 @@
 package net.conczin.mca.neoforge;
 
 import net.conczin.mca.expansion.wardrobe.Wardrobes;
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.expansion.wardrobe.OutfitTab;
 import net.conczin.mca.expansion.minds.routine.DailyToggles;
 import net.conczin.mca.expansion.minds.routine.OpportunityTypes;
@@ -156,6 +157,7 @@ public final class CommonNeoForge {
         event.addListener(MCA.locate("tasks"), new Tasks());
         event.addListener(MCA.locate("names"), new Names());
         event.addListener(MCA.locate("building_types"), new BuildingTypes());
+        Addons.reloadListeners(event::addListener);
     }
 
     @SubscribeEvent
@@ -174,7 +176,7 @@ public final class CommonNeoForge {
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
-        ServerInteractionManager.getInstance().tick();
+        ServerInteractionManager.getInstance().tick(event.getServer());
     }
 
     @SubscribeEvent

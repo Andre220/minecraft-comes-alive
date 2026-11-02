@@ -28,7 +28,12 @@ Fases 3 a 5 (2026-10-29):
   - "De onde vocês vêm?": a última vila e a próxima.
   - "Alguma notícia?": boato de uma vila que ninguém achou ainda (nome, direção e distância aproximada), ou do território da facção mais próxima.
 
-Falta: encomendas (pedir um item para a próxima viagem).
+- **Encomendas (`CaravanOrders`, 2026-11-01):**
+  - "Pode me trazer mais disto?" com o item na mão: até 32 (ou uma pilha); preço 2 + 1/8 por item comum, 1/2 incomum, 2 raro, até 64 esmeraldas. Épicos, ovos de criação, esmeraldas e a tag `mca:caravan_unorderable` não dá;
+  - uma encomenda por jogador por caravana; fica pronta quando a caravana chega a outra vila, com aviso para quem pediu;
+  - "Trouxe minha encomenda?" (constraint `caravan_ordered`): paga e leva.
+
+Falta: a encomenda feita pelo líder da vila nos Registros da Cidade; se a caravana some na estrada, a encomenda some junto.
 
 ## O que já existe e será reaproveitado
 - **Taverna:** `VillageInnManager` já faz aparecer viajantes (aventureiros, cultistas e o mercador ambulante, `innSpawnsWanderingTraders`). As caravanas podem pernoitar ali.

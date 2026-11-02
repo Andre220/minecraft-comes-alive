@@ -19,9 +19,9 @@ public final class ExpansionGuide {
     /**
      * Pages per chapter, in order; chapter 0 is the introduction. Chapters: looks, radial menu,
      * needs, action queue, schedule, property, construction, gatherers, workshops, hauler, debugging,
-     * smarter villagers, requests, village progression, other mods and windows.
+     * smarter villagers, requests, village progression, other mods and windows, bands and roads.
      */
-    private static final int[] PAGES = {2, 4, 2, 6, 2, 2, 6, 6, 6, 5, 3, 2, 7, 7, 4, 5};
+    private static final int[] PAGES = {2, 4, 2, 7, 2, 2, 6, 6, 6, 5, 3, 2, 7, 7, 4, 5, 10};
 
     public static final Item BOOK = ItemsMCA.register("book_" + NAME,
             new ExtendedWrittenBookItem(ItemsMCA.baseProps("book_" + NAME), create()));

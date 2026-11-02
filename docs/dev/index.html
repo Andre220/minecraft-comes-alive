@@ -113,9 +113,9 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <a href='#buildings' style='--c:var(--gold)'><span class='ic'>🏛️</span>Tipos de prédio</a>
 <a href='#icons' style='--c:var(--rose)'><span class='ic'>💬</span>Ícones e balões</a>
 </nav><main>
-<header class='hero'><div class='cube'></div><h1>Minecraft Comes Alive · guia do dev</h1><p>O que o MCA original já faz, o que a expansão acrescenta e como os aldeões pensam, trabalham e enfeitam a vila.</p><div class='chips'><span>21 flags</span><span>25 profissões</span><span>31 tipos de prédio</span><span>16 oportunidades</span><span>1368 ícones</span></div></header>
+<header class='hero'><div class='cube'></div><h1>Minecraft Comes Alive · guia do dev</h1><p>O que o MCA original já faz, o que a expansão acrescenta e como os aldeões pensam, trabalham e enfeitam a vila.</p><div class='chips'><span>21 flags</span><span>25 profissões</span><span>31 tipos de prédio</span><span>18 oportunidades</span><span>1368 ícones</span></div></header>
 <section class='sec' id='planning' style='--c:var(--sky)'><h2><span class='ic'>🗺️</span>Planejamento</h2>
-<p>Os 13 documentos de <code>docs/planning</code>: o que está em discussão (WIP), o que falta de arte (TODO) e os planos já feitos. Clique num cartão para abrir o documento.</p><div class='plans'>
+<p>Os 16 documentos de <code>docs/planning</code>: o que está em discussão (WIP), o que falta de arte (TODO) e os planos já feitos. Clique num cartão para abrir o documento.</p><div class='plans'>
 <a class='plan' href='#doc-proximos-passos' style='--k:var(--grass)'><span class='state'>índice</span><b>Próximos passos da expansão</b><p>Data: 2026-10-18. Continua vilas-consolidado.md e bountiful-producao-coletor.md. As fases 0 a 3 da economia</p></a>
 <a class='plan' href='#doc-gestao-da-vila' style='--k:var(--violet)'><span class='state'>WIP</span><b>Gestão da vila: prefeitura, chefe, empregos e a questline do ancião</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado). Os atributos, que dizem quem combina com cada posto, estão em atributos-e-niveis.md.</p></a>
 <a class='plan' href='#doc-interface-e-conversas' style='--k:var(--violet)'><span class='state'>WIP</span><b>Interface: informação atrás das conversas e visual editável</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado).</p></a>
@@ -125,9 +125,12 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <a class='plan' href='#doc-espelho-estudo' style='--k:var(--grass)'><span class='state'>feito</span><b>Espelhos: estudo técnico</b><p>Pedido do Andre: dois espelhos, um pequeno (de pôr em cima de mesa, cômoda, bancada e afins) e um grande (de</p></a>
 <a class='plan' href='#doc-tracos-rimworld' style='--k:var(--grass)'><span class='state'>feito</span><b>Traços do RimWorld e crise mental</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado). Continua o sistema de tracos-sims.md: mesmo builder (Traits.builder), efeitos tipados (TraitEffect), condições (TraitCondition) e jeito de andar (WalkStyle).</p></a>
 <a class='plan' href='#doc-tracos-sims' style='--k:var(--grass)'><span class='state'>feito</span><b>Traços estilo The Sims 4 para villagers do MCA</b><p>Hoje os traços (entity/ai/Traits.java) são quase só genéticos e visuais. Os poucos efeitos que eles têm não aparecem em lugar nenhum: o usuário só descobriu pela wiki que athletic dá +10% de velocidade e que tough dá ×1.…</p></a>
+<a class='plan' href='#doc-comercio-e-despensa' style='--k:var(--gold)'><span class='state'>referência</span><b>Comércio e despensa: comida em casa, despensa da vila e mercado entre aldeões</b><p>Data: 2026-10-31. Pedido do Andre, depois de olhar como os aldeões conseguem comida:</p></a>
 <a class='plan' href='#doc-faccoes' style='--k:var(--sky)'><span class='state'>em andamento</span><b>Facções: saqueadores como gente, com bandeira e reputação</b><p>Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é dar ao jogador um motivo para virar fora da …</p></a>
 <a class='plan' href='#doc-addons' style='--k:var(--gold)'><span class='state'>catálogo</span><b>MCA Reborn: catálogo de addons</b><p>Data: 2026-10-30. Este é o catálogo do que o fork tem hoje, agrupado nas expansões que vão virar addons instaláveis, no estilo The Sims: cada uma traz mecânicas, itens e conversas novas que conversam com o que já existe.</p></a>
 <a class='plan' href='#doc-bountiful-producao-coletor' style='--k:var(--gold)'><span class='state'>referência</span><b>Missões, produção e coletor: consolidado de planejamento</b><p>Resultado de uma conversa com o Andre sobre três temas ligados entre si:</p></a>
+<a class='plan' href='#doc-planejamento-de-obras' style='--k:var(--gold)'><span class='state'>referência</span><b>Planejamento de obras 2: rascunho, catálogo, seções de blueprint e formas</b><p>Data: 2026-11-01. Pedido do Andre, depois de usar a tela de planejamento (Cavar / Construir / Blueprint / Capturar):</p></a>
+<a class='plan' href='#doc-tactical-combat' style='--k:var(--sky)'><span class='state'>em andamento</span><b>Tactical Combat: corte, concussão e perfuração</b><p>Mod separado, em jar e repositório próprios (../tactical-combat, mod_id tactical_combat), planejado em 2026-10-31. Fases 0 a 5 feitas (ver Estado). Cada golpe físico se divide em corte, concussão e perfuração. Armas, arm…</p></a>
 <a class='plan' href='#doc-vilas-consolidado' style='--k:var(--gold)'><span class='state'>referência</span><b>Vilas: consolidado de planejamento</b><p>Documento de passagem para um chat único que vai juntar três temas ligados entre si:</p></a>
 </div>
 <details class='doc' id='doc-proximos-passos' style='--k:var(--grass)'><summary><span class='state'>índice</span>Próximos passos da expansão <span class='muted'>· proximos-passos.md</span></summary><div class='body'><h1>Próximos passos da expansão</h1>
@@ -1279,13 +1282,23 @@ itens e profissões).</p>
 <li><strong>Saque:</strong> matar alguém da caravana custa 15 corações nas vilas da rota e dá +2 com as facções.</li>
 </ul>
 </li>
-<li><strong>Conversa</strong> (<code>CaravanTalk</code>, constraint <code>caravan</code>):<ul>
+<li>
+<p><strong>Conversa</strong> (<code>CaravanTalk</code>, constraint <code>caravan</code>):</p>
+<ul>
 <li>"De onde vocês vêm?": a última vila e a próxima.</li>
 <li>"Alguma notícia?": boato de uma vila que ninguém achou ainda (nome, direção e distância aproximada), ou do território da facção mais próxima.</li>
 </ul>
 </li>
+<li>
+<p><strong>Encomendas (<code>CaravanOrders</code>, 2026-11-01):</strong></p>
+<ul>
+<li>"Pode me trazer mais disto?" com o item na mão: até 32 (ou uma pilha); preço 2 + 1/8 por item comum, 1/2 incomum, 2 raro, até 64 esmeraldas. Épicos, ovos de criação, esmeraldas e a tag <code>mca:caravan_unorderable</code> não dá;</li>
+<li>uma encomenda por jogador por caravana; fica pronta quando a caravana chega a outra vila, com aviso para quem pediu;</li>
+<li>"Trouxe minha encomenda?" (constraint <code>caravan_ordered</code>): paga e leva.</li>
 </ul>
-<p>Falta: encomendas (pedir um item para a próxima viagem).</p>
+</li>
+</ul>
+<p>Falta: a encomenda feita pelo líder da vila nos Registros da Cidade; se a caravana some na estrada, a encomenda some junto.</p>
 <h2>O que já existe e será reaproveitado</h2>
 <ul>
 <li><strong>Taverna:</strong> <code>VillageInnManager</code> já faz aparecer viajantes (aventureiros, cultistas e o mercador ambulante, <code>innSpawnsWanderingTraders</code>). As caravanas podem pernoitar ali.</li>
@@ -2644,6 +2657,300 @@ olho do jogador.</p>
 <li>Efeitos: F3 (debug) mostra os multiplicadores. Comparar a queda de fome entre um Guloso e um villager comum ao longo de um dia (<code>/time add</code>) e a velocidade de um Ativo contra um Preguiçoso.</li>
 <li><code>gradle build</code> com testes, se houver para traços e datafix.</li>
 </ul></div></details>
+<details class='doc' id='doc-comercio-e-despensa' style='--k:var(--gold)'><summary><span class='state'>referência</span>Comércio e despensa: comida em casa, despensa da vila e mercado entre aldeões <span class='muted'>· comercio-e-despensa.md</span></summary><div class='body'><h1>Comércio e despensa: comida em casa, despensa da vila e mercado entre aldeões</h1>
+<p>Data: 2026-10-31. Pedido do Andre, depois de olhar como os aldeões conseguem comida:</p>
+<ol>
+<li><strong>Família:</strong> quem leva comida para casa guarda também para o cônjuge e os filhos; uma criança com fome pega do
+      baú dos pais.</li>
+<li><strong>Despensa da vila:</strong> uma parte da comida produzida vai direto para o armazém, para quem não tem renda.</li>
+<li><strong>Comércio:</strong> caçadores vendem carne, o padeiro pão, os fazendeiros legumes; trocam ferramentas por recursos entre
+      si.</li>
+</ol>
+<p><strong>Decidido (2026-10-31):</strong> mercado pelos desenhos <strong>A</strong> (armazém como mercado) e <strong>B</strong> (barracas no mercado); o
+<strong>C</strong> (troca direta entre aldeões) fica de fora: é difícil de ver em jogo e caro de manter. Família e despensa
+seguem como descritas.</p>
+<p>Nada disso está implementado. Pertence aos addons <strong>Fome e Sede</strong> (1 e 2) e <strong>Trabalho e Economia</strong> (3), ver
+<a href="#doc-addons">addons.md</a>.</p>
+<hr />
+<h2>0. O que já existe (base para tudo)</h2>
+<table>
+<thead>
+<tr>
+<th>Peça</th>
+<th>Onde</th>
+<th>O que faz hoje</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parte da vila na produção</td>
+<td><code>expansion/economy/ProductionSink</code></td>
+<td>O imposto (painel) decide quanto do que a oficina produz vai para o baú da oficina; o resto fica com o trabalhador</td>
+</tr>
+<tr>
+<td>Levar para casa</td>
+<td><code>economy/task/StashTask</code></td>
+<td>Bolsos cheios: o trabalhador guarda tudo num baú de casa, menos ferramentas, 8 comidas e 16 sementes</td>
+</tr>
+<tr>
+<td>Carregador</td>
+<td><code>economy/task/HaulerTask</code></td>
+<td>Leva da oficina para o armazém e traz os insumos de volta (sem carregador, o artesão busca os próprios)</td>
+</tr>
+<tr>
+<td>Buscar comida</td>
+<td><code>entity/ai/brain/tasks/NeedsFetchFoodTask</code></td>
+<td>Com fome e sem comida: até 4 comidas de um baú <strong>da própria casa</strong> (prédio do quarto, ou 8 blocos da cama)</td>
+</tr>
+<tr>
+<td>Despensa comunitária</td>
+<td><code>expansion/minds/Provisions</code></td>
+<td>Sem nada em casa: o armazém da vila, <strong>só com <code>villagerSkills</code></strong></td>
+</tr>
+<tr>
+<td>Fazer pão</td>
+<td><code>NeedsBakeBreadTask</code></td>
+<td>Sem comida em lugar nenhum: trigo de casa ou do armazém, assado na mesa de trabalho</td>
+</tr>
+<tr>
+<td>Troca vanilla</td>
+<td><code>TradeWithVillager</code> (nos encontros)</td>
+<td>Quem tem comida sobrando joga um pouco para quem tem pouco</td>
+</tr>
+<tr>
+<td>Esmeraldas</td>
+<td><code>addon/roads/caravan/CaravanTrade</code></td>
+<td>As caravanas compram e vendem com o armazém, 1 esmeralda por 12 itens</td>
+</tr>
+<tr>
+<td>Barganha</td>
+<td><code>expansion/barter</code></td>
+<td>Só entre o jogador e um aldeão</td>
+</tr>
+<tr>
+<td>Ferramenta nova</td>
+<td><code>Provisions</code></td>
+<td>Ferramenta quebrou: o trabalhador pega uma nova do armazém, de graça</td>
+</tr>
+</tbody>
+</table>
+<p><strong>O que falta:</strong> quem não trabalha (crianças, desempregados, idosos) não tem renda; os pais não alimentam os filhos;
+nenhum aldeão compra nada de outro; o armazém só serve de despensa com <code>villagerSkills</code>.</p>
+<hr />
+<h2>1. Família: a casa como despensa da família</h2>
+<p><strong>Ideia:</strong> a comida de casa é da família, não só de quem a trouxe.</p>
+<ul>
+<li><strong>Guardar para a casa.</strong> O <code>StashTask</code> passa a guardar comida a mais quando a casa tem pouca: o trabalhador conta
+    quantas pessoas moram na casa (ele, cônjuge, filhos que dormem lá) e quanta comida há nos baús; se houver menos
+    que <strong>4 por pessoa</strong>, deixa no baú também parte das 8 que levaria no bolso (fica com 2).</li>
+<li><strong>Achar a casa dos pais.</strong> O <code>NeedsFetchFoodTask</code> de uma criança (ou adolescente) procura também nos baús da casa
+    dos pais, quando a dela não tiver comida (os pais vêm de <code>Relationship</code>/árvore genealógica; a casa de cada um, da
+    memória <code>HOME</code>).</li>
+<li><strong>Cônjuge.</strong> Mesma regra: sem comida em casa, o cônjuge olha o baú da casa do outro, se morarem separados.</li>
+<li><strong>Propriedade.</strong> Baús da família contam como próprios em <code>PropertyRules.canVillagerUse</code> (hoje só o dono e quem o
+    dono permite), para não virar furto.</li>
+</ul>
+<p><strong>Teste (GameTest):</strong> casal com um filho; o pai traz 10 pães; a criança com fome os encontra no baú de casa, e na casa
+dos pais quando mora em outra.</p>
+<hr />
+<h2>2. Despensa da vila: comida para quem não tem renda</h2>
+<p><strong>Ideia:</strong> uma parte de toda comida produzida vai para o armazém, mesmo com o imposto baixo; quem não tem renda come de
+lá.</p>
+<ul>
+<li><strong>Parte de comida.</strong> Em <code>ProductionSink.villageShare</code>, a comida (itens comestíveis) usa
+    <code>max(imposto, economyFoodShare)</code>; nova opção <code>economyFoodShare</code> (padrão <strong>0,25</strong>). O carregador já leva isso ao
+    armazém.</li>
+<li><strong>Também a colheita.</strong> Fazendeiro, pescador, coletor e caçador já entregam a parte da vila na oficina; vale a
+    mesma regra.</li>
+<li><strong>A despensa sem <code>villagerSkills</code>.</strong> <code>Provisions.storageWith</code> passa a depender de <code>villagerEconomy</code> (é economia,
+    não talento). Com as duas desligadas, nada muda.</li>
+<li><strong>Ordem de quem come.</strong> Quem não trabalha pode levar até 4 comidas; quem trabalha só pega do armazém se a casa e a
+    família estiverem vazias, e leva 2 (ração). Evita que os trabalhadores esvaziem a despensa dos sem renda.</li>
+<li><strong>Painel.</strong> A prefeitura mostra "Despensa: N refeições" e quantos estão sem comida em casa.</li>
+</ul>
+<p><strong>Teste:</strong> uma criança órfã sem casa com comida, um armazém com pão; ela come do armazém. Um açougueiro produzindo
+com imposto 0 ainda manda 1 em cada 4 carnes ao armazém.</p>
+<hr />
+<h2>3. Comércio entre aldeões</h2>
+<h3>3.1 Moeda</h3>
+<p><strong>Esmeraldas</strong>, como as caravanas já usam. Cada aldeão tem as suas no inventário e no baú de casa (as "economias" dos
+pedidos já são isso). Fica tudo de verdade, sem número escondido: o jogador pode ver, roubar, ganhar.</p>
+<h3>3.2 Quem vende o quê</h3>
+<table>
+<thead>
+<tr>
+<th>Profissão</th>
+<th>Vende</th>
+<th>Compra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caçador</td>
+<td>carne crua, couro, penas</td>
+<td>flechas, arco, comida pronta</td>
+</tr>
+<tr>
+<td>Açougueiro (padaria e açougue)</td>
+<td>pão, carne assada</td>
+<td>trigo, carne crua, carvão</td>
+</tr>
+<tr>
+<td>Fazendeiro</td>
+<td>trigo, cenoura, batata, beterraba, abóbora</td>
+<td>enxada, farinha de osso, pão</td>
+</tr>
+<tr>
+<td>Pescador</td>
+<td>peixe</td>
+<td>vara de pesca, pão</td>
+</tr>
+<tr>
+<td>Coletor</td>
+<td>frutas, cogumelos, cana</td>
+<td>comida pronta</td>
+</tr>
+<tr>
+<td>Lenhador</td>
+<td>toras, gravetos</td>
+<td>machado, comida</td>
+</tr>
+<tr>
+<td>Minerador</td>
+<td>carvão, ferro, pedra</td>
+<td>picareta, tocha, comida</td>
+</tr>
+<tr>
+<td>Ferramenteiro</td>
+<td>ferramentas</td>
+<td>ferro, gravetos, carvão</td>
+</tr>
+<tr>
+<td>Pastor, curtidor, flecheiro…</td>
+<td>o que a oficina produz (<code>data/mca/production</code>)</td>
+<td>os insumos da receita</td>
+</tr>
+</tbody>
+</table>
+<p>A tabela não precisa ser escrita à mão: <strong>vende o que a receita produz, compra o que a receita consome</strong>, mais comida e
+a ferramenta da profissão (que quebra com o uso).</p>
+<h3>3.3 Preços</h3>
+<ul>
+<li>Um preço base por item em dados (<code>data/mca/prices/*.json</code>), com uma regra de reserva: itens sem preço valem pelo
+    custo da receita (insumos + tempo).</li>
+<li><strong>Oferta e procura:</strong> o preço sobe quando a vila tem pouco do item (armazém + barracas), cai quando tem muito. As
+    caravanas já usam "a vila tem pouco" (menos de 16): mesma medida.</li>
+<li>Os mesmos preços valem para o jogador, na barganha e no mercado.</li>
+</ul>
+<h3>3.4 Onde se compra: três desenhos</h3>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Como funciona</th>
+<th>Visível?</th>
+<th>Custo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>A. Armazém como mercado</strong></td>
+<td>Ao guardar a sua parte, o trabalhador <strong>vende</strong> ao armazém e recebe esmeraldas; quem precisa <strong>compra</strong> do armazém pagando. O armazém é o caixa da vila</td>
+<td>pouco: só idas ao armazém</td>
+<td>baixo: usa armazém, carregador e <code>Provisions</code></td>
+</tr>
+<tr>
+<td><strong>B. Barracas no mercado</strong></td>
+<td>Um prédio novo <code>market</code> (tipo <code>building_types/market.json</code>) com <strong>barracas</strong> (barril + placa ou um bloco próprio). Cada vendedor tem a sua, abastece com o que produz e fica lá em parte do dia; os compradores vão lá, pagam e levam</td>
+<td>muito: o mercado tem movimento</td>
+<td>médio: prédio, bloco, horário na agenda, rotina de compras</td>
+</tr>
+<tr>
+<td><strong>C. Troca direta</strong></td>
+<td>Nos encontros, quem precisa de algo procura quem tem (o caçador com carne no bolso) e troca, com ou sem esmeralda</td>
+<td>médio</td>
+<td>alto: casar ofertas e procuras entre pessoas que andam</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decidido:</strong> <strong>A</strong> primeiro (rápido, já dá economia de verdade e fecha o ciclo do dinheiro) e <strong>B</strong> em cima dele (as
+barracas viram uma "vitrine" do armazém, com o dono por perto). <strong>C</strong> descartado: difícil de ver e caro de ter; o
+<code>TradeWithVillager</code> vanilla continua como está.</p>
+<h3>3.5 O ciclo do dinheiro (desenho A)</h3>
+<ol>
+<li><strong>Produz:</strong> o trabalhador produz na oficina; a parte da vila (imposto) vai para o armazém como hoje.</li>
+<li><strong>Vende:</strong> a parte dele, em vez de ir só para o baú de casa, pode ser <strong>vendida</strong> ao armazém: ele guarda o que a
+      casa precisa (seção 1) e vende o resto. Recebe esmeraldas, que leva para casa.</li>
+<li><strong>Compra:</strong> com fome, sem comida em casa, e com esmeraldas: compra no armazém. Sem esmeraldas: a despensa (seção 2).</li>
+<li><strong>Ferramentas:</strong> a ferramenta quebrou: compra uma no armazém (hoje é de graça). O ferramenteiro compra ferro e
+      gravetos do armazém para produzir; o minerador e o lenhador vendem os seus. É a "troca de ferramentas por recursos",
+      com a esmeralda no meio.</li>
+<li><strong>O caixa da vila:</strong> o armazém paga com as esmeraldas que tem (dos impostos, das caravanas, das vendas). Sem
+      esmeraldas no caixa, compra fiado (anota) ou não compra; o painel da prefeitura mostra o caixa.</li>
+</ol>
+<p><strong>Sem dinheiro no mundo, nada trava:</strong> a despensa (seção 2) alimenta quem não tem esmeraldas.</p>
+<h3>3.6 Ligações com o resto</h3>
+<ul>
+<li><strong>Atributo Social</strong> (Talentos): melhora o preço, como já faz na barganha com o jogador.</li>
+<li><strong>Traços</strong> (Sentimentos): avarento guarda esmeraldas e compra pouco; generoso dá comida à família; cleptomaníaco
+    furta da barraca (Propriedade e Crime).</li>
+<li><strong>Caravanas:</strong> continuam comprando e vendendo com o armazém, agora pelos mesmos preços.</li>
+<li><strong>Pedidos:</strong> a recompensa sai das esmeraldas do aldeão.</li>
+<li><strong>Prefeitura:</strong> caixa, despensa, preços e quem está sem comida.</li>
+</ul>
+<hr />
+<h2>4. Ordem sugerida</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>O quê</th>
+<th>Depende de</th>
+<th>Tamanho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Família (seção 1)</td>
+<td>—</td>
+<td>pequeno</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Despensa da vila (seção 2)</td>
+<td>—</td>
+<td>pequeno</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Preços e o armazém como mercado (3.1 a 3.5, desenho A)</td>
+<td>2</td>
+<td>médio</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Ferramentas compradas, insumos do ferramenteiro</td>
+<td>3</td>
+<td>pequeno</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Mercado com barracas (desenho B)</td>
+<td>3</td>
+<td>médio a grande</td>
+</tr>
+</tbody>
+</table>
+<p>Cada fase atrás de uma opção (padrão desligada) e com GameTests; o livro-guia ganha um capítulo "Comércio".</p>
+<h2>Perguntas em aberto</h2>
+<ol>
+<li><strong>Moeda:</strong> esmeraldas mesmo, ou um item próprio (moedas de cobre, prata, ouro)?</li>
+<li>~~<strong>Mercado:</strong>~~ decidido: A e depois B; C descartado.</li>
+<li><strong>Imposto:</strong> com vendas ao armazém, o imposto continua sendo uma parte das mercadorias ou passa a ser uma parte
+      das vendas em esmeraldas?</li>
+<li><strong>Caixa vazio:</strong> o armazém compra fiado ou deixa de comprar?</li>
+</ol></div></details>
 <details class='doc' id='doc-faccoes' style='--k:var(--sky)'><summary><span class='state'>em andamento</span>Facções: saqueadores como gente, com bandeira e reputação <span class='muted'>· faccoes.md</span></summary><div class='body'><h1>Facções: saqueadores como gente, com bandeira e reputação (WIP)</h1>
 <blockquote>
 <p><strong>Status: em andamento.</strong> Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é <strong>dar ao jogador um motivo para virar fora da lei</strong>.</p>
@@ -2714,7 +3021,9 @@ olho do jogador.</p>
 <li>mortes entre facções pioram a relação em 6.</li>
 </ul>
 </li>
-<li><strong>Ações (fase 3, <code>FactionDeals</code>):</strong><ul>
+<li>
+<p><strong>Ações (fase 3, <code>FactionDeals</code>):</strong></p>
+<ul>
 <li><strong>negociar:</strong> o botão de barganha já existente, agora com o que o bandido carrega: 2 a 4 itens roubados (pão, trigo, couro, ferro, ouro, flechas, sela…) e algumas esmeraldas;</li>
 <li><strong>"Venha lutar por mim"</strong> (só com reputação amigo ou melhor): 8 esmeraldas por 3 dias ou 16 por uma semana. O bandido sai do bando e vira mercenário;</li>
 <li><strong>"Deixem a vila em paz"</strong>: <code>factionTruceCost</code> (24) esmeraldas dão <code>factionTruceDays</code> (7) dias de trégua para a vila mais próxima do jogador (até 2000 blocos):<ul>
@@ -2725,8 +3034,58 @@ olho do jogador.</p>
 <li>os pedidos ("traga X") continuam pelo sistema de pedidos que já existe.</li>
 </ul>
 </li>
+<li>
+<p><strong>Fase 4, entrar no bando (<code>FactionMembers</code>, 2026-11-01):</strong></p>
+<ul>
+<li>com reputação <strong>aliado</strong>, "Quero andar com vocês" (constraint <code>bandit_can_join</code>): o jogador vira membro (um bando por vez) e ganha a bandeira; perde 20 com os bandos em guerra com o seu;</li>
+<li><strong>fora da lei:</strong> a tarefa de rank <code>faction_free</code> (<code>data/mca_roads/tasks/peasant.json</code>) faz toda vila ver o membro como <code>OUTLAW</code>;</li>
+<li>os bandidos do bando lutam ao lado do membro: atacam quem ele acabou de bater ou quem o atacou (jogadores, só se atacaram primeiro);</li>
+<li>"Venha comigo, irmão" (<code>bandit_rally</code>): um bandido vira mercenário por 1 dia, de graça. Para membros, a opção paga de contratar some;</li>
+<li>os bandos em guerra com o do jogador o tratam como inimigo, mesmo com reputação boa;</li>
+<li>"Vou sair do bando": sai, com −40 de reputação (traição). Abaixo de amigo, o bando o expulsa.</li>
 </ul>
-<p>Falta: fase 4 (entrar na facção, caminho fora da lei), fase 5 (tipos), redenção, facções novas por racha e exílio.</p>
+</li>
+<li><strong>Redenção (<code>Redemption</code>):</strong> "Como acerto minhas contas com a vila?" e "Pagar a multa" com qualquer morador de uma vila que vê o jogador como fora da lei (constraint <code>village_debt</code>):<ul>
+<li>multa de 8 esmeraldas + 1 por 5 pontos de reputação negativa + 24 se for membro de bando, até 96;</li>
+<li>pagar devolve a reputação da vila para um pouco acima de zero e tira o jogador do bando como traidor.</li>
+</ul>
+</li>
+<li><strong>Tipos de facção (fase 5, <code>FactionTypes</code>):</strong> arquivos <code>data/&lt;ns&gt;/faction_types/*.json</code> com peso, número de nomes, força na guerra simulada e armas, mão secundária e armaduras com chance:<ul>
+<li><code>raiders</code> (besta e machado), <code>tribal</code> (arco, machado de pedra, tridente, couro), <code>cult</code> (espadas de ferro e ouro, capacete de ouro, totem raro), <code>military</code> (espada, besta, escudo, ferro e malha);</li>
+<li>nomes próprios por tipo ("Tribo de X", "Culto de X", "Legião de X"…); bandos antigos continuam <code>raiders</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Facções novas e fim (<code>FactionSplits</code>):</strong></p>
+<ul>
+<li><strong>racha:</strong> uma vez por dia, um bando com 3 postos ou mais tem 5% de chance de perder o posto mais afastado para um bando novo do mesmo tipo, nascido em guerra com ele (−70); os jogadores ficam com a mesma reputação nos dois. Boato no chat;</li>
+<li><strong>fim:</strong> um bando que perde o último posto na guerra some, se houver mais bandos que <code>factionCount</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pena e serviço (<code>Redemption</code>, 2026-11-01):</strong> além da multa, com qualquer morador:</p>
+<ul>
+<li>"Cumpro pena na prisão de vocês" (só se a vila tem um prédio <code>prison</code>): o jogador vai para a cela por 30 ticks por ponto de reputação negativa, de 2 a 10 minutos. Sair do prédio é fuga: a pena acaba e a vila tira mais 20. Cumprida, vale como multa paga;</li>
+<li>"Deixe-me pagar com trabalho": de 1 a 5 pedidos (1 por 25 pontos negativos) de moradores da vila. Cada pedido feito (gancho <code>McaAddon.requestCompleted</code>) desconta um; o último perdoa;</li>
+<li>pena e serviço ficam em tags do jogador (<code>mca_jail:</code>, <code>mca_service:</code>). Enquanto cumpre, a multa e as penas não aparecem.</li>
+</ul>
+</li>
+<li><strong>Morar no posto (<code>FactionMembers</code>):</strong> "Posso ficar aqui com vocês?" a até 48 blocos de um posto do bando muda o ponto de renascer para ali.</li>
+<li><strong>Saquear com o bando (<code>FactionRaids</code>):</strong> "Vamos atacar a vila aqui perto": o bandido e mais 3 marcham para a vila mais próxima (até 320 blocos), por 5 minutos:<ul>
+<li>dentro da vila atacam aldeões adultos e golens; cada um que derrubam dá 2 esmeraldas (4 por golem) e +2 de reputação ao membro;</li>
+<li>a vila tira 15 de quem trouxe o bando; uma vez por dia; nunca contra uma vila com trégua paga. Depois, voltam ao posto mais próximo.</li>
+</ul>
+</li>
+<li><strong>Fundar o próprio bando (<code>FactionFounding</code>):</strong> um membro aliado, com uma bandeira na mão e 32 esmeraldas, funda o "Bando de <nome>":<ul>
+<li>tipo <code>founded</code> (equipado como saqueadores), com a bandeira da mão, o acampamento onde o jogador está e o jogador como líder (<code>leader</code> no save);</li>
+<li>o bando de origem fica em bons termos (+40), e o bandido da conversa vem junto;</li>
+<li>o líder recruta bandidos de bandos que confiam nele (8 esmeraldas) e aldeões fora da lei (de graça);</li>
+<li>não racha, não ganha postos descobertos de graça, não expulsa o líder e não some enquanto tiver membros. Se o líder sai, o bando fica sem líder.</li>
+</ul>
+</li>
+<li><strong>Exílio (<code>Exiles</code>):</strong> um aldeão com a profissão <code>outlaw</code> (o "executar" do MCA) que sobrevive vai para o acampamento de exilados mais próximo (até 600 blocos) e vira bandido dele. Sem acampamento, e com vaga no teto, monta um a 48–80 blocos com fogueira e bandeira: um bando novo do tipo <code>exiles</code> (peso 0, nunca sorteado; espada de pedra, machado de madeira, arco). Boato no chat.</li>
+</ul>
+<p>Falta: o jogador escolher o nome do bando (hoje é o nome dele), postos de verdade para o bando do jogador (tomar um posto inimigo) e a pena com porta trancada pelos guardas.</p>
 <h2>O que já existe e será reaproveitado</h2>
 <ul>
 <li><strong>Villager zumbi do MCA:</strong> <code>ZombieVillagerEntityMCA</code> estende o zumbi vanilla e implementa <code>VillagerLike</code>. É o molde para o <strong>saqueador do MCA</strong>: mesma genética, pele, roupa, cabelo, traços e diálogos.</li>
@@ -3043,6 +3402,8 @@ olho do jogador.</p>
 <ul>
 <li>necessidades: fome, sede, energia, diversão, segurança e social;</li>
 <li>bebidas, limpas e sujas;</li>
+<li>água em caldeirões, pias e <strong>poços</strong> (2026-10-31): boca cercada por cercas ou muros, com água até 12 blocos abaixo (<code>Wells</code>, tag <code>mca:well_rims</code>);</li>
+<li><strong>fazer pão</strong> (2026-10-31): com fome e sem comida, o villager pega trigo em casa e assa na mesa de trabalho (<code>NeedsBakeBreadTask</code>);</li>
 <li>buscar comida em casa;</li>
 <li>dieta e provisões;</li>
 <li>baús de casa;</li>
@@ -3129,7 +3490,9 @@ olho do jogador.</p>
 <li>bandidos: saqueadores que viram gente do MCA;</li>
 <li>guerras entre facções;</li>
 <li>tréguas e contratação;</li>
-<li>caravanas de 3 a 5 pessoas com animais, que comerciam entre vilas, sofrem emboscadas e aceitam escolta;</li>
+<li>tipos de facção em arquivos de dados (<code>data/mca/faction_types</code>: saqueadores, tribo, culto, exército), rachas e fim de facções;</li>
+<li>entrar no bando (caminho fora da lei: a tarefa <code>faction_free</code> em <code>data/mca_roads/tasks/peasant.json</code> tira o rank em todas as vilas) e redenção pela multa, pela prisão ou por serviço; morar no posto, saquear com o bando, fundar o próprio bando e exilados (aldeões fora da lei formam bandos);</li>
+<li>caravanas de 3 a 5 pessoas com animais, que comerciam entre vilas, sofrem emboscadas, aceitam escolta e trazem encomendas;</li>
 <li>o vendedor ambulante mais raro.</li>
 </ul>
 <p><strong>Código (já migrado, fase 2):</strong> <code>addon/roads/RoadsAddon</code> (o <code>McaAddon</code>), <code>addon/roads/faction/*</code>, <code>addon/roads/caravan/*</code>, <code>addon/roads/client/FactionMapOverlay</code>, os mixins em <code>mixin/addon/roads/</code>. O núcleo não chama mais nenhuma classe do addon.</p>
@@ -3351,7 +3714,14 @@ olho do jogador.</p>
 <li>[ ] <strong>Vida Social:</strong> painéis revelados pelas perguntas da conversa.</li>
 <li>[ ] <strong>Bandos e Estradas:</strong><ul>
 <li>caravanas: chegada, comércio com o armazém, emboscada e escolta;</li>
-<li>facções: bandeiras nas bases, território na barra de ação e no mapa, bandidos no lugar dos saqueadores, "Quem são vocês?", contratar (confirmar que a fala não mostra a chave crua), trégua, guerras e grupos de guerra.</li>
+<li>facções: bandeiras nas bases, território na barra de ação e no mapa, bandidos no lugar dos saqueadores, "Quem são vocês?", contratar (confirmar que a fala não mostra a chave crua), trégua, guerras e grupos de guerra;</li>
+<li>fase 4 (2026-11-01): entrar no bando com reputação aliado (bandeira, rank fora da lei nas vilas), bandidos lutando ao lado do membro, "Venha comigo, irmão", sair do bando, expulsão abaixo de amigo, multa de redenção com um morador;</li>
+<li>tipos de facção (armas e armaduras por tipo, nomes próprios), racha de um bando com 3 postos ou mais, fim de um bando sem postos;</li>
+<li>encomendas da caravana: pedir com o item na mão, aviso de pronta na vila seguinte, pagar e levar;</li>
+<li>pena e serviço (2026-11-01): ir para a cela e cumprir; sair do prédio e ver a fuga; aceitar o serviço e fazer os pedidos até o perdão;</li>
+<li>morar no posto (renascer lá), saque com o bando (marcha, ataque na vila, esmeraldas por morte, volta ao posto);</li>
+<li>fundar bando com uma bandeira (nome, cores, acampamento), recrutar um bandido e um aldeão fora da lei;</li>
+<li>exílio: mandar executar um aldeão e ver se ele foge e monta o acampamento.</li>
 </ul>
 </li>
 <li>[ ] <strong>Interface:</strong> botões escuros do MCA, editor com abas de ícones e grades de prévia, prévia 3D sincronizada, pupila do jogador centralizada.</li>
@@ -3366,6 +3736,7 @@ olho do jogador.</p>
 <li><code>registerMessages()</code>;</li>
 <li><code>levelTick()</code>, <code>villageTick()</code> e <code>villagerTick()</code> (uma vez por segundo);</li>
 <li><code>refusesInteraction()</code>;</li>
+<li><code>requestCompleted()</code> (2026-11-01): o jogador fez o que o pedido de um villager pedia;</li>
 <li><code>replacesSpawn()</code> e <code>replaceSpawn()</code> (trocar uma entidade que entra no mundo);</li>
 <li><code>fightsLikeMercenary()</code>.</li>
 </ul>
@@ -3377,6 +3748,8 @@ olho do jogador.</p>
 </ul>
 </li>
 <li><strong><code>Constraint.register(id, teste)</code>:</strong> o <code>Constraint</code> deixou de ser enum e agora aceita restrições de diálogo dos addons.</li>
+<li><strong><code>McaAddon.reloadListeners()</code></strong> (2026-11-01): os carregadores de dados do addon, registrados pelos dois loaders junto com os do MCA.</li>
+<li><strong><code>TaskRegistry.register(tipo, leitor)</code></strong> (2026-11-01): tipos novos de requisito de rank; o addon põe o arquivo <code>data/&lt;ns do addon&gt;/tasks/&lt;rank&gt;.json</code>, que soma aos requisitos do MCA.</li>
 <li><strong>Cliente:</strong><ul>
 <li><code>MapOverlay</code>, uma camada sobre o mapa da vila, com <code>MapView</code>;</li>
 <li><code>DialogueIcons</code>, o ícone de uma resposta no menu radial.</li>
@@ -3634,6 +4007,956 @@ S
 </li>
 <li>Trabalhar num worktree próprio: o checkout principal é compartilhado por várias sessões.</li>
 </ol></div></details>
+<details class='doc' id='doc-planejamento-de-obras' style='--k:var(--gold)'><summary><span class='state'>referência</span>Planejamento de obras 2: rascunho, catálogo, seções de blueprint e formas <span class='muted'>· planejamento-de-obras.md</span></summary><div class='body'><h1>Planejamento de obras 2: rascunho, catálogo, seções de blueprint e formas</h1>
+<p>Data: 2026-11-01. Pedido do Andre, depois de usar a tela de planejamento (Cavar / Construir / Blueprint / Capturar):</p>
+<ol>
+<li><strong>Cavar:</strong> marcar várias áreas livremente sem que nada aconteça; um botão confirma e manda cavar. Sair da
+      ferramenta limpa as áreas.</li>
+<li><strong>Construir:</strong> catálogo de blocos no estilo do inventário criativo (tecla E), com abas, num painel lateral;
+      planejar blocos que não estão na mão.</li>
+<li><strong>Fantasmas:</strong> em vez dos cubos coloridos, o próprio bloco que vai surgir, quase transparente (~5%).</li>
+<li><strong>Blueprint abaixo do chão:</strong> rolagem para afundar o blueprint, para prédios com porão.</li>
+<li><strong>Movimento livre e confirmar:</strong> o que foi posto (blueprint ou construção) fica como rascunho; dá para voar em volta,
+      clicar numa peça para pegá-la de novo e editar, e só então confirmar.</li>
+<li><strong>Navegador de blueprints:</strong> grade com abas no topo (estilo Fallout 76), no lado esquerdo.</li>
+<li><strong>Seções:</strong> criar seções próprias (com ícone) para peças reutilizáveis (janela com floreira, cama montada...) e
+      escolher a seção ao capturar.</li>
+<li><strong>Captura com confirmação:</strong> ajustar a caixa olhando em volta antes de salvar, para não esquecer bloco.</li>
+<li><strong>Formas de construção:</strong> ferramentas de construção em massa mais finas: linha, repetir arrastando. Hoje escadas saem viradas
+      para o lado errado. Também um <strong>pincel</strong> (arrastar pintando blocos) e <strong>extrudar</strong> o traço com a rolagem, para
+      erguer muralhas em volta da vila rapidamente.</li>
+<li><strong>Textos e legendas:</strong> botão para mostrar/esconder a ajuda; cores diferentes para a tecla e para o que ela faz.</li>
+<li><strong>Excluir blueprint:</strong> um botão para apagar; uma captura errada fica para sempre.</li>
+<li><strong>Demolir tudo:</strong> opção para cavar também baús, estantes, sinos (e o que tiver dentro).</li>
+</ol>
+<p><strong>Estado (2026-11-01):</strong> fases 1 a 5 implementadas e compiladas, ainda sem teste em jogo; a fase 6 (fantasmas com o
+modelo do bloco) não foi começada. Fica no recurso de obras (<code>villagerWorkOrders</code>), código em
+<code>client/gui/workorder</code> e <code>server/world/data/workorder</code>.</p>
+<p>O que ficou diferente do desenho abaixo:</p>
+<ul>
+<li>Parede/Piso não viraram formas próprias: uma Caixa de espessura 1 faz o mesmo.</li>
+<li>Renomear blueprint pelo menu não entrou (o id é o nome do arquivo; renomear seria capturar de novo).</li>
+<li>O rascunho e a barra de confirmar ficam no canto superior direito, abaixo de Obras/Pronto.</li>
+<li>Peças pegadas de volta giram em torno do canto, não do centro.</li>
+<li>Seções ficam em <code>generated/mca/blueprint_sections.json</code>.</li>
+<li>Depois da primeira avaliação: cartões com miniatura isométrica (<code>BlueprintThumbnails</code>, cor de mapa de cada bloco,
+    três faces sombreadas) e materiais numa grade tipo inventário abaixo da biblioteca (<code>MaterialGrid</code>): quantidade
+    necessária no canto, verde se o armazém tem, vermelho se falta; com Construir mostra o rascunho inteiro.</li>
+<li>Teclas novas: H ajuda, F inverter, T bloco no topo do traço, N novo traço, [ ] tamanho do pincel, Alt+arrastar
+    apaga, Del remove a peça, Page Up/Down sobe/desce.</li>
+</ul>
+<hr />
+<h2>0. O que já existe</h2>
+<table>
+<thead>
+<tr>
+<th>Peça</th>
+<th>Onde</th>
+<th>O que faz hoje</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tela</td>
+<td><code>WorkPlanningScreen</code> (1130 linhas)</td>
+<td>Câmera livre, 4 ferramentas, painel de obras (Tab), lista de blueprints à esquerda</td>
+</tr>
+<tr>
+<td>Seleção</td>
+<td><code>PlanningSelection</code></td>
+<td><strong>Uma</strong> caixa: clique, arrasta, rolagem estica para cima/baixo; o segundo clique já manda a obra</td>
+</tr>
+<tr>
+<td>Desenho no mundo</td>
+<td><code>WorkOrderOverlay</code></td>
+<td>Gizmos (cubos coloridos) refeitos a cada tick; até 6000 fantasmas roxos</td>
+</tr>
+<tr>
+<td>Construir</td>
+<td><code>CreateWorkOrderMessage</code></td>
+<td>Enche uma caixa com <strong>um</strong> bloco, <strong>sempre no estado padrão</strong> (<code>defaultBlockState</code>): é por isso que escadas saem viradas</td>
+</tr>
+<tr>
+<td>Paleta</td>
+<td><code>rebuildPalette</code></td>
+<td>Até 12 blocos: escolhidos com o botão do meio, inventário, armazém, 6 fixos do Editor</td>
+</tr>
+<tr>
+<td>Blueprint</td>
+<td><code>PlaceBlueprintMessage</code></td>
+<td>Clique já cria a obra; rolagem sobe/afunda <strong>±16</strong> (já existe, mas o fantasma some dentro da terra)</td>
+</tr>
+<tr>
+<td>Ordem de blueprint</td>
+<td><code>WorkOrder.plan</code></td>
+<td>Mapa posição → estado, derivado do id do blueprint; construtores limpam e erguem</td>
+</tr>
+<tr>
+<td>Biblioteca</td>
+<td><code>BlueprintLibrary</code></td>
+<td>Arquivos <code>.nbt</code> (<code>mca:blueprints/&lt;nome&gt;</code>) no <code>generated/</code> do mundo + 4 do mod; sem apagar, sem categorias</td>
+</tr>
+<tr>
+<td>Cavar</td>
+<td><code>WorkOrderBlocks.needsDigging</code></td>
+<td>Nunca cava bloco com block entity (baú, cama, placa) nem segura lava</td>
+</tr>
+<tr>
+<td>Criativo</td>
+<td><code>CreativeWork</code>, <code>placeNow</code></td>
+<td>Tudo é feito na hora, aos pedaços por tick</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>1. A ideia central: o <strong>rascunho</strong></h2>
+<p>Hoje cada ferramenta manda a obra no segundo clique. Passa a existir um <strong>rascunho</strong> do lado do cliente, comum a todas
+as ferramentas, que só vai ao servidor no botão <strong>Confirmar obra</strong> (ícone: livro e pena, Enter também confirma).</p>
+<pre><code>Rascunho
+├── áreas de escavação      (caixas; podem se sobrepor)
+└── peças                   (cada uma: mapa posição → estado de bloco + de onde veio)
+    ├── preenchimento       (caixa cheia de um bloco, com orientação)
+    ├── blueprint           (id + origem + giro; editável como um todo)
+    └── forma               (linha, repetição, cópia...)
+</code></pre>
+<ul>
+<li><strong>Cavar (#1):</strong> cada clique-arrasta-clique adiciona uma área ao rascunho (vermelha tracejada). Clique direito numa área
+    a remove. Trocar de ferramenta pergunta nada e <strong>descarta só as áreas de escavação</strong> (como pedido); peças continuam.</li>
+<li><strong>Peças (#5):</strong> colocar um blueprint ou uma caixa cria uma peça. Clicar numa peça já posta a <strong>pega de volta</strong>: ela
+    segue o cursor de novo, gira com R, sobe/desce com a rolagem, Delete a apaga. Clicar de novo a solta.</li>
+<li><strong>Barra do rascunho</strong> (canto inferior direito): "Rascunho: 2 áreas, 3 peças · 412 blocos" + <strong>Confirmar</strong> +
+    <strong>Descartar</strong>. Fechar a tela com rascunho pergunta "Descartar o rascunho?".</li>
+<li>Conflitos: peça sobre peça → a última vence naquela posição (aviso em laranja). Área de escavação sob uma peça → a
+    peça vence.</li>
+</ul>
+<h3>Servidor: ordem com plano próprio</h3>
+<p>Novo <code>CommitPlanMessage(áreas, peças)</code>. Cada peça vira uma <code>WorkOrder</code> do tipo <code>BLUEPRINT</code> com <strong>plano embutido</strong>
+(palette + posições, salvo no NBT da ordem) em vez de só o id. Isso resolve as escadas: o estado completo (direção,
+metade, formato) viaja e é construído como está. As áreas viram ordens <code>DIG</code> como hoje. Limites: <code>workOrderMaxVolume</code>
+por peça e um teto total por confirmação. Criativo continua fazendo tudo na hora.</p>
+<hr />
+<h2>2. Construir com catálogo (#2)</h2>
+<p>Painel do lado <strong>direito</strong> (o esquerdo fica com os blueprints), cerca de 9×7 espaços, rolável:</p>
+<ul>
+<li><strong>Abas no topo</strong> com os ícones das abas criativas do jogo (<code>CreativeModeTabs</code>), mais três próprias à frente:
+    <strong>Na vila</strong> (armazém + inventário, com quantidade no canto), <strong>Recentes</strong>, <strong>Busca</strong> (caixa de texto).</li>
+<li>Qualquer bloco pode ser planejado. Fora do criativo, o espaço mostra em amarelo quanto o armazém tem; os construtores
+    esperam o material como já fazem hoje com blueprints.</li>
+<li>Botão do meio no mundo continua escolhendo o bloco (vai para Recentes).</li>
+<li><strong>Orientação:</strong> o bloco é posto como um jogador o poria, olhando da câmera para a face clicada
+    (<code>getStateForPlacement</code> com um contexto que usa o giro da câmera). R gira, F inverte em cima/embaixo (escadas,
+    lajes). O fantasma mostra o resultado antes.</li>
+</ul>
+<h2>3. Fantasmas de verdade (#3)</h2>
+<p>Desenhar o modelo do próprio bloco, translúcido, no lugar onde vai surgir. Opacidade padrão <strong>5%</strong> como pedido, com
+um controle deslizante 5–60% na tela (e na config), porque 5% some contra o céu claro. Blocos que precisam sair antes
+continuam com contorno vermelho.</p>
+<ul>
+<li>Precisa de um gancho de renderização do mundo, que o mod ainda não tem: evento de fim de renderização translúcida no
+    Fabric e <code>RenderLevelStageEvent</code> no NeoForge, chamando um <code>GhostBlockRenderer</code> comum. É a parte de maior risco
+    (API de render do 26.2 é nova); se não der, volta para os gizmos coloridos sem quebrar nada.</li>
+<li>Teto de blocos por quadro (como os 6000 de hoje) e cache da malha: só refaz quando o rascunho muda.</li>
+</ul>
+<h2>4. Abaixo do chão (#4)</h2>
+<p>A rolagem para afundar <strong>já existe</strong> (±16). O problema real é que o fantasma fica escondido dentro da terra. Mudanças:</p>
+<ul>
+<li>Limite passa a ser a altura do blueprint + 16 para baixo.</li>
+<li>A parte enterrada é desenhada <strong>através do terreno</strong> (só contorno, sem teste de profundidade) e um plano fino marca o
+    nível do chão.</li>
+<li>Texto "Porão: 4 camadas abaixo do chão" e quantos blocos de terra serão escavados.</li>
+<li>Page Up / Page Down também sobem e descem, para quem usa a rolagem para voar.</li>
+</ul>
+<h2>5. Navegador de blueprints (#6) e seções (#7)</h2>
+<p>Painel do lado <strong>esquerdo</strong>, no lugar da lista de botões:</p>
+<pre><code>[🏠 Prédios][🪟 Peças][🛏 Móveis][★ Todos][ + ]      ← abas (ícone, nome no tooltip)
+┌──────┬──────┬──────┐
+│ ícone│ ícone│ ícone│   cartões: ícone, nome, 12×9×11
+│ nome │ nome │ nome │   clique: escolhe · botão direito: menu
+└──────┴──────┴──────┘   (mover para seção, renomear, excluir)
+[🔍 busca...........]
+</code></pre>
+<ul>
+<li><strong>Seção</strong> = nome + ícone (um item escolhido no catálogo do #2) + ordem. Guardadas por mundo em
+    <code>generated/mca/blueprints/sections.json</code>, junto com a seção de cada blueprint. Os do mod caem em "Prédios".</li>
+<li><strong>+</strong> cria uma seção (nome + ícone). Ao capturar, o aviso de nome ganha um seletor de seção.</li>
+<li>Seção vazia pode ser apagada; os blueprints dela voltam para "Todos".</li>
+</ul>
+<h2>6. Captura com confirmação (#8)</h2>
+<p>A caixa da captura vira rascunho também: depois do arrasto ela <strong>fica</strong>, dá para voar em volta, e</p>
+<ul>
+<li>passar o mouse numa face a destaca; a rolagem empurra/puxa <strong>aquela face</strong> (hoje só estica a altura);</li>
+<li>blocos sólidos <strong>encostados do lado de fora</strong> da caixa piscam em amarelo ("3 blocos encostam na caixa por fora"):
+    é exatamente o bloco esquecido;</li>
+<li><strong>Salvar blueprint</strong> abre o nome + seção; Esc descarta.</li>
+</ul>
+<h2>7. Formas de construção (#9)</h2>
+<p>Não são itens: são botões da ferramenta Construir, na segunda fileira da tela de planejamento.</p>
+<p>Sub-ferramentas dentro de Construir (segunda fileira), todas gerando <strong>peças</strong> do rascunho, com orientação completa:</p>
+<table>
+<thead>
+<tr>
+<th>Forma</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caixa</td>
+<td>O de hoje: enche a caixa</td>
+</tr>
+<tr>
+<td>Linha</td>
+<td>Clique no início e no fim; segue o eixo dominante ou diagonal</td>
+</tr>
+<tr>
+<td>Parede / Piso</td>
+<td>Caixa de espessura 1 no plano escolhido</td>
+</tr>
+<tr>
+<td>Caixa oca</td>
+<td>Só as faces da caixa</td>
+</tr>
+<tr>
+<td><strong>Repetir</strong></td>
+<td>Seleciona blocos (do mundo ou do rascunho) e arrasta: a cópia se repete lado a lado, com os estados iguais. Resolve o telhado de escadas: faz um degrau certo e arrasta</td>
+</tr>
+<tr>
+<td>Espelhar</td>
+<td>Cópia espelhada (escadas e portas espelham junto)</td>
+</tr>
+<tr>
+<td><strong>Pincel</strong></td>
+<td>Segura o clique esquerdo e arrasta: pinta blocos onde o cursor passa, na camada em que começou (sem pular para o terreno). Tamanho 1×1 ou 3×3 com [ e ]. Clique direito arrastando apaga do traço</td>
+</tr>
+<tr>
+<td><strong>Extrudar</strong></td>
+<td>Depois do traço do pincel (ou de uma linha), a rolagem sobe ou desce <strong>o traço inteiro</strong> camada por camada, como uma extrusão: muralhas em volta da vila saem de um traço só. Só no topo pode trocar o bloco (ameias, laje)</td>
+</tr>
+</tbody>
+</table>
+<p>Inspirado em mods de varinhas de construção, sem depender de nenhum. Exemplo de muralha: Pincel de pedregulho contornando a
+vila no chão → rolagem +6 → troca o bloco e pinta ameias no topo → Confirmar.</p>
+<h2>8. Ajuda com cores e botão (#10)</h2>
+<ul>
+<li>Botão <strong>?</strong> (e tecla H) mostra/esconde as linhas de ajuda; a escolha fica salva.</li>
+<li>Cada dica vira pares <em>tecla → ação</em>: a tecla em <strong>amarelo</strong> dentro de colchetes (<code>[Clique esq.]</code>, <code>[Rolagem]</code>,
+    <code>[R]</code>), a ação em cinza claro. As linhas de ajuda passam a ser montadas de pares de chaves de tradução, não de uma
+    frase só.</li>
+</ul>
+<h2>9. Excluir blueprint (#11)</h2>
+<p>No menu do cartão (botão direito) ou com o cartão escolhido: <strong>Excluir</strong> com confirmação ("Excluir 'Cuty hall 1'?
+Não dá para desfazer"). Apaga o <code>.nbt</code> do <code>generated/</code> e tira do cache do jogo. Os que vêm do mod não podem ser apagados,
+só <strong>ocultados</strong> (fica na lista de ocultos, com botão para mostrar de novo). Mesma permissão da captura.</p>
+<h2>10. Demolir tudo (#12)</h2>
+<p>Interruptor na ferramenta Cavar: <strong>Demolir tudo</strong> (ícone TNT, vermelho quando ligado). Ligado, a escavação inclui
+blocos com block entity (baús, estantes, sinos, placas, camas). O conteúdo <strong>é apagado</strong>, como pedido; o aviso mostra
+quantos recipientes com itens serão destruídos antes de confirmar. Só para quem tem permissão de planejar; fora do
+criativo, mineiros fazem o trabalho como em qualquer escavação. Continua respeitando lava e blocos inquebráveis.</p>
+<hr />
+<h2>Fases</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Itens</th>
+<th>Risco</th>
+<th>Comentário</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>#10 ajuda, #11 excluir, #12 demolir, #4 porão</td>
+<td>Baixo</td>
+<td>Pequenas, independentes, dá para testar logo</td>
+</tr>
+<tr>
+<td>2</td>
+<td>#1, #5, #8 rascunho + <code>CommitPlanMessage</code> + plano embutido</td>
+<td>Médio</td>
+<td>Mexe no fluxo inteiro da tela; base de tudo que vem depois</td>
+</tr>
+<tr>
+<td>3</td>
+<td>#2 catálogo + orientação</td>
+<td>Médio</td>
+<td>Abas criativas no cliente; resolve parte das escadas</td>
+</tr>
+<tr>
+<td>4</td>
+<td>#6, #7 navegador e seções</td>
+<td>Baixo</td>
+<td>UI + um JSON por mundo</td>
+</tr>
+<tr>
+<td>5</td>
+<td>#9 formas</td>
+<td>Médio</td>
+<td>Pincel + extrudar primeiro (muralhas), depois linha, oca, repetir, espelhar</td>
+</tr>
+<tr>
+<td>6</td>
+<td>#3 fantasmas de verdade</td>
+<td>Alto</td>
+<td>Gancho de render por plataforma; fallback nos gizmos</td>
+</tr>
+</tbody>
+</table>
+<p>A tela atual tem 1130 linhas; antes da fase 2 ela é dividida (rascunho, painéis, ajuda, entrada) para não passar de
+2000 com tudo isso.</p></div></details>
+<details class='doc' id='doc-tactical-combat' style='--k:var(--sky)'><summary><span class='state'>em andamento</span>Tactical Combat: corte, concussão e perfuração <span class='muted'>· tactical-combat.md</span></summary><div class='body'><h1>Tactical Combat: corte, concussão e perfuração (WIP)</h1>
+<blockquote>
+<p><strong>Status: em andamento.</strong> Mod separado, em jar e repositório próprios (<code>../tactical-combat</code>, <code>mod_id</code> <code>tactical_combat</code>), planejado em 2026-10-31. Fases 0 a 5 feitas (ver Estado). Cada golpe físico se divide em <strong>corte</strong>, <strong>concussão</strong> e <strong>perfuração</strong>. Armas, armaduras e mobs lidam com cada tipo de um jeito, e o <strong>peso</strong> de armas e armaduras entra na conta. O objetivo é um combate mais tático, que dê uso a armas e armaduras específicas. O MCA vai integrar depois, sem dependência de código.</p>
+</blockquote>
+<h2>Estado (2026-11-01)</h2>
+<p>Fases 0 a 5 feitas, com commit no repositório do mod (sem remoto). Ainda não testado no cliente; os testes automáticos passam (30 GameTests, <code>./gradlew :fabric:runGameTest</code> no <code>../tactical-combat</code>).</p>
+<ul>
+<li><strong>Repositório:</strong> esqueleto do Tabletop, só Fabric, MC 26.2.<ul>
+<li>O plano completo está em <code>docs/plan.md</code> do repositório do mod.</li>
+<li>O jar fica em <code>fabric/dev-mods</code> do MCA, junto com Spell Engine, Spell Power e PlayerAnimationLib (ver <a href="../dev-mods.md">docs/dev-mods.md</a>).</li>
+</ul>
+</li>
+<li><strong>Cálculo do dano</strong> (<code>damage/TypedDamage</code>): um mixin em <code>LivingEntity.hurtServer</code>.<ul>
+<li>Vale para golpes de jogador, de mob e de aldeão do MCA; fogo, queda e magia ficam como estão (tag de dano <code>tactical_combat:physical</code>).</li>
+<li>A fonte de dano continua a do vanilla, então pontos de armadura, encantamentos e outros mods funcionam como antes.</li>
+</ul>
+</li>
+<li><strong>Perfis em JSON</strong>, recarregáveis com <code>/reload</code> e enviados ao cliente para o tooltip:<ul>
+<li><code>data/&lt;ns&gt;/tactical_combat/weapon_profiles</code>, <code>armor_profiles</code> e <code>mob_profiles</code>;</li>
+<li>gerados por <code>scripts/profiles.py</code> no repositório do mod: 19 de armas, 29 de armaduras e 20 de mobs;</li>
+<li>um item citado pelo id vence uma tag; ids de mods ausentes são ignorados.</li>
+</ul>
+</li>
+<li><strong>Peso</strong> (<code>weight/Weight</code>):<ul>
+<li>atributo novo <code>tactical_combat:weight</code>, presente em toda entidade viva;</li>
+<li>modificadores temporários, refeitos ao carregar a entidade e a cada troca de arma ou armadura;</li>
+<li>constantes em <code>config/tactical_combat.json</code>.</li>
+</ul>
+</li>
+<li><strong>Tooltip:</strong> "Corte 60% · Perfuração 40%", o peso e o que ele faz ("Leve: +5% velocidade de ataque", "Pesada: +20% dano de concussão"); nas peças de armadura, as resistências e a velocidade perdida.</li>
+</ul>
+<h2>Câmera segue a animação (2026-11-01)</h2>
+<p>Pedido do usuário depois de testar o Better Combat com o First Person Model.</p>
+<p><strong>O problema:</strong> no golpe, o corpo inteiro se inclina e a câmera fica parada. O cabelo aparece na frente da tela, e olhando para baixo aparecem o peito e os ombros.</p>
+<p><strong>A solução:</strong> em primeira pessoa, a câmera segue a cabeça animada pela PlayerAnimationLib.</p>
+<ul>
+<li>Posição: o olho gira com o corpo em torno do quadril, como a PAL desenha.</li>
+<li>Rotação: a do corpo mais a da cabeça.</li>
+<li>Inclinação lateral: aplicada onde o jogo faz o tremor de dano, porque a câmera vanilla não tem roll.</li>
+</ul>
+<p><strong>Só a visão se move.</strong> A mira continua a do mouse, então o acerto do Better Combat não muda. O efeito tático vem disso: errar com a maça faz olhar para o chão até o golpe terminar.</p>
+<p><strong>Config:</strong></p>
+<ul>
+<li><code>cameraFollowsAnimation</code> (liga e desliga);</li>
+<li><code>cameraFollowStrength</code> (de 0 a 1).</li>
+</ul>
+<p><strong>Ainda não testado no jogo.</strong> Se algum eixo andar ao contrário, basta trocar o sinal em <code>AnimatedCamera</code>.</p>
+<h2>Efeitos dos golpes (fase 3, 2026-11-01)</h2>
+<p>Só valem quando o golpe acerta de fato (<code>HitEffects</code>, no fim de <code>hurtServer</code>). A chance de cada marca cresce com a parcela do tipo no golpe e com o multiplicador do mob para esse tipo.</p>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Marca</th>
+<th>Chance (golpe 100% do tipo)</th>
+<th>Detalhe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Corte</td>
+<td>Sangramento (<code>spell_engine:bleed</code>)</td>
+<td>35%</td>
+<td>5 s; cada corte novo sobe um nível, até III; mobs <code>bloodless</code> não sangram</td>
+</tr>
+<tr>
+<td>Concussão</td>
+<td>Lentidão</td>
+<td>40%</td>
+<td>1,5 s</td>
+</tr>
+<tr>
+<td>Concussão</td>
+<td><strong>Fratura</strong> (nossa)</td>
+<td>4% + 3% por ponto de peso acima de 4 (maça: 16%)</td>
+<td>2 min, −20% de movimento e −15% de velocidade de ataque por nível (até II); mobs <code>boneless</code> (slime, blaze, golem…) não fraturam</td>
+</tr>
+<tr>
+<td>Concussão</td>
+<td>Atordoamento (<code>spell_engine:stun</code>)</td>
+<td>6%, mais com arma pesada</td>
+<td>0,75 s</td>
+</tr>
+<tr>
+<td>Perfuração</td>
+<td>Crítico</td>
+<td>15%</td>
+<td>+50% de dano (mais o crit damage do Critical Strike, se instalado) e atravessa metade da armadura; partículas e som de crítico</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Tala:</strong> 2 gravetos + 1 couro rendem 2. Na aba Combate. Usar por 2 segundos tira a fratura.</li>
+<li><strong>Dormir:</strong> acordar de manhã também cura a fratura.</li>
+<li><strong>Arte provisória:</strong> a textura da Tala e o ícone da Fratura são gerados por <code>scripts/content_assets.py</code>.</li>
+<li><strong>Câmera:</strong> ficou mais suave. Ela persegue a cabeça em 0,12 s (<code>cameraFollowSmoothing</code>) e a força padrão caiu para 0,7, porque 100% na hora podia dar enjoo.</li>
+</ul>
+<h2>Regra principal: não repetir a série RPG</h2>
+<p>O usuário quer o mod conversando com a série RPG do ZsoltMolnarrr: Better Combat, Spell Engine, Archers, Wizards, Rogues &amp; Warriors, Paladins &amp; Priests, Arsenal, Forcemaster e Witcher. <strong>Nada que ela já tem é refeito aqui.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Já existe (usamos o deles)</th>
+<th>Lacuna (o que o Tactical Combat faz)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sangramento: <code>spell_engine:bleed</code></td>
+<td>Tipos de dano físico, com resistência por tipo (na série, só a magia tem)</td>
+</tr>
+<tr>
+<td>Atordoamento: <code>spell_engine:stun</code></td>
+<td>Perfil de armadura por tipo de dano</td>
+</tr>
+<tr>
+<td>Crítico (chance e dano): Critical Strike</td>
+<td>Peso de arma e de armadura</td>
+</tr>
+<tr>
+<td>Alcance, área do golpe, combos e animações: Better Combat</td>
+<td>Fratura, local do golpe e desmembramento</td>
+</tr>
+<tr>
+<td>Tipos de arma: tags <code>rpg_series:weapon_type/*</code></td>
+<td>Reações por mob (creeper, slime, esqueleto…)</td>
+</tr>
+<tr>
+<td></td>
+<td>Mobs usando o sistema (o Better Combat só vale para jogadores)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Spell Engine</strong> é dependência obrigatória. Só o id do efeito é usado, sem dependência de código.</li>
+<li><strong>Critical Strike</strong> é opcional.</li>
+<li><strong>Recurso 4 reduzido ao peso:</strong> alcance e animações de ataque ficam com o Better Combat.</li>
+</ul>
+<h2>Armas</h2>
+<table>
+<thead>
+<tr>
+<th>Arma</th>
+<th>Corte</th>
+<th>Concussão</th>
+<th>Perfuração</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Espada</td>
+<td>60</td>
+<td>–</td>
+<td>40</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Lança</td>
+<td>–</td>
+<td>–</td>
+<td>100</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Machado</td>
+<td>60</td>
+<td>40</td>
+<td>–</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Picareta (ferramenta)</td>
+<td>–</td>
+<td>50</td>
+<td>50</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Enxada, a "foice" (ferramenta, dano baixo)</td>
+<td>50</td>
+<td>50</td>
+<td>–</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Pá</td>
+<td>20</td>
+<td>80</td>
+<td>–</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Maça (porrete)</td>
+<td>–</td>
+<td>100</td>
+<td>–</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Tridente, flecha, virote</td>
+<td>–</td>
+<td>–</td>
+<td>100</td>
+<td>5 / 0</td>
+</tr>
+<tr>
+<td>Mão vazia</td>
+<td>–</td>
+<td>100</td>
+<td>–</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Série RPG,</strong> pelas tags <code>rpg_series:weapon_type/*</code>:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Arma</th>
+<th>Divisão do dano</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adaga</td>
+<td>perfuração 70 / corte 30</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Foice curta (sickle)</td>
+<td>corte 100</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Machado duplo</td>
+<td>corte 60 / concussão 40</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Glaive</td>
+<td>corte 50 / perfuração 50</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Montante</td>
+<td>corte 60 / concussão 40</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Martelo</td>
+<td>concussão 100</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Maça</td>
+<td>concussão 100</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Lança</td>
+<td>perfuração 100</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Mobs sem arma</strong> têm o próprio golpe: o zumbi soca (concussão), a aranha morde (perfuração), o lobo morde e arranha.</li>
+</ul>
+<h2>Mobs</h2>
+<table>
+<thead>
+<tr>
+<th>Mob</th>
+<th>Corte</th>
+<th>Concussão</th>
+<th>Perfuração</th>
+<th>Reação planejada</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zumbis</td>
+<td>1,25</td>
+<td>0,75</td>
+<td>1,25</td>
+<td>Perdem membros, rastejam</td>
+</tr>
+<tr>
+<td>Esqueletos (sem sangue)</td>
+<td>0,5</td>
+<td>1,5</td>
+<td>0,5</td>
+<td>Crítico de concussão explode em ossos</td>
+</tr>
+<tr>
+<td>Slime</td>
+<td>1,25</td>
+<td>0,25</td>
+<td>1,25</td>
+<td>Sangrando, deixa poça grudenta</td>
+</tr>
+<tr>
+<td>Magma cube</td>
+<td>1</td>
+<td>0,25</td>
+<td>1</td>
+<td>Poça de magma que queima</td>
+</tr>
+<tr>
+<td>Creeper</td>
+<td>1,25</td>
+<td>1,25</td>
+<td>1</td>
+<td>Crítico de perfuração detona na hora</td>
+</tr>
+<tr>
+<td>Aranhas</td>
+<td>1,25</td>
+<td>1</td>
+<td>1</td>
+<td>Perdem patas</td>
+</tr>
+<tr>
+<td>Phantom</td>
+<td>1,25</td>
+<td>1</td>
+<td>1,5</td>
+<td>Asa rasgada, cai</td>
+</tr>
+<tr>
+<td>Ghast</td>
+<td>1</td>
+<td>0,5</td>
+<td>2</td>
+<td>Perfuração estoura</td>
+</tr>
+<tr>
+<td>Blaze (sem sangue)</td>
+<td>0,5</td>
+<td>1,5</td>
+<td>0,75</td>
+<td>Concussão quebra um bastão</td>
+</tr>
+<tr>
+<td>Golem de ferro (sem sangue)</td>
+<td>0,25</td>
+<td>1,5</td>
+<td>0,5</td>
+<td>Racha antes</td>
+</tr>
+<tr>
+<td>Breeze, shulker (sem sangue)</td>
+<td>0,5</td>
+<td>1</td>
+<td>0,5</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Silverfish, endermite</td>
+<td>1</td>
+<td>1,5</td>
+<td>0,75</td>
+<td>–</td>
+</tr>
+<tr>
+<td>Wither, Warden, Dragão</td>
+<td>0,9 a 1,1</td>
+<td></td>
+<td></td>
+<td>Sem desmembramento</td>
+</tr>
+</tbody>
+</table>
+<h2>Armaduras</h2>
+<p>Cada conjunto completo soma as resistências abaixo. O peito conta 40%, as pernas 30%, o capacete e as botas 15% cada. Positivo deixa passar menos daquele tipo; negativo, mais.</p>
+<table>
+<thead>
+<tr>
+<th>Conjunto</th>
+<th>Corte</th>
+<th>Concussão</th>
+<th>Perfuração</th>
+<th>Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Couro</td>
+<td>–</td>
+<td>+20%</td>
+<td>−10%</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Cobre</td>
+<td>+5%</td>
+<td>–</td>
+<td>+5%</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Cota de malha</td>
+<td>+25%</td>
+<td>−10%</td>
+<td>–</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Ferro</td>
+<td>+10%</td>
+<td>−5%</td>
+<td>+15%</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Ouro</td>
+<td>+5%</td>
+<td>–</td>
+<td>–</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Diamante</td>
+<td>+10%</td>
+<td>–</td>
+<td>+10%</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Netherite</td>
+<td>+10%</td>
+<td>–</td>
+<td>+20%</td>
+<td>14</td>
+</tr>
+</tbody>
+</table>
+<h2>Peso</h2>
+<p>Uma arma de peso 4 é neutra.</p>
+<table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Efeito</th>
+<th>Exemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Arma leve de corte/perfuração</td>
+<td>+5% de velocidade de ataque por ponto abaixo de 4</td>
+<td>Espada +5%, adaga +15%</td>
+</tr>
+<tr>
+<td>Arma pesada com concussão</td>
+<td>+5% de dano de concussão e +0,1 de repulsão por ponto acima de 4</td>
+<td>Maça +20% de dano e +0,4 de repulsão</td>
+</tr>
+<tr>
+<td>Armadura, velocidade</td>
+<td>−0,5% de movimento e −0,4% de velocidade de ataque por ponto (no máximo −50%)</td>
+<td>Netherite −7% de movimento</td>
+</tr>
+<tr>
+<td>Armadura, concussão</td>
+<td>+0,5% de resistência a concussão por ponto</td>
+<td>Netherite +7%</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Picareta e enxada não ganham os bônus de arma leve ou pesada.</li>
+<li>Vale para mobs e aldeões também: um guarda de ferro anda mais devagar.</li>
+</ul>
+<h2>Reações (fase 4)</h2>
+<p>Cada reação tem um id e entra no <code>reactions</code> do perfil do mob. Um id que ninguém registrou não faz nada, então os perfis já citam reações da fase 5. Outros mods registram as suas com <code>Reactions.register</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Reação</th>
+<th>Quando</th>
+<th>O que acontece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>creeper_detonate</code></td>
+<td>Crítico de perfuração</td>
+<td>O creeper explode na hora, mesmo se o golpe o matar. Segue a regra <code>mobGriefing</code>.</td>
+</tr>
+<tr>
+<td><code>slime_puddle</code> / <code>magma_puddle</code></td>
+<td>Golpe de corte ou perfuração: 50% para um golpe só de corte; sempre no golpe que mata</td>
+<td>Poça fina no chão: gruda como mel (velocidade ×0,4, pulo ×0,5) e seca num random tick, cerca de 1 min. Slimes grandes espalham mais. A de magma queima quem pisa sem agachar e brilha de leve. Não dá item.</td>
+</tr>
+<tr>
+<td><code>bone_burst</code></td>
+<td>Golpe de concussão que mata: 50% para concussão pura, mais com arma pesada</td>
+<td>O esqueleto se desfaz: ossos inteiros (partícula <code>flying_item</code>) sobem girando e caem atravessando o chão, e o corpo some sem fumaça. Caem de 2 a 4 ossos reais (o loot é completado; Looting pode dar mais).</td>
+</tr>
+<tr>
+<td><code>ghast_pop</code></td>
+<td>Crítico de perfuração</td>
+<td>O ghast estoura na hora (dano 1000, igual à bola de fogo devolvida).</td>
+</tr>
+<tr>
+<td><code>blaze_rod_break</code></td>
+<td>Golpe de concussão: 25% × 1,5 do multiplicador do blaze</td>
+<td>Um bastão quebra: cai 1 pó de blaze e o blaze despenca um pouco. No máximo 2 por blaze (fica nas tags da entidade).</td>
+</tr>
+</tbody>
+</table>
+<p>Config: <code>puddleChance</code>, <code>boneBurstChance</code>, <code>blazeRodChance</code> e <code>maxBrokenRods</code>.</p>
+<h2>Local do golpe e partes do corpo (fase 5)</h2>
+<p><strong>Local do golpe.</strong> Vale para quem está na tag <code>#tactical_combat:humanoid</code>: jogador, zumbis, esqueletos, piglins, illagers, bruxa, aldeões e os aldeões do MCA.</p>
+<ul>
+<li><strong>Onde cai:</strong><ul>
+<li>o golpe do jogador cai onde ele olha;</li>
+<li>o projétil cai onde o voo encontra o corpo;</li>
+<li>o mob bate mais ou menos na própria altura, com variação: cerca de 16% na cabeça entre mobs do mesmo tamanho.</li>
+</ul>
+</li>
+<li><strong>Divisão do corpo:</strong> cabeça no quarto de cima; pernas abaixo de 37,5%; no meio, os braços ficam nas laterais.</li>
+<li><strong>Efeitos:</strong><ul>
+<li>cabeça: dano ×1,5;</li>
+<li>pernas: 50% de chance de Lentidão II por 2 s;</li>
+<li>braço: 50% de chance de Fraqueza por 3 s.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Partes perdidas.</strong> Ficam num attachment do Fabric, salvo com a entidade e enviado aos jogadores. O efeito no corpo vem de modificadores de atributo permanentes.</p>
+<table>
+<thead>
+<tr>
+<th>Mob</th>
+<th>Quando</th>
+<th>O que acontece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zumbis (reação <code>dismember</code>)</td>
+<td>Corte no braço ou nas pernas: 25% num golpe só de corte</td>
+<td>Braço: −40% de dano por braço e o item daquela mão cai (se cairia na morte). Pernas: rasteja deitado, −70% de velocidade e 40% da altura.</td>
+</tr>
+<tr>
+<td>Zumbis</td>
+<td>Crítico de perfuração na cabeça; ou golpe de corte que mata, na cabeça (50%)</td>
+<td>Morte na hora e a cabeça sai voando</td>
+</tr>
+<tr>
+<td>Aranhas (<code>spider_leg</code>)</td>
+<td>Corte: 25% × parcela × 1,25</td>
+<td>Perde uma pata: −10% de velocidade por pata, no máximo 4. Com 3 ou mais, não escala paredes.</td>
+</tr>
+<tr>
+<td>Phantom (<code>phantom_wing</code>)</td>
+<td>Corte: 25% × parcela × 1,25</td>
+<td>Asa rasgada: cai e não voa mais</td>
+</tr>
+<tr>
+<td>Golem de ferro (<code>golem_crack</code>)</td>
+<td>Concussão: 30% × parcela × 1,5</td>
+<td>Uma rachadura, até 3: aparece na hora no modelo e cada uma deixa passar +15% de dano. Consertado até a vida cheia, fica inteiro de novo.</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Membro decepado</strong> (entidade <code>tactical_combat:severed_limb</code>):<ul>
+<li>é a própria parte do modelo do mob, com a textura dele;</li>
+<li>voa para longe de quem cortou, cai, fica no chão por 30 s e não é salvo;</li>
+<li>com Fresh Animations, uma parte que o EMF trocou por outra não aparece solta.</li>
+</ul>
+</li>
+<li><strong>Variáveis do EMF</strong>, para o Fresh Animations esconder as partes nos modelos dele:<ul>
+<li><code>tc_arm_left_lost</code>, <code>tc_arm_right_lost</code>, <code>tc_head_lost</code>, <code>tc_legs_lost</code> e <code>tc_crawling</code>;</li>
+<li><code>tc_spider_legs_lost</code> e <code>tc_spider_leg_0_lost</code> a <code>tc_spider_leg_7_lost</code>;</li>
+<li><code>tc_wing_left_lost</code> e <code>tc_wing_right_lost</code>;</li>
+<li><code>tc_cracks</code>.</li>
+</ul>
+</li>
+<li><strong>Aldeões zumbis do MCA:</strong> eles herdam de <code>Zombie</code>, então também perdem partes. Só que as camadas do MCA (pele, roupa, cabelo) ligam de novo todas as partes do modelo, então o membro perdido ainda aparece nelas. Esconder o membro nessas camadas fica para a fase 6.</li>
+<li><strong>Config:</strong> <code>headMultiplier</code>, <code>legSlowChance</code>, <code>armWeaknessChance</code>, <code>dismemberChance</code>, <code>decapitateChance</code>, <code>lostArmDamage</code>, <code>crawlSpeedPenalty</code>, <code>spiderLegChance</code>, <code>maxSpiderLegs</code>, <code>spiderLegsToStopClimbing</code>, <code>lostLegSpeed</code>, <code>phantomWingChance</code>, <code>golemCrackChance</code>, <code>crackDamageBonus</code> e <code>limbLifetimeTicks</code>.</li>
+</ul>
+<h2>Fases</h2>
+<table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Conteúdo</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Repositório, Spell Engine em dev-mods, plano</td>
+<td>feito</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Perfis, gancho de dano, tooltip, GameTests</td>
+<td>feito</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Peso: atributo, modificadores, config</td>
+<td>feito</td>
+</tr>
+<tr>
+<td>2b</td>
+<td>Câmera segue a animação em primeira pessoa</td>
+<td>feito, sem teste em jogo</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Efeitos: sangramento e atordoamento do Spell Engine; Fratura e Tala (nossos); crítico de perfuração com Critical Strike opcional</td>
+<td>feito, sem teste em jogo</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Reações: creeper, poças de slime e magma, explosão de ossos, ghast, blaze</td>
+<td>feito, sem teste em jogo</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Local do golpe, desmembramento, zumbi rastejando, pata de aranha, asa de phantom, golem rachado, variáveis EMF para o Fresh Animations</td>
+<td>feito, sem teste em jogo</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Integração com o MCA e com o Forsaken Adventurers</td>
+<td>outra conversa</td>
+</tr>
+</tbody>
+</table>
+<h2>Integração com o MCA (outra conversa)</h2>
+<p>Sem dependência de código, como no Tabletop e no Village Furnishings. O MCA só cita ids e efeitos.</p>
+<ul>
+<li>Guardas e aldeões já atacam pelo mesmo caminho, então o sistema vale para eles sem nada novo.</li>
+<li><strong>Ideias:</strong><ul>
+<li>guardas escolhem a arma pelo inimigo (maça contra ataque de esqueletos);</li>
+<li>o clérigo trata sangramento e põe tala na fratura;</li>
+<li>traços com bônus por tipo (um "Brutamontes" com concussão);</li>
+<li>bandidos e facções usam o mesmo sistema.</li>
+</ul>
+</li>
+<li><strong>Forsaken Adventurers / ANARCHY RPG</strong> só existe até a 1.21.1, então essa integração depende de um port.</li>
+</ul></div></details>
 <details class='doc' id='doc-vilas-consolidado' style='--k:var(--gold)'><summary><span class='state'>referência</span>Vilas: consolidado de planejamento <span class='muted'>· vilas-consolidado.md</span></summary><div class='body'><h1>Vilas: consolidado de planejamento</h1>
 <p>Documento de passagem para um chat único que vai juntar três temas ligados entre si:</p>
 <ol>
@@ -3790,6 +5113,18 @@ S
 <li>Fase 3: aterrar buracos de caverna (carvers) sob as ruas.</li>
 <li>Fase 4: aplanar terreno pelo <code>Beardifier</code> (fallback para vilas pequenas demais e para degraus de 2).</li>
 <li>Fase 5: arquivo de config. NeoForge.</li>
+<li><strong>Ruas curvas (pedido de 2026-11-01):</strong> as ruas da vila são retas demais; algumas com traçado curvo deixariam a vila
+    mais orgânica. Casas nas curvas não são o objetivo: elas ficam onde o jigsaw as pôs, só o traçado da rua ondula.
+    Caminho sugerido, no mesmo gancho do <code>StreetSteps</code> (<code>StructureStart.placeInChunk</code>): nos trechos retos e longos da
+    rua, longe das entradas das casas e dos cruzamentos, deslocar o caminho para os lados com um ruído suave ao longo do
+    comprimento (±1 a 2 blocos, mesma largura). Onde o caminho sai, volta grama; onde entra, vira caminho. Perto de cada
+    porta e de cada cruzamento o deslocamento cai a zero, para nada ficar desconectado. A alternativa (peças de rua
+    curvas no pool do jigsaw) dá mais trabalho e briga com o CTOV e o Lithostitched.
+    <strong>Feito em 2026-11-01</strong> (<code>placement/StreetCurves.java</code>, não commitado): peças retas em fila viram uma rua só, que
+    ondula até 3 blocos, uma curva a cada ~20 blocos, cada curva para o lado com mais espaço; zero nas pontas, junto de
+    outras ruas e onde encostaria numa casa; o caminho antigo fica a até 2 blocos de cada porta. Teste headless na vila
+    1904,-1056 (seed 5704449408643216038): ~190 blocos de caminho movidos, sem buracos. Ruas com casas dos dois lados
+    continuam retas. Desliga com <code>-Dgroundedvillages.noCurves=true</code>.</li>
 </ul>
 <hr />
 <h2>2. Evolução de prédios no MCA (em discussão)</h2>
@@ -4059,7 +5394,8 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <div class='chapter' style='--k:var(--rose)'><b>Capítulo 3</b><span class=st>Necessidades</span>
 <p>Seis medidores de 0 a 100 caem com o tempo: Fome, Sede, Energia, Social, Lazer e Segurança. Medidores baixos viram pensamentos que pesam no humor.</p>
 <p><b>Fome</b><br>O aldeão come do inventário ou de um baú em casa: dê pão, carne ou outra comida. Trabalhar dá mais fome. Faminto, perde vida até meio coração, mas não morre.</p>
-<p><b>Sede</b><br>Bebe parado ao lado de um caldeirão com água: coloque caldeirões na vila.<br><b>Energia</b><br>Recupera dormindo na cama à noite. Sem cama, cochila onde estiver.</p>
+<p><b>Sede</b><br>Bebe parado ao lado de um caldeirão com água ou na boca de um poço.<br><b>Energia</b><br>Recupera dormindo na cama à noite. Sem cama, cochila onde estiver.</p>
+<p><b>Poços e pão</b><br>Poço: um buraco com cerca ou muro em 3 dos 8 lados e água até 12 blocos abaixo. Com fome e sem comida, o aldeão busca trigo em casa e faz pão numa mesa de trabalho: 3 trigos por pão.</p>
 <p><b>Social</b><br>Sobe conversando com você, com outros aldeões e no ponto de encontro do sino.<br><b>Lazer</b><br>Tempo livre e prédios favoritos. O trabalho cansa.</p>
 <p><b>Segurança</b><br>Cai quando monstros chegam perto. Recupera em casa, perto de guardas ou golens. Um medidor crítico faz o aldeão largar a rotina para resolver.</p>
 <p>Os medidores aparecem na tela de interação: passe o mouse para ver como atender cada um. Casais que dormem juntos ficam mais felizes.</p>
@@ -4143,6 +5479,18 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Janelas</b><br>Venezianas: um alçapão e um graveto dão duas. Ponha na parede ao lado da janela; fechada, ela cobre a janela. Os aldeões abrem de manhã, fecham à noite e acendem as luminárias do Beautify.</p>
 <p><b>Itens postos</b><br>Com Tabletop, V põe o item da mão sobre um bloco. Os aldeões pegam o instrumento, tocam e devolvem, comem a comida e olham o resto. Oficinas expõem o que fazem nas mesas.</p>
 </div>
+<div class='chapter' style='--k:var(--violet)'><b>Capítulo 16</b><span class=st>Bandos e estradas</span>
+<p>Com villagerFactions, os saqueadores andam em bandos com nome, bandeira e postos. Cada bando é de um tipo (saqueadores, tribo, culto ou exército), com armas próprias. Ao entrar num território, aparece o dono e como ele te vê.</p>
+<p><b>Reputação</b><br>Matar gente do bando derruba; atacar vilas, aldeões e golens sobe. Hostil: atacam. Neutro: deixam passar e conversam. Amigo: aceitam ser contratados. Aliado: aceitam você no bando.</p>
+<p><b>Conversa</b><br>Pergunte a um bandido quem são eles, negocie, pague uma trégua para uma vila ou contrate um para lutar por você. Os bandos guerreiam entre si, tomam postos uns dos outros, racham e podem acabar.</p>
+<p><b>Fora da lei</b><br>No bando, você ganha a bandeira, os bandidos lutam do seu lado e vêm com você de graça. Em troca, toda vila te vê como fora da lei, e os inimigos do bando passam a ser seus.</p>
+<p><b>Redenção</b><br>Para voltar, pague a multa a qualquer morador, cumpra pena na prisão da vila ou faça pedidos dos moradores; quanto mais mal, mais caro. Fugir da prisão piora tudo. A vila perdoa e você sai do bando, que te vê como traidor.</p>
+<p><b>No posto</b><br>Peça a um bandido para morar no posto: você passa a acordar lá. Chame o bando para atacar a vila mais próxima: cada aldeão ou golem que ele derrubar rende esmeraldas para você. Um ataque por dia.</p>
+<p><b>Seu bando</b><br>Aliado do bando, segure uma bandeira e funde o seu: custa 32 esmeraldas, e o acampamento fica onde você está. Recrute bandidos de bandos que confiam em você (8 esmeraldas) e aldeões fora da lei (de graça).</p>
+<p><b>Exilados</b><br>Um aldeão posto fora da lei que sobrevive foge para um acampamento de exilados por perto, ou monta um com fogueira e bandeira. Os exilados formam um bando como os outros, e crescem a cada expulso.</p>
+<p><b>Caravanas</b><br>Com villagerCaravans, mercadores, guardas e animais com baú viajam entre as vilas que você conhece. Negociam com o armazém, trazem notícias e podem ser escoltados ou atacados.</p>
+<p><b>Encomendas</b><br>Segure um item e pergunte a alguém da caravana se ela traz mais. A encomenda fica pronta na próxima vila em que a caravana parar: pague lá e leve. Itens raros custam mais.</p>
+</div>
 </div>
 </section>
 <section class='sec' id='behavior' style='--c:var(--sky)'><h2><span class='ic'>🧠</span>Comportamento dos aldeões</h2>
@@ -4204,6 +5552,8 @@ que a oficina dele precisa. Guarda um pouco de comida para si. Qualquer um pode 
 <tr><td><code>compat_storage_delight_read</code></td><td>read</td><td>storagedelight:acacia_bookshelf_with_door, storagedelight:acacia_drawer_with_books, storagedelight:bamboo_bookshelf_with_door, storagedelight:bamboo_drawer_with_books, storagedelight:birch_bookshelf_with_door, … +19</td><td>1.0</td><td>rooms: {&#x27;library&#x27;: 1.8, &#x27;school&#x27;: 1.8}, professions: {&#x27;minecraft:librarian&#x27;: 1.5}, hold: minecraft:book</td></tr>
 <tr><td><code>compat_tables_chairs</code></td><td>sit</td><td>minecraft:item_display tac+chair, minecraft:item_display tac+bench</td><td>1.6</td><td></td></tr>
 <tr><td><code>compat_tabletop</code></td><td>inspect</td><td>tabletop:placed_items</td><td>1.3</td><td>rooms: {&#x27;inn&#x27;: 1.5, &#x27;library&#x27;: 1.3, &#x27;music_store&#x27;: 1.5}</td></tr>
+<tr><td><code>compat_village_furnishings_casks</code></td><td>gather</td><td>#village_furnishings:casks</td><td>0.9</td><td>rooms: {&#x27;inn&#x27;: 2.0}, hold: minecraft:potion</td></tr>
+<tr><td><code>compat_village_furnishings_racks</code></td><td>inspect</td><td>#village_furnishings:racks</td><td>1.2</td><td>rooms: {&#x27;weaponsmith&#x27;: 1.5, &#x27;toolsmith&#x27;: 1.5, &#x27;armorer&#x27;: 1.5, &#x27;blacksmith&#x27;: 1.5, &#x27;armory&#x27;: 1.5}, professions: {&#x27;minecraft:weaponsmith&#x27;: 1.6, &#x27;minecraft:toolsmith&#x27;: 1.6, &#x27;minecraft:armorer&#x27;: 1.4}</td></tr>
 <tr><td><code>inspect_vanilla</code></td><td>inspect</td><td>minecraft:armor_stand, minecraft:item_frame, minecraft:glow_item_frame</td><td>0.8</td><td>professions: {&#x27;minecraft:toolsmith&#x27;: 1.5, &#x27;minecraft:weaponsmith&#x27;: 1.5, &#x27;minecraft:armorer&#x27;: 1.5}</td></tr>
 <tr><td><code>listen_jukebox</code></td><td>listen</td><td>minecraft:jukebox</td><td>1.5</td><td>properties: {&#x27;has_record&#x27;: &#x27;true&#x27;}, particle: minecraft:note</td></tr>
 <tr><td><code>listen_note_block</code></td><td>listen</td><td>minecraft:note_block</td><td>0.7</td><td>particle: minecraft:note</td></tr>

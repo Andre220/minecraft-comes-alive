@@ -90,6 +90,37 @@ public final class BlueprintLibrary {
         return manager(server).get(id).map(template -> CACHE.computeIfAbsent(template, t -> parse(id, t)));
     }
 
+    /** Where a captured blueprint is saved in the world, or empty if the id cannot be a file name. */
+    private static Optional<java.nio.file.Path> worldFile(MinecraftServer server, Identifier id) {
+        try {
+            return Optional.of(manager(server).worldTemplates().createAndValidatePathToStructure(id));
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
+
+    /** Captured in this world (not shipped with the mod or a data pack), so it can be deleted. */
+    public static boolean isDeletable(MinecraftServer server, Identifier id) {
+        return isBlueprint(id) && worldFile(server, id).filter(java.nio.file.Files::exists).isPresent();
+    }
+
+    /** Deletes a blueprint captured in this world. False if there was no such file or it could not be deleted. */
+    public static boolean delete(MinecraftServer server, Identifier id) {
+        if (!isDeletable(server, id)) {
+            return false;
+        }
+        try {
+            java.nio.file.Files.delete(worldFile(server, id).orElseThrow());
+        } catch (java.io.IOException e) {
+            MCA.LOGGER.warn("Could not delete blueprint {}", id, e);
+            return false;
+        }
+        manager(server).get(id).ifPresent(CACHE::remove);
+        manager(server).remove(id);
+        BlueprintCatalog.get(server).forget(id);
+        return true;
+    }
+
     /** Saves everything inside the area, air included, as a blueprint. Entities are left out. */
     public static CaptureResult capture(ServerLevel level, WorkArea area, String name, String author) {
         String slug = slug(name);

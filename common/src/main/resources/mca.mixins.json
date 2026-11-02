@@ -52,6 +52,7 @@
     "client.MixinEntity",
     "client.MixinGameRenderer",
     "client.MixinGuiEntityRenderer",
+    "client.MixinHud",
     "client.MixinHumanoidArmorLayer",
     "client.MixinItemInHandLayer",
     "client.MixinLayerDefinitions",

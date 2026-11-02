@@ -6,7 +6,10 @@ import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.server.world.data.Village;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
@@ -16,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 /**
  * The addons MCA knows, and the calls MCA's classes make into all of them. The addons shipped in this jar register
@@ -70,6 +74,10 @@ public final class Addons {
         all().forEach(McaAddon::clientBootstrap);
     }
 
+    public static void reloadListeners(BiConsumer<Identifier, PreparableReloadListener> register) {
+        all().forEach(addon -> addon.reloadListeners(register));
+    }
+
     public static void registerMessages(Network.Registrar registrar) {
         all().forEach(addon -> addon.registerMessages(registrar));
     }
@@ -84,6 +92,10 @@ public final class Addons {
 
     public static void villagerTick(ServerLevel level, VillagerEntityMCA villager) {
         all().forEach(addon -> addon.villagerTick(level, villager));
+    }
+
+    public static void requestCompleted(ServerPlayer player, VillagerEntityMCA villager) {
+        all().forEach(addon -> addon.requestCompleted(player, villager));
     }
 
     public static boolean refusesInteraction(VillagerEntityMCA villager, Player player) {

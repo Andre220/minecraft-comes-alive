@@ -13,14 +13,16 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
 /**
- * Save the blocks inside a box, built by hand, as a blueprint called {@code name}.
+ * Save the blocks inside a box, built by hand, as a blueprint called {@code name}, sorted into {@code section}
+ * (empty: the default one).
  */
-public record CaptureBlueprintMessage(BlockPos from, BlockPos to, String name) implements HandleablePayload {
+public record CaptureBlueprintMessage(BlockPos from, BlockPos to, String name, String section) implements HandleablePayload {
     public static final CustomPacketPayload.Type<CaptureBlueprintMessage> TYPE = new CustomPacketPayload.Type<>(MCA.locate("capture_blueprint"));
     public static final StreamCodec<FriendlyByteBuf, CaptureBlueprintMessage> STREAM_CODEC = StreamCodec.composite(
             BlockPos.STREAM_CODEC, CaptureBlueprintMessage::from,
             BlockPos.STREAM_CODEC, CaptureBlueprintMessage::to,
             ByteBufCodecs.stringUtf8(64), CaptureBlueprintMessage::name,
+            ByteBufCodecs.stringUtf8(64), CaptureBlueprintMessage::section,
             CaptureBlueprintMessage::new
     );
 
@@ -31,7 +33,7 @@ public record CaptureBlueprintMessage(BlockPos from, BlockPos to, String name) i
             player.sendSystemMessage(Component.translatable("workorder.error.too_far"));
             return;
         }
-        player.sendSystemMessage(WorkOrderService.capture(player, area, name).message());
+        player.sendSystemMessage(WorkOrderService.capture(player, area, name, section).message());
         WorkOrdersRequest.sendResponse(player, area.center());
     }
 

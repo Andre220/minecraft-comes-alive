@@ -26,6 +26,7 @@ public class HairLayer<S extends HumanoidRenderState, M extends HumanoidModel<S>
         setAllVisible(this.model, true);
         hideLegs(this.model);
         hideBreasts(this.model);
+        keepHeadHidden();
     }
 
     private static void hideBreasts(HumanoidModel<?> model) {

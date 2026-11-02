@@ -675,7 +675,7 @@ public final class Config extends CommonConfig {
     /**
      * Largest number of blocks a single work order may cover.
      */
-    public int workOrderMaxVolume = 4096;
+    public int workOrderMaxVolume = 16384;
 
     /**
      * Creative digging and building is done this many blocks per server tick, area after area, so large areas do not
@@ -702,6 +702,16 @@ public final class Config extends CommonConfig {
      * not hold up the server. Off by default while it is being tried out.
      */
     public boolean villagerAsyncPathfinding = false;
+
+    /**
+     * Real minutes from sunrise to sunset; vanilla is 10. Villager routines stretch along with it.
+     */
+    public float dayLengthMinutes = 10.0f;
+
+    /**
+     * Real minutes from sunset to sunrise; vanilla is 10.
+     */
+    public float nightLengthMinutes = 10.0f;
 
     /**
      * Largest number of open work orders per village.

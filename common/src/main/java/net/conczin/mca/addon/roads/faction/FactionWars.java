@@ -134,13 +134,19 @@ public final class FactionWars {
             return;
         }
         RandomSource random = level.getRandom();
-        long attack = data.outpostCount(attacker) * 3 + random.nextInt(9);
-        long defence = data.outpostCount(defender) * 3 + random.nextInt(9) + 2; // walls help
+        double attack = (data.outpostCount(attacker) * 3 + random.nextInt(9)) * strength(data, attacker);
+        double defence = (data.outpostCount(defender) * 3 + random.nextInt(9) + 2) * strength(data, defender); // walls help
         if (attack > defence) {
             data.setOwner(outpost, attacker);
             data.faction(attacker).ifPresent(a -> data.faction(defender).ifPresent(d ->
                     tell(level, Component.translatable("faction.outpost_taken", Factions.name(a), Factions.name(d)))));
+            FactionSplits.fallIfEmpty(level, data, defender);
         }
+    }
+
+    /** How hard a band hits in a war fought out of sight, by its kind. */
+    private static double strength(FactionData data, int faction) {
+        return data.faction(faction).map(f -> (double) FactionTypes.get(f.type()).strength).orElse(1.0);
     }
 
     /** A war party of the attacker walks toward the outpost from its edge. */
@@ -183,7 +189,7 @@ public final class FactionWars {
         return one >= 0 && other >= 0 && !atWar(FactionData.get(level), one, other);
     }
 
-    private static void tell(ServerLevel level, Component message) {
+    static void tell(ServerLevel level, Component message) {
         for (ServerPlayer player : level.players()) {
             player.sendSystemMessage(message);
         }

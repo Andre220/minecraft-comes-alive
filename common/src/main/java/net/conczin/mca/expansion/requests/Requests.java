@@ -6,6 +6,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.entity.EntityType;
 import net.conczin.mca.Config;
 import net.conczin.mca.MCA;
+import net.conczin.mca.api.addon.Addons;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.ai.Memories;
 import net.conczin.mca.expansion.HomeChests;
@@ -349,6 +350,9 @@ public final class Requests {
         villager.getVillagerBrain().getMemoriesForPlayer(player).modHearts(request.hearts());
         set(villager, null);
         say(villager, player, Component.translatable("request.thanks", request.hearts()));
+        if (player instanceof ServerPlayer serverPlayer) {
+            Addons.requestCompleted(serverPlayer, villager);
+        }
     }
 
     /** A request past its deadline ends: the reward goes back home and the player loses some hearts. */

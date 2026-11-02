@@ -6,6 +6,7 @@ import net.conczin.mca.MCA;
 import net.conczin.mca.network.HandleablePayload;
 import net.conczin.mca.server.world.data.Village;
 import net.conczin.mca.server.world.data.workorder.Blueprint;
+import net.conczin.mca.server.world.data.workorder.BlueprintCatalog;
 import net.conczin.mca.server.world.data.workorder.BlueprintLibrary;
 import net.conczin.mca.server.world.data.workorder.VillageStorage;
 import net.conczin.mca.server.world.data.workorder.WorkArea;
@@ -18,6 +19,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -47,7 +49,9 @@ public record WorkOrdersResponse(
         int maxVolume,
         List<OrderInfo> orders,
         Map<String, Integer> storage,
-        List<BlueprintInfo> blueprints
+        List<BlueprintInfo> blueprints,
+        List<SectionInfo> sections,
+        boolean canManageBlueprints
 ) implements HandleablePayload {
     public static final CustomPacketPayload.Type<WorkOrdersResponse> TYPE = new CustomPacketPayload.Type<>(MCA.locate("work_orders_response"));
     public static final StreamCodec<FriendlyByteBuf, WorkOrdersResponse> STREAM_CODEC = StreamCodec.of(
@@ -57,9 +61,12 @@ public record WorkOrdersResponse(
     /** Most different blocks of the storage reported to the client. */
     private static final int MAX_STORAGE_ENTRIES = 256;
 
-    /** A work order as the client sees it. {@code block} is a block id, empty for digging. */
+    /**
+     * A work order as the client sees it. {@code block} is a block id, a blueprint id, or empty for digging and blocks
+     * placed one by one.
+     */
     public record OrderInfo(int id, WorkOrderType type, WorkArea area, String block, float progress,
-                            int remaining, boolean paused, boolean waiting, boolean free) {
+                            int remaining, boolean paused, boolean waiting, boolean free, boolean demolish) {
         static OrderInfo of(WorkOrder order) {
             BlockState state = order.getBlock();
             return new OrderInfo(
@@ -72,7 +79,8 @@ public record WorkOrdersResponse(
                     order.getRemainingWork(),
                     order.isPaused(),
                     order.isWaitingForMaterial(),
-                    order.isFree()
+                    order.isFree(),
+                    order.isDemolish()
             );
         }
 
@@ -86,6 +94,7 @@ public record WorkOrdersResponse(
             buf.writeBoolean(paused);
             buf.writeBoolean(waiting);
             buf.writeBoolean(free);
+            buf.writeBoolean(demolish);
         }
 
         static OrderInfo read(FriendlyByteBuf buf) {
@@ -93,19 +102,27 @@ public record WorkOrdersResponse(
             WorkOrderType type = WorkOrderType.values()[Math.floorMod(buf.readVarInt(), WorkOrderType.values().length)];
             WorkArea area = WorkArea.fromArray(buf.readVarIntArray(6));
             return new OrderInfo(id, type, area, buf.readUtf(), buf.readFloat(), buf.readVarInt(),
-                    buf.readBoolean(), buf.readBoolean(), buf.readBoolean());
+                    buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), buf.readBoolean());
         }
     }
 
-    /** A saved blueprint the player can place; its blocks are fetched separately for the preview. */
-    public record BlueprintInfo(String id, String name, int sizeX, int sizeY, int sizeZ, int blocks, String icon) {
-        static BlueprintInfo of(Blueprint blueprint) {
+    /**
+     * A saved blueprint the player can place; its blocks are fetched separately for the preview. {@code section} is
+     * the section it is sorted into (empty: none), {@code deletable} whether it was captured in this world.
+     */
+    public record BlueprintInfo(String id, String name, int sizeX, int sizeY, int sizeZ, int blocks, String icon,
+                                String section, boolean deletable, boolean hidden) {
+        static BlueprintInfo of(MinecraftServer server, Blueprint blueprint) {
+            BlueprintCatalog catalog = BlueprintCatalog.get(server);
             return new BlueprintInfo(blueprint.id().toString(), blueprint.name(),
                     blueprint.sizeX(), blueprint.sizeY(), blueprint.sizeZ(), (int) blueprint.solidBlocks(),
                     blueprint.materials().items().entrySet().stream()
                             .max(Map.Entry.comparingByValue())
                             .map(entry -> BuiltInRegistries.ITEM.getKey(entry.getKey()).toString())
-                            .orElse("minecraft:map"));
+                            .orElse("minecraft:map"),
+                    catalog.sectionOf(blueprint.id()),
+                    BlueprintLibrary.isDeletable(server, blueprint.id()),
+                    catalog.isHidden(blueprint.id()));
         }
 
         void write(FriendlyByteBuf buf) {
@@ -116,24 +133,49 @@ public record WorkOrdersResponse(
             buf.writeVarInt(sizeZ);
             buf.writeVarInt(blocks);
             buf.writeUtf(icon);
+            buf.writeUtf(section);
+            buf.writeBoolean(deletable);
+            buf.writeBoolean(hidden);
         }
 
         static BlueprintInfo read(FriendlyByteBuf buf) {
-            return new BlueprintInfo(buf.readUtf(), buf.readUtf(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readUtf());
+            return new BlueprintInfo(buf.readUtf(), buf.readUtf(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt(),
+                    buf.readUtf(), buf.readUtf(), buf.readBoolean(), buf.readBoolean());
+        }
+    }
+
+    /** A section of the blueprint library; {@code name} may be a translation key (the default sections). */
+    public record SectionInfo(String id, String name, String icon) {
+        void write(FriendlyByteBuf buf) {
+            buf.writeUtf(id);
+            buf.writeUtf(name);
+            buf.writeUtf(icon);
+        }
+
+        static SectionInfo read(FriendlyByteBuf buf) {
+            return new SectionInfo(buf.readUtf(), buf.readUtf(), buf.readUtf());
         }
     }
 
     /** Outside any village: no orders, but the saved blueprints are still listed (to look at, or put down in creative). */
     public static WorkOrdersResponse none(ServerPlayer player) {
         return new WorkOrdersResponse(-1, "", WorkOrderPermissions.Access.DENIED.ordinal(),
-                rankKey(), false, 0, 0, 0, List.of(), Map.of(), blueprints(player.level()));
+                rankKey(), false, 0, 0, 0, List.of(), Map.of(), blueprints(player.level()), sections(player.level()),
+                WorkOrderService.canManageBlueprints(player));
     }
 
     private static List<BlueprintInfo> blueprints(ServerLevel level) {
-        return BlueprintLibrary.list(level.getServer()).stream()
-                .map(id -> BlueprintLibrary.get(level.getServer(), id))
+        MinecraftServer server = level.getServer();
+        return BlueprintLibrary.list(server).stream()
+                .map(id -> BlueprintLibrary.get(server, id))
                 .flatMap(java.util.Optional::stream)
-                .map(BlueprintInfo::of)
+                .map(blueprint -> BlueprintInfo.of(server, blueprint))
+                .toList();
+    }
+
+    private static List<SectionInfo> sections(ServerLevel level) {
+        return BlueprintCatalog.get(level.getServer()).getSections().stream()
+                .map(section -> new SectionInfo(section.id(), section.name(), section.icon()))
                 .toList();
     }
 
@@ -167,7 +209,9 @@ public record WorkOrdersResponse(
                 Config.getInstance().workOrderMaxVolume,
                 orders,
                 storage,
-                blueprints(level)
+                blueprints(level),
+                sections(level),
+                WorkOrderService.canManageBlueprints(player)
         );
     }
 
@@ -200,6 +244,8 @@ public record WorkOrdersResponse(
         buf.writeCollection(orders, (b, order) -> order.write(b));
         buf.writeMap(storage, FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeVarInt);
         buf.writeCollection(blueprints, (b, info) -> info.write(b));
+        buf.writeCollection(sections, (b, info) -> info.write(b));
+        buf.writeBoolean(canManageBlueprints);
     }
 
     private static WorkOrdersResponse read(FriendlyByteBuf buf) {
@@ -214,7 +260,10 @@ public record WorkOrdersResponse(
         List<OrderInfo> orders = new ArrayList<>(buf.readList(OrderInfo::read));
         Map<String, Integer> storage = buf.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readVarInt);
         List<BlueprintInfo> blueprints = buf.readList(BlueprintInfo::read);
-        return new WorkOrdersResponse(villageId, villageName, access, minRank, hasStorage, builders, miners, maxVolume, orders, storage, blueprints);
+        List<SectionInfo> sections = buf.readList(SectionInfo::read);
+        boolean canManageBlueprints = buf.readBoolean();
+        return new WorkOrdersResponse(villageId, villageName, access, minRank, hasStorage, builders, miners, maxVolume, orders, storage,
+                blueprints, sections, canManageBlueprints);
     }
 
     public boolean hasVillage() {

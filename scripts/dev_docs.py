@@ -363,6 +363,7 @@ PLAN_STATES = {
     "interface-e-conversas.md": ("WIP", "var(--violet)"),
     "tracos-rimworld.md": ("feito", "var(--grass)"),
     "faccoes.md": ("em andamento", "var(--sky)"),
+    "tactical-combat.md": ("em andamento", "var(--sky)"),
     "caravanas.md": ("feito", "var(--grass)"),
     "todo-arte.md": ("TODO", "var(--rose)"),
     "espelho-estudo.md": ("feito", "var(--grass)"),

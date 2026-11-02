@@ -1,0 +1,12 @@
+{
+  "weight": 4,
+  "names": 6,
+  "strength": 1.0,
+  "mainhand": [
+    {"item": "minecraft:crossbow", "weight": 7},
+    {"item": "minecraft:iron_axe", "weight": 3}
+  ],
+  "armor": [
+    {"item": "minecraft:leather_chestplate", "chance": 0.2}
+  ]
+}

@@ -156,6 +156,45 @@ public class VillageWorkOrders {
 
     public CreateResult create(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block,
                                UUID author, String authorName, boolean free) {
+        return create(level, type, area, block, author, authorName, free, false);
+    }
+
+    /**
+     * Plans blocks placed one by one in the planning screen, with their exact states (stairs keep their facing). Built
+     * like a blueprint: what stands in the way is cleared first. Only the number of blocks is limited, so a long wall
+     * around the village fits in one order.
+     */
+    public CreateResult createInline(ServerLevel level, Map<BlockPos, BlockState> plan, UUID author, String authorName, boolean free) {
+        Config config = Config.getInstance();
+        if (plan.isEmpty()) {
+            return CreateResult.error("workorder.error.nothing_to_do");
+        }
+        int maxBlocks = WorkOrderService.maxInlineBlocks();
+        if (plan.size() > maxBlocks) {
+            return CreateResult.error("workorder.error.too_big", plan.size(), maxBlocks);
+        }
+        if (orders.size() >= config.workOrderMaxPerVillage) {
+            return CreateResult.error("workorder.error.too_many", config.workOrderMaxPerVillage);
+        }
+        WorkArea area = WorkArea.around(plan.keySet());
+        if (!village.isWithinBorder(area.center(), Village.BORDER_MARGIN)) {
+            return CreateResult.error("workorder.error.outside_village", village.getName());
+        }
+        WorkOrder order = new WorkOrder(nextId, WorkOrderType.BLUEPRINT, area, null, author, authorName, free, level.getGameTime());
+        order.setInlinePlan(plan);
+        int work = countRemaining(level, order);
+        if (work == 0) {
+            return CreateResult.error("workorder.error.nothing_to_do");
+        }
+        order.setInitialWork(work);
+        nextId++;
+        orders.put(order.getId(), order);
+        village.markDirty();
+        return new CreateResult(order, null);
+    }
+
+    public CreateResult create(ServerLevel level, WorkOrderType type, WorkArea area, @Nullable BlockState block,
+                               UUID author, String authorName, boolean free, boolean demolish) {
         Config config = Config.getInstance();
         if (type == WorkOrderType.BLUEPRINT) {
             return CreateResult.error("workorder.error.nothing_to_do");
@@ -179,6 +218,7 @@ public class VillageWorkOrders {
         }
 
         WorkOrder order = new WorkOrder(nextId, type, area, block, author, authorName, free, level.getGameTime());
+        order.setDemolish(demolish && type == WorkOrderType.DIG);
         int work = countRemaining(level, order);
         if (work == 0) {
             return CreateResult.error("workorder.error.nothing_to_do");
@@ -305,10 +345,10 @@ public class VillageWorkOrders {
         UUID self = villager.getUUID();
         WorkArea area = order.getArea();
 
-        for (int y : area.layerOrder(true)) {
+        for (List<BlockPos> layer : planLayers(order, true)) {
             BlockPos best = null;
             double bestScore = Double.MAX_VALUE;
-            for (BlockPos pos : area.layer(y)) {
+            for (BlockPos pos : layer) {
                 BlockState target = plan.get(pos);
                 if (target == null || !isCandidate(level, order, pos, self, time, exclude)) {
                     continue;
@@ -327,10 +367,10 @@ public class VillageWorkOrders {
             }
         }
 
-        for (int y : area.layerOrder(false)) {
+        for (List<BlockPos> layer : planLayers(order, false)) {
             BlockPos best = null;
             double bestScore = Double.MAX_VALUE;
-            for (BlockPos pos : area.layer(y)) {
+            for (BlockPos pos : layer) {
                 BlockState target = plan.get(pos);
                 if (target == null || target.isAir() || WorkOrderBlocks.isSecondHalf(target)
                     || !isCandidate(level, order, pos, self, time, exclude)
@@ -355,6 +395,20 @@ public class VillageWorkOrders {
             }
         }
         return Optional.empty();
+    }
+
+    /** The planned positions layer by layer, from the top down or the bottom up; only the planned ones, not the whole box. */
+    private static Collection<List<BlockPos>> planLayers(WorkOrder order, boolean topDown) {
+        return topDown ? order.getPlanLayers().descendingMap().values() : order.getPlanLayers().values();
+    }
+
+    /** Every position the order covers: its plan if it has one, otherwise its whole box. */
+    private static Iterable<BlockPos> positions(WorkOrder order) {
+        if (order.getPlan() != null) {
+            return order.getPlan().keySet();
+        }
+        WorkArea area = order.getArea();
+        return BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ());
     }
 
     private boolean isCandidate(ServerLevel level, WorkOrder order, BlockPos pos, UUID self, long time, Predicate<BlockPos> exclude) {
@@ -472,12 +526,9 @@ public class VillageWorkOrders {
 
     private int countRemaining(ServerLevel level, WorkOrder order) {
         int count = 0;
-        WorkArea area = order.getArea();
-        for (int y : area.layerOrder(true)) {
-            for (BlockPos pos : area.layer(y)) {
-                if (WorkOrderBlocks.needsWork(level, order, pos)) {
-                    count++;
-                }
+        for (BlockPos pos : positions(order)) {
+            if (WorkOrderBlocks.needsWork(level, order, pos)) {
+                count++;
             }
         }
         return count;
@@ -488,12 +539,9 @@ public class VillageWorkOrders {
             return 0;
         }
         int count = 0;
-        WorkArea area = order.getArea();
-        for (int y : area.layerOrder(true)) {
-            for (BlockPos pos : area.layer(y)) {
-                if (order.isSkipped(pos) && WorkOrderBlocks.needsWork(level, order, pos)) {
-                    count++;
-                }
+        for (BlockPos pos : positions(order)) {
+            if (order.isSkipped(pos) && WorkOrderBlocks.needsWork(level, order, pos)) {
+                count++;
             }
         }
         return count;

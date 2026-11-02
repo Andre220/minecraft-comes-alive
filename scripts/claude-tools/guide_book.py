@@ -26,7 +26,8 @@ PT = [
     ("Capítulo 3", "Necessidades", [
         "Seis medidores de 0 a 100 caem com o tempo: Fome, Sede, Energia, Social, Lazer e Segurança. Medidores baixos viram pensamentos que pesam no humor.",
         f"{B}Fome{R}\nO aldeão come do inventário ou de um baú em casa: dê pão, carne ou outra comida. Trabalhar dá mais fome. Faminto, perde vida até meio coração, mas não morre.",
-        f"{B}Sede{R}\nBebe parado ao lado de um caldeirão com água: coloque caldeirões na vila.\n{B}Energia{R}\nRecupera dormindo na cama à noite. Sem cama, cochila onde estiver.",
+        f"{B}Sede{R}\nBebe parado ao lado de um caldeirão com água ou na boca de um poço.\n{B}Energia{R}\nRecupera dormindo na cama à noite. Sem cama, cochila onde estiver.",
+        f"{B}Poços e pão{R}\nPoço: um buraco com cerca ou muro em 3 dos 8 lados e água até 12 blocos abaixo. Com fome e sem comida, o aldeão busca trigo em casa e faz pão numa mesa de trabalho: 3 trigos por pão.",
         f"{B}Social{R}\nSobe conversando com você, com outros aldeões e no ponto de encontro do sino.\n{B}Lazer{R}\nTempo livre e prédios favoritos. O trabalho cansa.",
         f"{B}Segurança{R}\nCai quando monstros chegam perto. Recupera em casa, perto de guardas ou golens. Um medidor crítico faz o aldeão largar a rotina para resolver.",
         "Os medidores aparecem na tela de interação: passe o mouse para ver como atender cada um. Casais que dormem juntos ficam mais felizes.",
@@ -110,6 +111,18 @@ PT = [
         f"{B}Janelas{R}\n" + "Venezianas: um alçapão e um graveto dão duas. Ponha na parede ao lado da janela; fechada, ela cobre a janela. Os aldeões abrem de manhã, fecham à noite e acendem as luminárias do Beautify.",
         f"{B}Itens postos{R}\n" + "Com Tabletop, V põe o item da mão sobre um bloco. Os aldeões pegam o instrumento, tocam e devolvem, comem a comida e olham o resto. Oficinas expõem o que fazem nas mesas.",
     ]),
+    ("Capítulo 16", "Bandos e estradas", [
+        "Com villagerFactions, os saqueadores andam em bandos com nome, bandeira e postos. Cada bando é de um tipo (saqueadores, tribo, culto ou exército), com armas próprias. Ao entrar num território, aparece o dono e como ele te vê.",
+        f"{B}Reputação{R}\n" + "Matar gente do bando derruba; atacar vilas, aldeões e golens sobe. Hostil: atacam. Neutro: deixam passar e conversam. Amigo: aceitam ser contratados. Aliado: aceitam você no bando.",
+        f"{B}Conversa{R}\n" + "Pergunte a um bandido quem são eles, negocie, pague uma trégua para uma vila ou contrate um para lutar por você. Os bandos guerreiam entre si, tomam postos uns dos outros, racham e podem acabar.",
+        f"{B}Fora da lei{R}\n" + "No bando, você ganha a bandeira, os bandidos lutam do seu lado e vêm com você de graça. Em troca, toda vila te vê como fora da lei, e os inimigos do bando passam a ser seus.",
+        f"{B}Redenção{R}\n" + "Para voltar, pague a multa a qualquer morador, cumpra pena na prisão da vila ou faça pedidos dos moradores; quanto mais mal, mais caro. Fugir da prisão piora tudo. A vila perdoa e você sai do bando, que te vê como traidor.",
+        f"{B}No posto{R}\n" + "Peça a um bandido para morar no posto: você passa a acordar lá. Chame o bando para atacar a vila mais próxima: cada aldeão ou golem que ele derrubar rende esmeraldas para você. Um ataque por dia.",
+        f"{B}Seu bando{R}\n" + "Aliado do bando, segure uma bandeira e funde o seu: custa 32 esmeraldas, e o acampamento fica onde você está. Recrute bandidos de bandos que confiam em você (8 esmeraldas) e aldeões fora da lei (de graça).",
+        f"{B}Exilados{R}\n" + "Um aldeão posto fora da lei que sobrevive foge para um acampamento de exilados por perto, ou monta um com fogueira e bandeira. Os exilados formam um bando como os outros, e crescem a cada expulso.",
+        f"{B}Caravanas{R}\n" + "Com villagerCaravans, mercadores, guardas e animais com baú viajam entre as vilas que você conhece. Negociam com o armazém, trazem notícias e podem ser escoltados ou atacados.",
+        f"{B}Encomendas{R}\n" + "Segure um item e pergunte a alguém da caravana se ela traz mais. A encomenda fica pronta na próxima vila em que a caravana parar: pague lá e leve. Itens raros custam mais.",
+    ]),
 ]
 
 EN = [
@@ -130,7 +143,8 @@ EN = [
     ("Chapter 3", "Needs", [
         "Six meters from 0 to 100 drop over time: Hunger, Thirst, Energy, Social, Fun and Safety. Low meters become thoughts that weigh on the mood.",
         f"{B}Hunger{R}\nVillagers eat from their inventory or a chest at home: give bread, meat or other food. Working makes them hungrier. Starving costs health down to half a heart, never death.",
-        f"{B}Thirst{R}\nThey drink standing next to a cauldron with water: put cauldrons in the village.\n{B}Energy{R}\nRefills by sleeping in bed at night. Without a bed they nap anywhere.",
+        f"{B}Thirst{R}\nThey drink standing next to a cauldron with water or at the mouth of a well.\n{B}Energy{R}\nRefills by sleeping in bed at night. Without a bed they nap anywhere.",
+        f"{B}Wells and bread{R}\nA well: a hole with fences or walls on 3 of its 8 sides and water up to 12 blocks down. Hungry with no food, a villager fetches wheat from home and bakes bread at a crafting table: 3 wheat a loaf.",
         f"{B}Social{R}\nRises when talking to you, to other villagers and at the bell's meeting point.\n{B}Fun{R}\nFree time and favorite buildings. Work is tiring.",
         f"{B}Safety{R}\nDrops when monsters come close. Recovers at home, near guards or golems. A critical meter makes a villager drop their routine to deal with it.",
         "The meters show on the interaction screen: hover one to see how to fill it. Couples who sleep together are happier.",
@@ -213,6 +227,18 @@ EN = [
         f"{B}Kitchen{R}\n" + "With Farmer's Delight, a butcher at the inn cooks stews, soups and feasts. A feast set on the table gathers villagers: each takes a serving. Cabinets count as chests.",
         f"{B}Windows{R}\n" + "Shutters: a trapdoor and a stick make two. Put them on the wall beside the window; closed, they cover it. Villagers open them in the morning, close them at night and light Beautify lamps.",
         f"{B}Placed items{R}\n" + "With Tabletop, V puts the held item down on a block. Villagers pick up instruments, play and put them back, eat the food and look at the rest. Workshops show their wares on tables.",
+    ]),
+    ("Chapter 16", "Bands and roads", [
+        "With villagerFactions, pillagers ride in bands with a name, a banner and outposts. Each band is of a kind (raiders, tribe, cult or army), with weapons of its own. Entering a territory shows its owner and how they see you.",
+        f"{B}Reputation{R}\n" + "Killing a band's people lowers it; raiding villages, villagers and golems raises it. Hostile: they attack. Neutral: they let you pass and talk. Friendly: they can be hired. Ally: they take you into the band.",
+        f"{B}Talking{R}\n" + "Ask a bandit who they are, trade, pay a truce for a village or hire one to fight for you. Bands go to war with each other, take each other's outposts, split and can fall.",
+        f"{B}Outlaw{R}\n" + "In a band, you get its banner, bandits fight at your side and come along for free. In return every village sees an outlaw in you, and the band's enemies become yours.",
+        f"{B}Redemption{R}\n" + "To come back, pay the fine to any villager, serve time in the village prison or do requests for its people; the more harm, the dearer. Escaping makes it worse. The village forgives you and you leave the band, which calls you a traitor.",
+        f"{B}At the outpost{R}\n" + "Ask a bandit to let you live at the outpost: you wake up there from then on. Call the band to raid the nearest village: every villager or golem it brings down earns you emeralds. One raid a day.",
+        f"{B}Your band{R}\n" + "As the band's ally, hold a banner and found your own: it costs 32 emeralds, and the camp is where you stand. Recruit bandits of bands that trust you (8 emeralds) and outlaw villagers (for free).",
+        f"{B}Exiles{R}\n" + "A villager made an outlaw who lives through it flees to an exiles' camp nearby, or makes one with a campfire and a banner. Exiles are a band like the others, and grow with every outcast.",
+        f"{B}Caravans{R}\n" + "With villagerCaravans, merchants, guards and pack animals travel between the villages you know. They trade with the storage, bring news and can be escorted or raided.",
+        f"{B}Orders{R}\n" + "Hold an item and ask someone in the caravan to bring more. The order is ready at the next village the caravan stops at: pay there and take it. Rare items cost more.",
     ]),
 ]
 

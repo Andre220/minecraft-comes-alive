@@ -99,6 +99,18 @@ Mod separado do MCA que faz as vilas se assentarem no terreno de forma natural, 
 - Fase 3: aterrar buracos de caverna (carvers) sob as ruas.
 - Fase 4: aplanar terreno pelo `Beardifier` (fallback para vilas pequenas demais e para degraus de 2).
 - Fase 5: arquivo de config. NeoForge.
+- **Ruas curvas (pedido de 2026-11-01):** as ruas da vila são retas demais; algumas com traçado curvo deixariam a vila
+  mais orgânica. Casas nas curvas não são o objetivo: elas ficam onde o jigsaw as pôs, só o traçado da rua ondula.
+  Caminho sugerido, no mesmo gancho do `StreetSteps` (`StructureStart.placeInChunk`): nos trechos retos e longos da
+  rua, longe das entradas das casas e dos cruzamentos, deslocar o caminho para os lados com um ruído suave ao longo do
+  comprimento (±1 a 2 blocos, mesma largura). Onde o caminho sai, volta grama; onde entra, vira caminho. Perto de cada
+  porta e de cada cruzamento o deslocamento cai a zero, para nada ficar desconectado. A alternativa (peças de rua
+  curvas no pool do jigsaw) dá mais trabalho e briga com o CTOV e o Lithostitched.
+  **Feito em 2026-11-01** (`placement/StreetCurves.java`, não commitado): peças retas em fila viram uma rua só, que
+  ondula até 3 blocos, uma curva a cada ~20 blocos, cada curva para o lado com mais espaço; zero nas pontas, junto de
+  outras ruas e onde encostaria numa casa; o caminho antigo fica a até 2 blocos de cada porta. Teste headless na vila
+  1904,-1056 (seed 5704449408643216038): ~190 blocos de caminho movidos, sem buracos. Ruas com casas dos dois lados
+  continuam retas. Desliga com `-Dgroundedvillages.noCurves=true`.
 
 ---
 

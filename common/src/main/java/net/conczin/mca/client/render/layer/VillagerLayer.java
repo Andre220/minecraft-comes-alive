@@ -101,6 +101,17 @@ public abstract class VillagerLayer<S extends HumanoidRenderState, M extends Hum
         }
     }
 
+    /**
+     * Keeps the head hidden when the parent hid it. First person body mods (First Person Model) hide the head so
+     * the camera doesn't see the inside of it; a layer that turns its parts back on would otherwise draw over the view.
+     */
+    protected void keepHeadHidden() {
+        if (!this.getParentModel().head.visible) {
+            this.model.head.visible = false;
+            this.model.hat.visible = false;
+        }
+    }
+
     protected static void copyVisibility(HumanoidModel source, HumanoidModel target) {
         target.head.visible = source.head.visible;
         target.hat.visible = source.hat.visible;

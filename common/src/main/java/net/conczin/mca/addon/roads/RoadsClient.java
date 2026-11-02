@@ -17,5 +17,18 @@ final class RoadsClient {
         DialogueIcons.register("bandit_band", Items.CROSSBOW);
         DialogueIcons.register("bandit_hire", Items.IRON_SWORD);
         DialogueIcons.register("bandit_truce", Items.EMERALD);
+        DialogueIcons.register("bandit_join", Items.OMINOUS_BOTTLE);
+        DialogueIcons.register("bandit_leave", Items.BARRIER);
+        DialogueIcons.register("bandit_rally", Items.GOAT_HORN);
+        DialogueIcons.register("village_fine_ask", Items.WRITABLE_BOOK);
+        DialogueIcons.register("village_fine_pay", Items.EMERALD_BLOCK);
+        DialogueIcons.register("caravan_order", Items.CHEST);
+        DialogueIcons.register("caravan_pickup", Items.CHEST_MINECART);
+        DialogueIcons.register("bandit_lodge", Items.BED.red());
+        DialogueIcons.register("bandit_raid", Items.IRON_AXE);
+        DialogueIcons.register("faction_found", Items.CAMPFIRE);
+        DialogueIcons.register("faction_recruit", Items.LEAD);
+        DialogueIcons.register("village_jail", Items.IRON_BARS);
+        DialogueIcons.register("village_service", Items.WRITABLE_BOOK);
     }
 }

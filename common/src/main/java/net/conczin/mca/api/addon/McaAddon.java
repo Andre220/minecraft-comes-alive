@@ -3,10 +3,15 @@ package net.conczin.mca.api.addon;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.network.Network;
 import net.conczin.mca.server.world.data.Village;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.function.BiConsumer;
 
 /**
  * An MCA Reborn addon: a themed expansion (feelings, needs, factions...) that plugs into MCA through these calls
@@ -26,6 +31,10 @@ public interface McaAddon {
 
     /** Once, on the client, before the addon's screens and icons are first needed: map overlays, dialogue icons. */
     default void clientBootstrap() {
+    }
+
+    /** The addon's data loaders (data/<ns>/<folder>/*.json), registered with MCA's on both loaders. */
+    default void reloadListeners(BiConsumer<Identifier, PreparableReloadListener> register) {
     }
 
     /** The addon's network messages, with MCA's. */
@@ -56,6 +65,10 @@ public interface McaAddon {
 
     /** Puts the addon's own entity in place of one held back by {@link #replacesSpawn}, which is already removed. */
     default void replaceSpawn(Entity entity) {
+    }
+
+    /** A player did what a villager's request asked. */
+    default void requestCompleted(ServerPlayer player, VillagerEntityMCA villager) {
     }
 
     /** Whether villagers of this profession get the mercenaries' combat brain. */

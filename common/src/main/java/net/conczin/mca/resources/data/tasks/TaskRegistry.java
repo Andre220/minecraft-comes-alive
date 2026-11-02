@@ -30,7 +30,8 @@ public class TaskRegistry {
         register(ReputationTask.TYPE, ReputationTask::new);
     }
 
-    static void register(String id, Function<JsonObject, Task> decoder) {
+    /** Open to addons: their own kinds of rank requirement (data/<ns>/tasks/<rank>.json). */
+    public static void register(String id, Function<JsonObject, Task> decoder) {
         DECODER.put(id, decoder);
     }
 

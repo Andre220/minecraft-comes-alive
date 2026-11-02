@@ -47,10 +47,7 @@ public final class FactionDeals {
             if (!pay(player, cost)) {
                 return;
             }
-            Factions.clearFaction(bandit);
-            bandit.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
-            bandit.makeMercenary();
-            bandit.setDespawnDelay(24000 * days);
+            hire(bandit, days);
         });
         // "Leave that village alone": tribute for a truce over the village nearest the player
         Actions.register("bandit_truce", GsonHelper::convertToString, ignored -> (villager, player) -> {
@@ -74,6 +71,14 @@ public final class FactionDeals {
         });
     }
 
+    /** The bandit leaves its band and fights for the player as a mercenary for some days. */
+    static void hire(VillagerEntityMCA bandit, int days) {
+        Factions.clearFaction(bandit);
+        bandit.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
+        bandit.makeMercenary();
+        bandit.setDespawnDelay(24000 * days);
+    }
+
     private static Optional<Village> nearestVillage(ServerPlayer player) {
         BlockPos pos = player.blockPosition();
         return VillageManager.get(player.level()).findVillages(v -> v.getBox().getMaxBlockCount() > 1
@@ -82,7 +87,7 @@ public final class FactionDeals {
     }
 
     /** Takes emeralds from the player if they have enough. */
-    private static boolean pay(ServerPlayer player, int emeralds) {
+    public static boolean pay(ServerPlayer player, int emeralds) {
         Inventory inventory = player.getInventory();
         if (player.isCreative()) {
             return true;

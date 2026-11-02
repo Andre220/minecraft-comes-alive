@@ -56,6 +56,8 @@ public interface ItemsMCA {
     /** Locks one's own chest, barrel, door or trapdoor (see PropertyRules); shown on the latch. */
     Item PADLOCK = register("padlock", new Item(baseProps("padlock").stacksTo(16)));
     Item BLUEPRINT = register("blueprint", new BlueprintItem(baseProps("blueprint")));
+    /** Shows the hour on a Majora's Mask style dial while held, see MayorClockHud. */
+    Item MAYOR_CLOCK = register("mayor_clock", new TooltippedItem(unstackableProps("mayor_clock")));
     Item FAMILY_TREE = register("family_tree", new FamilyTreeItem(baseProps("family_tree")));
     Item VILLAGER_TRACKER = register("villager_tracker", new VillagerTrackerItem(unstackableProps("villager_tracker")));
 

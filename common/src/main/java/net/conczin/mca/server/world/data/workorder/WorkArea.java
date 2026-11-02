@@ -22,6 +22,21 @@ public record WorkArea(int minX, int minY, int minZ, int maxX, int maxY, int max
         );
     }
 
+    /** The smallest box holding all the positions; there must be at least one. */
+    public static WorkArea around(java.util.Collection<BlockPos> positions) {
+        int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE, minZ = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE, maxZ = Integer.MIN_VALUE;
+        for (BlockPos pos : positions) {
+            minX = Math.min(minX, pos.getX());
+            minY = Math.min(minY, pos.getY());
+            minZ = Math.min(minZ, pos.getZ());
+            maxX = Math.max(maxX, pos.getX());
+            maxY = Math.max(maxY, pos.getY());
+            maxZ = Math.max(maxZ, pos.getZ());
+        }
+        return new WorkArea(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
     public static WorkArea fromArray(int[] values) {
         if (values.length != 6) {
             throw new IllegalArgumentException("Work area needs 6 coordinates, got " + values.length);

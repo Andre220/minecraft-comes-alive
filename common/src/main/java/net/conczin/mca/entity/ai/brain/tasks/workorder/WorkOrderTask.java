@@ -416,6 +416,9 @@ public class WorkOrderTask extends Behavior<VillagerEntityMCA> {
         List<ItemStack> drops = Block.getDrops(state, level, pos, null, villager, lootTool);
 
         level.destroyBlockProgress(villager.getId(), pos, -1);
+        if (order.isDemolish()) {
+            WorkOrderBlocks.emptyContainer(level, pos);
+        }
         if (!level.destroyBlock(pos, false, villager)) {
             fail(level, villager, village, order);
             return;

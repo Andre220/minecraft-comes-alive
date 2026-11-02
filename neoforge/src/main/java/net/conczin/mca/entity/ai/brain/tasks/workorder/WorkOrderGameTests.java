@@ -359,6 +359,81 @@ public final class WorkOrderGameTests {
         });
     }
 
+    @GameTest(batch = "mca_work_order_inline", templateNamespace = "minecraft",
+            template = "bastion/blocks/air", timeoutTicks = 2400)
+    public static void builderRaisesBlocksPlannedOneByOneWithTheirFacing(GameTestHelper helper) {
+        BlockPos center = helper.absolutePos(new BlockPos(6160, 2, 400));
+        Village village = prepareVillage(helper, center);
+        ServerLevel level = helper.getLevel();
+        chest(helper, center.offset(-3, 0, -3)).setItem(0, new ItemStack(Items.OAK_STAIRS, 8));
+
+        // a row of stairs facing west, the way the planning screen sends them: exact states, not defaults
+        BlockState stairs = Blocks.OAK_STAIRS.defaultBlockState().setValue(net.minecraft.world.level.block.StairBlock.FACING, Direction.WEST);
+        Map<BlockPos, BlockState> plan = new LinkedHashMap<>();
+        for (int x = -1; x <= 1; x++) {
+            plan.put(center.offset(x, 0, 8), stairs);
+        }
+        VillageWorkOrders.CreateResult created = village.getWorkOrders().createInline(level, plan, AUTHOR, "Planner", false);
+        WorkOrder order = created.order();
+        helper.assertTrue(order != null, "planning failed: " + (created.error() == null ? "?" : created.error().getString()));
+        helper.assertTrue(order.getInitialWork() == 3, "expected 3 blocks, got " + order.getInitialWork());
+
+        Village reloaded = new Village(village.save(), level);
+        WorkOrder copy = reloaded.getWorkOrders().get(order.getId()).orElse(null);
+        helper.assertTrue(copy != null && copy.isInline() && copy.getPlan() != null, "the planned blocks were not saved");
+        helper.assertTrue(copy.getPlan().equals(plan), "the planned blocks changed on reload: " + copy.getPlan());
+
+        spawnWorker(helper, center.offset(0, 0, 12), ProfessionsMCA.BUILDER, List.of(WorkOrderType.BLUEPRINT, WorkOrderType.BUILD, WorkOrderType.DIG));
+
+        helper.succeedWhen(() -> {
+            helper.assertTrue(village.getWorkOrders().get(order.getId()).isEmpty(), "not finished, " + order.getRemainingWork() + " left");
+            plan.keySet().forEach(pos -> {
+                BlockState placed = level.getBlockState(pos);
+                helper.assertTrue(placed.is(Blocks.OAK_STAIRS) && placed.getValue(net.minecraft.world.level.block.StairBlock.FACING) == Direction.WEST,
+                        "stairs at " + pos + " are " + placed);
+            });
+        });
+    }
+
+    @GameTest(batch = "mca_work_order_demolish", templateNamespace = "minecraft",
+            template = "bastion/blocks/air", timeoutTicks = 2400)
+    public static void demolishingTakesChestsAndTheirContents(GameTestHelper helper) {
+        BlockPos center = helper.absolutePos(new BlockPos(6416, 2, 400));
+        Village village = prepareVillage(helper, center);
+        ServerLevel level = helper.getLevel();
+        BlockPos target = center.offset(0, 0, 8);
+        setBlock(level, target, Blocks.CHEST.defaultBlockState());
+        chest(helper, target).setItem(0, new ItemStack(Items.DIAMOND, 5));
+        WorkArea area = WorkArea.of(target, target);
+
+        VillageWorkOrders.CreateResult refused = village.getWorkOrders().create(level, WorkOrderType.DIG, area, null, AUTHOR, "Planner", false);
+        helper.assertTrue(refused.order() == null, "a plain dig order must leave chests alone");
+        VillageWorkOrders.CreateResult created = village.getWorkOrders().create(level, WorkOrderType.DIG, area, null, AUTHOR, "Planner", false, true);
+        WorkOrder order = created.order();
+        helper.assertTrue(order != null && order.isDemolish(), "demolishing failed: " + (created.error() == null ? "?" : created.error().getString()));
+
+        spawnWorker(helper, center.offset(0, 0, 12), ProfessionsMCA.MINER, List.of(WorkOrderType.DIG));
+
+        helper.succeedWhen(() -> {
+            helper.assertTrue(level.getBlockState(target).isAir(), "the chest is still there");
+            helper.assertTrue(village.getWorkOrders().get(order.getId()).isEmpty(), "order was not completed");
+            List<net.minecraft.world.entity.item.ItemEntity> diamonds = level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class,
+                    new net.minecraft.world.phys.AABB(target).inflate(8), item -> item.getItem().is(Items.DIAMOND));
+            helper.assertTrue(diamonds.isEmpty(), "the chest's contents spilled out");
+            helper.assertTrue(VillageStorage.count(level, village, Items.DIAMOND) == 0, "the chest's contents ended up in the storage");
+        });
+    }
+
+    @AfterBatch(batch = "mca_work_order_inline")
+    public static void cleanupInline(ServerLevel level) {
+        cleanup(level);
+    }
+
+    @AfterBatch(batch = "mca_work_order_demolish")
+    public static void cleanupDemolish(ServerLevel level) {
+        cleanup(level);
+    }
+
     @AfterBatch(batch = "mca_work_order_raise_blueprint")
     public static void cleanupRaiseBlueprint(ServerLevel level) {
         cleanup(level);

@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -40,12 +42,101 @@ public final class WorkOrderService {
         }
     }
 
-    public static Result create(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
+    /** Blocks planned one by one may be more than a box of the same work: a wall around the village is long but thin. */
+    public static int maxInlineBlocks() {
+        return Math.max(1, Config.getInstance().workOrderMaxVolume) * 4;
+    }
+
+    /** A dig area of a confirmed draft. */
+    public record DigArea(WorkArea area, boolean demolish) {
+    }
+
+    /** A blueprint of a confirmed draft. */
+    public record BlueprintPlacement(Identifier id, BlockPos origin, int rotation) {
+    }
+
+    /**
+     * The planning screen's draft was confirmed: every dig area, every blueprint and the blocks placed one by one
+     * become orders (in creative, they are done at once). Returns one message per part.
+     */
+    public static List<Component> commit(ServerPlayer player, List<DigArea> digs, List<BlueprintPlacement> blueprints,
+                                         Map<BlockPos, BlockState> blocks) {
+        List<Component> messages = new ArrayList<>();
+        for (DigArea dig : digs) {
+            messages.add(create(player, WorkOrderType.DIG, dig.area(), null, dig.demolish()).message());
+        }
+        for (BlueprintPlacement placement : blueprints) {
+            messages.add(placeBlueprint(player, placement.id(), placement.origin(), placement.rotation()).message());
+        }
+        if (!blocks.isEmpty()) {
+            messages.add(createInline(player, blocks).message());
+        }
+        messages.removeIf(message -> message.getString().isEmpty());
+        return messages;
+    }
+
+    /** Blocks placed one by one, with their exact states. */
+    public static Result createInline(ServerPlayer player, Map<BlockPos, BlockState> blocks) {
         if (!WorkOrderPermissions.enabled()) {
             return Result.failure(Component.translatable("workorder.error.disabled"));
         }
         if (player.isCreative()) {
-            return applyNow(player, type, area, block);
+            CreativeWork.addPlan(player.level(), blocks, player);
+            return new Result(null, null, blocks.size() > Config.getInstance().workOrderBlocksPerTick || CreativeWork.busy()
+                    ? Component.translatable("workorder.working_now", blocks.size()).withStyle(ChatFormatting.GRAY)
+                    : Component.empty());
+        }
+        ServerLevel level = player.level();
+        WorkArea area = WorkArea.around(blocks.keySet());
+        Optional<Village> found = VillageManager.get(level).findNearestVillage(area.center(), Village.BORDER_MARGIN);
+        if (found.isEmpty()) {
+            return Result.failure(Component.translatable("workorder.error.no_village"));
+        }
+        Village village = found.get();
+        WorkOrderPermissions.Access access = WorkOrderPermissions.check(player, village);
+        if (!access.allowed()) {
+            return Result.failure(noPermission(village));
+        }
+        VillageWorkOrders.CreateResult created = village.getWorkOrders().createInline(level, blocks,
+                player.getUUID(), player.getGameProfile().name(), access.free());
+        WorkOrder order = created.order();
+        if (order == null) {
+            return Result.failure(created.error() != null ? created.error() : Component.translatable("workorder.error.nothing_to_do"));
+        }
+        return new Result(order, null, createdMessage(level, village, order));
+    }
+
+    /** "Order #3 created", plus hints about missing builders and materials. */
+    private static MutableComponent createdMessage(ServerLevel level, Village village, WorkOrder order) {
+        MutableComponent message = Component.translatable("workorder.created",
+                order.getId(), describeWork(order), village.getName(), order.getInitialWork()).withStyle(ChatFormatting.GREEN);
+        if (order.isFree()) {
+            message.append(" ").append(Component.translatable("workorder.created.free").withStyle(ChatFormatting.AQUA));
+        }
+        if (countWorkers(level, village, order.getType()) == 0) {
+            message.append("\n").append(Component.translatable("workorder.hint.no_builders").withStyle(ChatFormatting.YELLOW));
+        }
+        if (!order.isFree()) {
+            Map<Item, Integer> missing = VillageWorkOrders.missingMaterials(level, order);
+            Map<Item, Integer> stock = VillageStorage.contents(level, village);
+            long lacking = missing.entrySet().stream().filter(entry -> stock.getOrDefault(entry.getKey(), 0) < entry.getValue()).count();
+            if (lacking > 0) {
+                message.append("\n").append(Component.translatable("blueprint.hint.materials", lacking, missing.size()).withStyle(ChatFormatting.YELLOW));
+            }
+        }
+        return message;
+    }
+
+    public static Result create(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
+        return create(player, type, area, block, false);
+    }
+
+    public static Result create(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block, boolean demolish) {
+        if (!WorkOrderPermissions.enabled()) {
+            return Result.failure(Component.translatable("workorder.error.disabled"));
+        }
+        if (player.isCreative()) {
+            return applyNow(player, type, area, block, demolish);
         }
         ServerLevel level = player.level();
         Optional<Village> found = VillageManager.get(level).findNearestVillage(area.center(), Village.BORDER_MARGIN);
@@ -59,7 +150,7 @@ public final class WorkOrderService {
         }
 
         VillageWorkOrders.CreateResult created = village.getWorkOrders().create(level, type, area, block,
-                player.getUUID(), player.getGameProfile().name(), access.free());
+                player.getUUID(), player.getGameProfile().name(), access.free(), demolish);
         WorkOrder order = created.order();
         if (order == null) {
             return Result.failure(created.error() != null ? created.error() : Component.translatable("workorder.error.nothing_to_do"));
@@ -97,6 +188,10 @@ public final class WorkOrderService {
      * per tick (see {@link CreativeWork}); the player hears when it is finished.
      */
     public static Result applyNow(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block) {
+        return applyNow(player, type, area, block, false);
+    }
+
+    public static Result applyNow(ServerPlayer player, WorkOrderType type, WorkArea area, @Nullable BlockState block, boolean demolish) {
         int max = Config.getInstance().workOrderMaxVolume;
         if (area.volume() > max) {
             return Result.failure(Component.translatable("workorder.error.too_big", area.volume(), max));
@@ -104,7 +199,7 @@ public final class WorkOrderService {
         if (type == WorkOrderType.BUILD && block == null) {
             return Result.failure(Component.translatable("workorder.error.no_block"));
         }
-        CreativeWork.add(player.level(), type, area, block, player);
+        CreativeWork.add(player.level(), type, area, block, demolish, player);
         return new Result(null, null, CreativeWork.isLarge(area) || CreativeWork.busy()
                 ? Component.translatable("workorder.working_now", area.volume()).withStyle(ChatFormatting.GRAY)
                 : Component.empty());
@@ -115,6 +210,11 @@ public final class WorkOrderService {
      * planning rights apply; elsewhere only a Villager Editor allows it.
      */
     public static Result capture(ServerPlayer player, WorkArea area, String name) {
+        return capture(player, area, name, "");
+    }
+
+    /** Like {@link #capture(ServerPlayer, WorkArea, String)}, sorting the new blueprint into a section (empty: the default one). */
+    public static Result capture(ServerPlayer player, WorkArea area, String name, String section) {
         if (!WorkOrderPermissions.enabled()) {
             return Result.failure(Component.translatable("workorder.error.disabled"));
         }
@@ -130,6 +230,9 @@ public final class WorkOrderService {
             return Result.failure(result.error() != null ? result.error() : Component.translatable("blueprint.error.save"));
         }
         Blueprint blueprint = result.blueprint();
+        if (!section.isEmpty()) {
+            BlueprintCatalog.get(player.level().getServer()).assign(blueprint.id(), section);
+        }
         return new Result(null, null, Component.translatable(result.replaced() ? "blueprint.replaced" : "blueprint.saved",
                 blueprint.name(), blueprint.sizeX(), blueprint.sizeY(), blueprint.sizeZ(), blueprint.solidBlocks()).withStyle(ChatFormatting.GREEN));
     }
@@ -166,23 +269,23 @@ public final class WorkOrderService {
         if (order == null) {
             return Result.failure(created.error() != null ? created.error() : Component.translatable("workorder.error.nothing_to_do"));
         }
-        MutableComponent message = Component.translatable("workorder.created",
-                order.getId(), describeWork(order), village.getName(), order.getInitialWork()).withStyle(ChatFormatting.GREEN);
-        if (order.isFree()) {
-            message.append(" ").append(Component.translatable("workorder.created.free").withStyle(ChatFormatting.AQUA));
+        return new Result(order, null, createdMessage(player.level(), village, order));
+    }
+
+    /**
+     * Sorting, hiding and deleting blueprints: in creative, with a Villager Editor, or with the right to plan for the
+     * village the player stands in.
+     */
+    public static boolean canManageBlueprints(ServerPlayer player) {
+        if (!WorkOrderPermissions.enabled()) {
+            return false;
         }
-        if (countWorkers(player.level(), village, WorkOrderType.BLUEPRINT) == 0) {
-            message.append("\n").append(Component.translatable("workorder.hint.no_builders").withStyle(ChatFormatting.YELLOW));
+        if (player.isCreative() || WorkOrderPermissions.holdsEditor(player)) {
+            return true;
         }
-        if (!order.isFree()) {
-            Map<Item, Integer> missing = VillageWorkOrders.missingMaterials(player.level(), order);
-            Map<Item, Integer> stock = VillageStorage.contents(player.level(), village);
-            long lacking = missing.entrySet().stream().filter(entry -> stock.getOrDefault(entry.getKey(), 0) < entry.getValue()).count();
-            if (lacking > 0) {
-                message.append("\n").append(Component.translatable("blueprint.hint.materials", lacking, missing.size()).withStyle(ChatFormatting.YELLOW));
-            }
-        }
-        return new Result(order, null, message);
+        return VillageManager.get(player.level()).findNearestVillage(player.blockPosition(), Village.BORDER_MARGIN)
+                .map(village -> WorkOrderPermissions.check(player, village).allowed())
+                .orElse(false);
     }
 
     public static Component noPermission(Village village) {
@@ -198,6 +301,12 @@ public final class WorkOrderService {
             Identifier id = order.getBlueprint();
             return Component.translatable("workorder.type.blueprint_of",
                     Component.translatableWithFallback("blueprint.name." + id.getPath().replace('/', '.'), BlueprintLibrary.displayName(id)));
+        }
+        if (order.getType() == WorkOrderType.BLUEPRINT && order.isInline()) {
+            return Component.translatable("workorder.type.plan");
+        }
+        if (order.getType() == WorkOrderType.DIG && order.isDemolish()) {
+            return Component.translatable("workorder.type.demolish");
         }
         if (order.getType() == WorkOrderType.BUILD && block != null) {
             return Component.translatable("workorder.type.build_with", block.getBlock().getName());

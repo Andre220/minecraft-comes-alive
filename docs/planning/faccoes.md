@@ -55,7 +55,39 @@ Fases 1 a 3, território no mapa e guerras feitos, sem commit e sem teste em jog
     - as patrulhas do bando não aparecem até 64 blocos além da borda da vila;
   - os pedidos ("traga X") continuam pelo sistema de pedidos que já existe.
 
-Falta: fase 4 (entrar na facção, caminho fora da lei), fase 5 (tipos), redenção, facções novas por racha e exílio.
+- **Fase 4, entrar no bando (`FactionMembers`, 2026-11-01):**
+  - com reputação **aliado**, "Quero andar com vocês" (constraint `bandit_can_join`): o jogador vira membro (um bando por vez) e ganha a bandeira; perde 20 com os bandos em guerra com o seu;
+  - **fora da lei:** a tarefa de rank `faction_free` (`data/mca_roads/tasks/peasant.json`) faz toda vila ver o membro como `OUTLAW`;
+  - os bandidos do bando lutam ao lado do membro: atacam quem ele acabou de bater ou quem o atacou (jogadores, só se atacaram primeiro);
+  - "Venha comigo, irmão" (`bandit_rally`): um bandido vira mercenário por 1 dia, de graça. Para membros, a opção paga de contratar some;
+  - os bandos em guerra com o do jogador o tratam como inimigo, mesmo com reputação boa;
+  - "Vou sair do bando": sai, com −40 de reputação (traição). Abaixo de amigo, o bando o expulsa.
+- **Redenção (`Redemption`):** "Como acerto minhas contas com a vila?" e "Pagar a multa" com qualquer morador de uma vila que vê o jogador como fora da lei (constraint `village_debt`):
+  - multa de 8 esmeraldas + 1 por 5 pontos de reputação negativa + 24 se for membro de bando, até 96;
+  - pagar devolve a reputação da vila para um pouco acima de zero e tira o jogador do bando como traidor.
+- **Tipos de facção (fase 5, `FactionTypes`):** arquivos `data/<ns>/faction_types/*.json` com peso, número de nomes, força na guerra simulada e armas, mão secundária e armaduras com chance:
+  - `raiders` (besta e machado), `tribal` (arco, machado de pedra, tridente, couro), `cult` (espadas de ferro e ouro, capacete de ouro, totem raro), `military` (espada, besta, escudo, ferro e malha);
+  - nomes próprios por tipo ("Tribo de X", "Culto de X", "Legião de X"…); bandos antigos continuam `raiders`.
+- **Facções novas e fim (`FactionSplits`):**
+  - **racha:** uma vez por dia, um bando com 3 postos ou mais tem 5% de chance de perder o posto mais afastado para um bando novo do mesmo tipo, nascido em guerra com ele (−70); os jogadores ficam com a mesma reputação nos dois. Boato no chat;
+  - **fim:** um bando que perde o último posto na guerra some, se houver mais bandos que `factionCount`.
+
+- **Pena e serviço (`Redemption`, 2026-11-01):** além da multa, com qualquer morador:
+  - "Cumpro pena na prisão de vocês" (só se a vila tem um prédio `prison`): o jogador vai para a cela por 30 ticks por ponto de reputação negativa, de 2 a 10 minutos. Sair do prédio é fuga: a pena acaba e a vila tira mais 20. Cumprida, vale como multa paga;
+  - "Deixe-me pagar com trabalho": de 1 a 5 pedidos (1 por 25 pontos negativos) de moradores da vila. Cada pedido feito (gancho `McaAddon.requestCompleted`) desconta um; o último perdoa;
+  - pena e serviço ficam em tags do jogador (`mca_jail:`, `mca_service:`). Enquanto cumpre, a multa e as penas não aparecem.
+- **Morar no posto (`FactionMembers`):** "Posso ficar aqui com vocês?" a até 48 blocos de um posto do bando muda o ponto de renascer para ali.
+- **Saquear com o bando (`FactionRaids`):** "Vamos atacar a vila aqui perto": o bandido e mais 3 marcham para a vila mais próxima (até 320 blocos), por 5 minutos:
+  - dentro da vila atacam aldeões adultos e golens; cada um que derrubam dá 2 esmeraldas (4 por golem) e +2 de reputação ao membro;
+  - a vila tira 15 de quem trouxe o bando; uma vez por dia; nunca contra uma vila com trégua paga. Depois, voltam ao posto mais próximo.
+- **Fundar o próprio bando (`FactionFounding`):** um membro aliado, com uma bandeira na mão e 32 esmeraldas, funda o "Bando de <nome>":
+  - tipo `founded` (equipado como saqueadores), com a bandeira da mão, o acampamento onde o jogador está e o jogador como líder (`leader` no save);
+  - o bando de origem fica em bons termos (+40), e o bandido da conversa vem junto;
+  - o líder recruta bandidos de bandos que confiam nele (8 esmeraldas) e aldeões fora da lei (de graça);
+  - não racha, não ganha postos descobertos de graça, não expulsa o líder e não some enquanto tiver membros. Se o líder sai, o bando fica sem líder.
+- **Exílio (`Exiles`):** um aldeão com a profissão `outlaw` (o "executar" do MCA) que sobrevive vai para o acampamento de exilados mais próximo (até 600 blocos) e vira bandido dele. Sem acampamento, e com vaga no teto, monta um a 48–80 blocos com fogueira e bandeira: um bando novo do tipo `exiles` (peso 0, nunca sorteado; espada de pedra, machado de madeira, arco). Boato no chat.
+
+Falta: o jogador escolher o nome do bando (hoje é o nome dele), postos de verdade para o bando do jogador (tomar um posto inimigo) e a pena com porta trancada pelos guardas.
 
 ## O que já existe e será reaproveitado
 - **Villager zumbi do MCA:** `ZombieVillagerEntityMCA` estende o zumbi vanilla e implementa `VillagerLike`. É o molde para o **saqueador do MCA**: mesma genética, pele, roupa, cabelo, traços e diálogos.

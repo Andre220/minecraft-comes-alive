@@ -3,17 +3,25 @@ package net.conczin.mca.addon.roads;
 import net.conczin.mca.addon.roads.caravan.Caravans;
 import net.conczin.mca.addon.roads.faction.Bandits;
 import net.conczin.mca.addon.roads.faction.FactionMapMessages;
+import net.conczin.mca.addon.roads.faction.FactionTypes;
 import net.conczin.mca.addon.roads.faction.Factions;
+import net.conczin.mca.addon.roads.faction.Redemption;
 import net.conczin.mca.api.addon.McaAddon;
 import net.conczin.mca.entity.VillagerEntityMCA;
 import net.conczin.mca.entity.interaction.Constraint;
 import net.conczin.mca.network.Network;
+import net.conczin.mca.registry.ProfessionsMCA;
 import net.conczin.mca.server.world.data.Village;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.monster.illager.Pillager;
 import net.minecraft.world.entity.npc.villager.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
+
+import java.util.function.BiConsumer;
 
 /**
  * MCA Reborn Addons: Bands and Roads. Factions with names, banners, outposts and lands, whose pillagers become MCA
@@ -38,6 +46,11 @@ public final class RoadsAddon implements McaAddon {
         Constraint.register("bandit", (villager, player) -> Bandits.isBandit(villager.asEntity()));
         Constraint.register("bandit_friend", (villager, player) -> Bandits.trusts(villager.asEntity(), player));
         Constraint.register("caravan", (villager, player) -> villager instanceof VillagerEntityMCA mca && Caravans.isMember(mca));
+    }
+
+    @Override
+    public void reloadListeners(BiConsumer<Identifier, PreparableReloadListener> register) {
+        register.accept(FactionTypes.ID, new FactionTypes());
     }
 
     @Override
@@ -69,6 +82,14 @@ public final class RoadsAddon implements McaAddon {
         if (Factions.enabled() && Bandits.isBandit(villager)) {
             Bandits.tick(level, villager);
         }
+        if (Factions.enabled() && villager.getProfession() == ProfessionsMCA.OUTLAW) {
+            Bandits.tickOutlaw(level, villager);
+        }
+    }
+
+    @Override
+    public void requestCompleted(ServerPlayer player, VillagerEntityMCA villager) {
+        Redemption.requestDone(player, villager);
     }
 
     @Override

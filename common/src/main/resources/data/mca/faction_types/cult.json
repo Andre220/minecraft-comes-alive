@@ -1,0 +1,16 @@
+{
+  "weight": 1,
+  "names": 4,
+  "strength": 1.1,
+  "mainhand": [
+    {"item": "minecraft:iron_sword", "weight": 4},
+    {"item": "minecraft:golden_sword", "weight": 2},
+    {"item": "minecraft:crossbow", "weight": 2}
+  ],
+  "offhand": [
+    {"item": "minecraft:totem_of_undying", "chance": 0.03}
+  ],
+  "armor": [
+    {"item": "minecraft:golden_helmet", "chance": 0.4}
+  ]
+}

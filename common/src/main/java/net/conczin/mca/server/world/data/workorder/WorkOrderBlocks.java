@@ -21,7 +21,7 @@ public final class WorkOrderBlocks {
 
     public static boolean needsWork(BlockGetter level, WorkOrder order, BlockPos pos) {
         return switch (order.getType()) {
-            case DIG -> needsDigging(level, pos);
+            case DIG -> needsDigging(level, pos, order.isDemolish());
             case BUILD -> order.getBlock() != null && needsBuilding(level, pos, order.getBlock());
             case BLUEPRINT -> order.getPlan() != null && needsBlueprint(level, pos, order.getPlan().get(pos), order.isFree());
         };
@@ -74,11 +74,16 @@ public final class WorkOrderBlocks {
      * holding back lava stay too, nobody wants to flood the village with it.
      */
     public static boolean needsDigging(BlockGetter level, BlockPos pos) {
+        return needsDigging(level, pos, false);
+    }
+
+    /** With {@code demolish}, blocks with block entities are dug too (the planner asked to clear everything). */
+    public static boolean needsDigging(BlockGetter level, BlockPos pos, boolean demolish) {
         BlockState state = level.getBlockState(pos);
         if (state.isAir() || state.getBlock() instanceof LiquidBlock) {
             return false;
         }
-        if (state.hasBlockEntity() || state.getDestroySpeed(level, pos) < 0.0F) {
+        if (!demolish && state.hasBlockEntity() || state.getDestroySpeed(level, pos) < 0.0F) {
             return false;
         }
         for (Direction direction : Direction.values()) {
@@ -107,5 +112,14 @@ public final class WorkOrderBlocks {
             }
         }
         return false;
+    }
+
+    /**
+     * Demolishing: what a container holds is destroyed with it instead of spilling all over the place.
+     */
+    public static void emptyContainer(net.minecraft.world.level.Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof net.minecraft.world.Container container) {
+            container.clearContent();
+        }
     }
 }

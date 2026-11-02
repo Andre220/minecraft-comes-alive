@@ -37,6 +37,7 @@ public class FaceLayer<S extends HumanoidRenderState, M extends HumanoidModel<S>
     protected void prepareModel(S state) {
         setAllVisible(this.model, false);
         this.model.head.visible = true;
+        keepHeadHidden();
     }
 
     @Override

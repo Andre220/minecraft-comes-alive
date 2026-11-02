@@ -206,7 +206,9 @@ Capítulos do guia: Introdução, Aparência, Menu radial, Fila de ações, Agen
 - bandidos: saqueadores que viram gente do MCA;
 - guerras entre facções;
 - tréguas e contratação;
-- caravanas de 3 a 5 pessoas com animais, que comerciam entre vilas, sofrem emboscadas e aceitam escolta;
+- tipos de facção em arquivos de dados (`data/mca/faction_types`: saqueadores, tribo, culto, exército), rachas e fim de facções;
+- entrar no bando (caminho fora da lei: a tarefa `faction_free` em `data/mca_roads/tasks/peasant.json` tira o rank em todas as vilas) e redenção pela multa, pela prisão ou por serviço; morar no posto, saquear com o bando, fundar o próprio bando e exilados (aldeões fora da lei formam bandos);
+- caravanas de 3 a 5 pessoas com animais, que comerciam entre vilas, sofrem emboscadas, aceitam escolta e trazem encomendas;
 - o vendedor ambulante mais raro.
 
 **Código (já migrado, fase 2):** `addon/roads/RoadsAddon` (o `McaAddon`), `addon/roads/faction/*`, `addon/roads/caravan/*`, `addon/roads/client/FactionMapOverlay`, os mixins em `mixin/addon/roads/`. O núcleo não chama mais nenhuma classe do addon.
@@ -296,7 +298,14 @@ Tudo de 28 a 30/10 está **sem teste em jogo**:
 - [ ] **Vida Social:** painéis revelados pelas perguntas da conversa.
 - [ ] **Bandos e Estradas:**
   - caravanas: chegada, comércio com o armazém, emboscada e escolta;
-  - facções: bandeiras nas bases, território na barra de ação e no mapa, bandidos no lugar dos saqueadores, "Quem são vocês?", contratar (confirmar que a fala não mostra a chave crua), trégua, guerras e grupos de guerra.
+  - facções: bandeiras nas bases, território na barra de ação e no mapa, bandidos no lugar dos saqueadores, "Quem são vocês?", contratar (confirmar que a fala não mostra a chave crua), trégua, guerras e grupos de guerra;
+  - fase 4 (2026-11-01): entrar no bando com reputação aliado (bandeira, rank fora da lei nas vilas), bandidos lutando ao lado do membro, "Venha comigo, irmão", sair do bando, expulsão abaixo de amigo, multa de redenção com um morador;
+  - tipos de facção (armas e armaduras por tipo, nomes próprios), racha de um bando com 3 postos ou mais, fim de um bando sem postos;
+  - encomendas da caravana: pedir com o item na mão, aviso de pronta na vila seguinte, pagar e levar;
+  - pena e serviço (2026-11-01): ir para a cela e cumprir; sair do prédio e ver a fuga; aceitar o serviço e fazer os pedidos até o perdão;
+  - morar no posto (renascer lá), saque com o bando (marcha, ataque na vila, esmeraldas por morte, volta ao posto);
+  - fundar bando com uma bandeira (nome, cores, acampamento), recrutar um bandido e um aldeão fora da lei;
+  - exílio: mandar executar um aldeão e ver se ele foge e monta o acampamento.
 - [ ] **Interface:** botões escuros do MCA, editor com abas de ícones e grades de prévia, prévia 3D sincronizada, pupila do jogador centralizada.
 
 Bugs conhecidos e abertos: nenhum além dos itens acima.
@@ -310,6 +319,7 @@ Pacote `net.conczin.mca.api.addon`:
   - `registerMessages()`;
   - `levelTick()`, `villageTick()` e `villagerTick()` (uma vez por segundo);
   - `refusesInteraction()`;
+  - `requestCompleted()` (2026-11-01): o jogador fez o que o pedido de um villager pedia;
   - `replacesSpawn()` e `replaceSpawn()` (trocar uma entidade que entra no mundo);
   - `fightsLikeMercenary()`.
 - **`Addons`:**
@@ -317,6 +327,8 @@ Pacote `net.conczin.mca.api.addon`:
   - as chamadas que o núcleo faz em todos;
   - `Addons.data(villager, id)`, o `CompoundTag` do addon no villager. Ele é gravado na chave `Addons` dos dados do MCA e é **mantido mesmo sem o addon instalado**.
 - **`Constraint.register(id, teste)`:** o `Constraint` deixou de ser enum e agora aceita restrições de diálogo dos addons.
+- **`McaAddon.reloadListeners()`** (2026-11-01): os carregadores de dados do addon, registrados pelos dois loaders junto com os do MCA.
+- **`TaskRegistry.register(tipo, leitor)`** (2026-11-01): tipos novos de requisito de rank; o addon põe o arquivo `data/<ns do addon>/tasks/<rank>.json`, que soma aos requisitos do MCA.
 - **Cliente:**
   - `MapOverlay`, uma camada sobre o mapa da vila, com `MapView`;
   - `DialogueIcons`, o ícone de uma resposta no menu radial.

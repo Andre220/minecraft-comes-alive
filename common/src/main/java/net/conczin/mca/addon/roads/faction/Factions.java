@@ -48,7 +48,6 @@ public final class Factions {
     /** Illagers carry "mca_faction:<id>" (or -1 for none) once their band is known. */
     public static final String TAG_PREFIX = "mca_faction:";
     private static final Identifier OUTPOST = Identifier.withDefaultNamespace("pillager_outpost");
-    private static final int TEMPLATES = 6;
     private static final int SEARCH_CHUNKS = 6;
     /** Outposts this close to another one of a band join that band. */
     private static final double SPREAD = 1200.0;
@@ -83,7 +82,8 @@ public final class Factions {
     }
 
     public static Component name(FactionData.Faction faction) {
-        return Component.translatable("faction.name." + faction.template, faction.place);
+        String kind = FactionTypes.RAIDERS.equals(faction.type) ? "" : faction.type + ".";
+        return Component.translatable("faction.name." + kind + faction.template, faction.place);
     }
 
     /** The banner of a faction, as an item. */
@@ -97,6 +97,9 @@ public final class Factions {
 
     /** From the level tick: makes the first factions, claims outposts players come near, tells who holds the land. */
     public static void levelTick(ServerLevel level) {
+        if (level.getGameTime() % 20 == 0) {
+            Redemption.tick(level);
+        }
         if (!enabled() || level.dimension() != net.minecraft.world.level.Level.OVERWORLD) {
             return;
         }
@@ -113,6 +116,7 @@ public final class Factions {
             FactionData data = FactionData.get(level);
             data.dropExpiredTruces(time);
             FactionWars.day(level, data);
+            FactionSplits.day(level, data);
         }
         if (time % 40 == 0) {
             FactionData data = FactionData.get(level);
@@ -130,6 +134,11 @@ public final class Factions {
     }
 
     private static FactionData.Faction create(ServerLevel level, FactionData data) {
+        return create(level, data, FactionTypes.pick(level.getRandom()));
+    }
+
+    /** A new band of a kind, with a name and banner of its own, meeting the others. */
+    static FactionData.Faction create(ServerLevel level, FactionData data, FactionTypes.Type type) {
         RandomSource random = level.getRandom();
         String place = API.getVillagePool().pickVillageName("village");
         DyeColor base = DyeColor.values()[random.nextInt(DyeColor.values().length)];
@@ -143,9 +152,15 @@ public final class Factions {
             } while (color == base);
             layers.add(patterns.get(random.nextInt(patterns.size())), color);
         }
-        FactionData.Faction faction = data.create(place, random.nextInt(TEMPLATES), base, layers.build());
+        FactionData.Faction faction = data.create(place, random.nextInt(type.names), base, layers.build(), type.id());
         FactionWars.meet(level, data, faction);
         return faction;
+    }
+
+    /** Flies a band's banners over an outpost it now holds, once someone is near enough to load it. */
+    static void repaintLater(FactionData data, BlockPos outpost) {
+        data.repaint().add(outpost.asLong());
+        data.setDirty();
     }
 
     /** Outposts taken in a war get the new band's banners once someone is near enough to load them. */
@@ -183,6 +198,7 @@ public final class Factions {
     private static FactionData.Faction claimant(ServerLevel level, FactionData data, BlockPos pos) {
         Optional<FactionData.Outpost> near = data.outposts().stream()
                 .filter(o -> horizontal(o.pos(), pos) < SPREAD * SPREAD)
+                .filter(o -> data.faction(o.faction()).filter(f -> f.leader() == null).isPresent()) // a player's band takes no outpost for nothing
                 .min(Comparator.comparingDouble(o -> horizontal(o.pos(), pos)));
         if (near.isPresent()) {
             return data.faction(near.get().faction()).orElseGet(() -> create(level, data));
@@ -279,6 +295,12 @@ public final class Factions {
         return faction;
     }
 
+    /** Puts an illager or bandit in a band. */
+    static void setFaction(Entity entity, int faction) {
+        entity.entityTags().stream().filter(t -> t.startsWith(TAG_PREFIX)).toList().forEach(entity::removeTag);
+        entity.addTag(TAG_PREFIX + faction);
+    }
+
     /** Takes an illager or bandit out of its band, as when hired away. */
     public static void clearFaction(Entity entity) {
         entity.entityTags().stream().filter(t -> t.startsWith(TAG_PREFIX)).toList().forEach(entity::removeTag);
@@ -293,6 +315,15 @@ public final class Factions {
         return Standing.of(reputation(level, player, faction));
     }
 
+    /** Whether a band's people go for a player: one it is hostile to, or one riding with a band it is at war with. */
+    public static boolean hostileTo(ServerLevel level, ServerPlayer player, int faction) {
+        if (standing(level, player.getUUID(), faction) == Standing.HOSTILE) {
+            return true;
+        }
+        int own = FactionData.get(level).memberOf(player.getUUID());
+        return own >= 0 && own != faction && FactionWars.atWar(FactionData.get(level), own, faction);
+    }
+
     public static void changeReputation(ServerLevel level, ServerPlayer player, int faction, int amount) {
         FactionData data = FactionData.get(level);
         if (data.faction(faction).isEmpty() || amount == 0) {
@@ -301,6 +332,10 @@ public final class Factions {
         int before = reputation(level, player.getUUID(), faction);
         int after = Math.clamp(before + amount, MIN, MAX);
         data.setReputation(player.getUUID(), faction, after);
+        if (data.memberOf(player.getUUID()) == faction && Standing.of(after).ordinal() < Standing.FRIENDLY.ordinal()
+            && data.faction(faction).filter(f -> player.getUUID().equals(f.leader())).isEmpty()) {
+            FactionMembers.expel(level, player, faction); // a member who turns on the band is cast out
+        }
         if (Standing.of(before) != Standing.of(after)) {
             data.faction(faction).ifPresent(f -> player.sendSystemMessage(Component.translatable("faction.standing_changed",
                     name(f), Standing.of(after).getName())));
@@ -320,7 +355,7 @@ public final class Factions {
             return false;
         }
         if (target instanceof ServerPlayer player) {
-            return standing(level, player.getUUID(), faction) != Standing.HOSTILE;
+            return !hostileTo(level, player, faction);
         }
         if (target instanceof Raider || Bandits.isBandit(target)) {
             return FactionWars.together(level, attacker, target);
@@ -335,6 +370,7 @@ public final class Factions {
         }
         if (source.getEntity() instanceof LivingEntity killer && !(killer instanceof ServerPlayer)
             && (killer instanceof Raider || Bandits.isBandit(killer))) {
+            FactionRaids.onKill(level, killer, victim);
             FactionWars.onKill(level, factionOf(killer), factionOf(victim));
             return;
         }

@@ -3,6 +3,7 @@ package net.conczin.mca.server.world.data.workorder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -10,9 +11,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.UUID;
 
 /**
@@ -40,6 +46,10 @@ public class WorkOrder {
     /** Blueprint orders: which saved blueprint, turned by {@code rotation} quarter turns clockwise. */
     private @Nullable Identifier blueprint;
     private int rotation;
+    /** Dig orders: also take out chests, beds, bells and the like, with whatever they hold. */
+    private boolean demolish;
+    /** Blueprint orders planned block by block in the planning screen rather than from a saved blueprint: the plan is saved with the order. */
+    private boolean inline;
 
     // runtime only
     private final Map<BlockPos, Integer> failures = new HashMap<>();
@@ -47,6 +57,8 @@ public class WorkOrder {
     private boolean waitingForMaterial;
     /** For blueprints: the block every position of the area should end up as. */
     private @Nullable Map<BlockPos, BlockState> plan;
+    /** The plan's positions by layer, built on first use. */
+    private @Nullable NavigableMap<Integer, List<BlockPos>> planLayers;
     /** For blueprints: a material builders went looking for and found nowhere. */
     private @Nullable Item missingMaterial;
 
@@ -94,10 +106,46 @@ public class WorkOrder {
         order.remainingWork = tag.getIntOr("remainingWork", order.initialWork);
         order.blueprint = tag.getString("blueprint").map(Identifier::tryParse).orElse(null);
         order.rotation = Math.floorMod(tag.getIntOr("rotation", 0), 4);
-        if (order.type == WorkOrderType.BLUEPRINT && order.blueprint == null) {
+        order.demolish = tag.getBooleanOr("demolish", false);
+        tag.getCompound("plan").ifPresent(planTag -> {
+            order.inline = true;
+            order.plan = loadPlan(planTag);
+        });
+        if (order.type == WorkOrderType.BLUEPRINT && order.blueprint == null && !order.inline) {
             return Optional.empty();
         }
         return Optional.of(order);
+    }
+
+    /** Plans are saved as a palette of states and, per state, the packed positions using it. */
+    private static Map<BlockPos, BlockState> loadPlan(CompoundTag tag) {
+        Map<BlockPos, BlockState> plan = new LinkedHashMap<>();
+        ListTag palette = tag.getListOrEmpty("palette");
+        ListTag positions = tag.getListOrEmpty("positions");
+        for (int i = 0; i < palette.size() && i < positions.size(); i++) {
+            BlockState state = NbtUtils.readBlockState(BuiltInRegistries.BLOCK, palette.getCompoundOrEmpty(i));
+            positions.getLongArray(i).ifPresent(packed -> {
+                for (long value : packed) {
+                    plan.put(BlockPos.of(value), state);
+                }
+            });
+        }
+        return plan;
+    }
+
+    private static CompoundTag savePlan(Map<BlockPos, BlockState> plan) {
+        Map<BlockState, List<Long>> byState = new LinkedHashMap<>();
+        plan.forEach((pos, state) -> byState.computeIfAbsent(state, s -> new ArrayList<>()).add(pos.asLong()));
+        ListTag palette = new ListTag();
+        ListTag positions = new ListTag();
+        byState.forEach((state, list) -> {
+            palette.add(NbtUtils.writeBlockState(state));
+            positions.add(new net.minecraft.nbt.LongArrayTag(list.stream().mapToLong(Long::longValue).toArray()));
+        });
+        CompoundTag tag = new CompoundTag();
+        tag.put("palette", palette);
+        tag.put("positions", positions);
+        return tag;
     }
 
     private static Optional<UUID> parseUuid(String value) {
@@ -126,6 +174,12 @@ public class WorkOrder {
         if (blueprint != null) {
             tag.putString("blueprint", blueprint.toString());
             tag.putInt("rotation", rotation);
+        }
+        if (demolish) {
+            tag.putBoolean("demolish", true);
+        }
+        if (inline && plan != null) {
+            tag.put("plan", savePlan(plan));
         }
         return tag;
     }
@@ -185,6 +239,37 @@ public class WorkOrder {
 
     void setPlan(@Nullable Map<BlockPos, BlockState> plan) {
         this.plan = plan;
+        this.planLayers = null;
+    }
+
+    /** Ties a blueprint order to blocks planned one by one instead of a saved blueprint; call right after creating it. */
+    void setInlinePlan(Map<BlockPos, BlockState> plan) {
+        this.inline = true;
+        setPlan(plan);
+    }
+
+    /** Planned block by block in the planning screen, not from a saved blueprint. */
+    public boolean isInline() {
+        return inline;
+    }
+
+    /** The planned positions grouped by layer, lowest first; empty without a plan. */
+    NavigableMap<Integer, List<BlockPos>> getPlanLayers() {
+        if (planLayers == null) {
+            planLayers = new TreeMap<>();
+            if (plan != null) {
+                plan.keySet().forEach(pos -> planLayers.computeIfAbsent(pos.getY(), y -> new ArrayList<>()).add(pos));
+            }
+        }
+        return planLayers;
+    }
+
+    public boolean isDemolish() {
+        return demolish;
+    }
+
+    void setDemolish(boolean demolish) {
+        this.demolish = demolish;
     }
 
     public UUID getAuthor() {

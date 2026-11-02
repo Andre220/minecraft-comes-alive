@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -35,6 +36,47 @@ public class CaravanData extends SavedData {
         ON_ROAD,
         /** Walking away from the known villages, to vanish once out of sight. */
         LEAVING
+    }
+
+    /** Something a player asked a caravan to bring: ready to collect once it reached another village. */
+    public static final class Order {
+        final UUID player;
+        final String item;
+        final int count;
+        final int price;
+        /** The village it was asked at; it is ready at the next one. */
+        final int askedAt;
+        boolean ready;
+
+        Order(UUID player, String item, int count, int price, int askedAt) {
+            this.player = player;
+            this.item = item;
+            this.count = count;
+            this.price = price;
+            this.askedAt = askedAt;
+        }
+
+        CompoundTag save() {
+            CompoundTag tag = new CompoundTag();
+            tag.putString("player", player.toString());
+            tag.putString("item", item);
+            tag.putInt("count", count);
+            tag.putInt("price", price);
+            tag.putInt("askedAt", askedAt);
+            tag.putBoolean("ready", ready);
+            return tag;
+        }
+
+        static @Nullable Order load(CompoundTag tag) {
+            Optional<UUID> player = tag.getString("player").map(UUID::fromString);
+            if (player.isEmpty()) {
+                return null;
+            }
+            Order order = new Order(player.get(), tag.getStringOr("item", "minecraft:air"), tag.getIntOr("count", 1),
+                    tag.getIntOr("price", 1), tag.getIntOr("askedAt", -1));
+            order.ready = tag.getBooleanOr("ready", false);
+            return order;
+        }
     }
 
     public static final class Caravan {
@@ -63,6 +105,8 @@ public class CaravanData extends SavedData {
         String lostOnRoad = "";
         /** Seconds each player walked along with it on this trip, for escorting it. */
         final Map<UUID, Integer> escort = new HashMap<>();
+        /** What players asked it to bring. */
+        final List<Order> orders = new ArrayList<>();
 
         Caravan(int id, String name) {
             this.id = id;
@@ -106,6 +150,9 @@ public class CaravanData extends SavedData {
             CompoundTag escorts = new CompoundTag();
             escort.forEach((player, seconds) -> escorts.putInt(player.toString(), seconds));
             tag.put("escort", escorts);
+            ListTag asked = new ListTag();
+            orders.forEach(order -> asked.add(order.save()));
+            tag.put("orders", asked);
             return tag;
         }
 
@@ -139,6 +186,14 @@ public class CaravanData extends SavedData {
             CompoundTag escorts = tag.getCompoundOrEmpty("escort");
             for (String player : escorts.keySet()) {
                 caravan.escort.put(UUID.fromString(player), escorts.getIntOr(player, 0));
+            }
+            for (Tag order : tag.getListOrEmpty("orders")) {
+                if (order instanceof CompoundTag compound) {
+                    Order loaded = Order.load(compound);
+                    if (loaded != null) {
+                        caravan.orders.add(loaded);
+                    }
+                }
             }
             return caravan;
         }

@@ -55,6 +55,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.conczin.mca.api.addon.Addons;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.Item;
@@ -147,6 +148,7 @@ public final class MCAFabric implements ModInitializer {
         registerReloadListener(resourceLoader, OpportunityTypes.ID, new OpportunityTypes()); // expansion: minds
         registerReloadListener(resourceLoader, DailyToggles.ID, new DailyToggles()); // expansion: minds
         registerReloadListener(resourceLoader, BuildingTypes.ID, new BuildingTypes());
+        Addons.reloadListeners((id, listener) -> registerReloadListener(resourceLoader, id, listener));
 
         // Create the creative mode tab
         ResourceKey<CreativeModeTab> mcaTab = ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), MCA.locate("mca_tab"));
@@ -183,7 +185,7 @@ public final class MCAFabric implements ModInitializer {
         });
         ServerLifecycleEvents.SERVER_STOPPED.register(MCA::finishServerStop);
         ServerTickEvents.END_LEVEL_TICK.register(w -> VillageManager.get(w).tick());
-        ServerTickEvents.END_SERVER_TICK.register(s -> ServerInteractionManager.getInstance().tick());
+        ServerTickEvents.END_SERVER_TICK.register(s -> ServerInteractionManager.getInstance().tick(s));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
                 ServerInteractionManager.getInstance().onPlayerJoin(handler.player)

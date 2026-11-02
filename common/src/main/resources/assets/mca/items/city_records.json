@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mca:block/city_records"
+    "model": "minecraft:block/lectern"
   }
 }

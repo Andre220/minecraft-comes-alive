@@ -1,0 +1,7 @@
+{
+  "kind": "gather",
+  "blocks": ["#village_furnishings:casks"],
+  "appeal": 0.9,
+  "rooms": {"inn": 2.0},
+  "hold": "minecraft:potion"
+}

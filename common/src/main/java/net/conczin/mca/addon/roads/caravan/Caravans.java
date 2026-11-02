@@ -78,6 +78,7 @@ public final class Caravans {
 
     public static void bootstrap() {
         CaravanTalk.bootstrap();
+        CaravanOrders.bootstrap();
     }
 
     public static boolean enabled() {
@@ -368,6 +369,7 @@ public final class Caravans {
                     announce(level, village, Component.translatable("caravan.arrived", caravan.name(), village.getName()));
                     CaravanRoad.rewardEscort(level, caravan, leader, village);
                     CaravanTrade.tradeWithVillage(level, caravan, village, leader.blockPosition());
+                    CaravanOrders.arrive(level, caravan, village);
                     data.setDirty();
                 } else if (!night) {
                     walk(level, leader, center);

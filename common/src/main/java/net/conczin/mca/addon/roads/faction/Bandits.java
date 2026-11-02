@@ -75,6 +75,15 @@ public final class Bandits {
             Network.sendToPlayer(new InteractionDialogueQuestionResponse(line, false), player);
         });
         FactionDeals.bootstrap();
+        FactionMembers.bootstrap();
+        FactionFounding.bootstrap();
+        FactionRaids.bootstrap();
+        Redemption.bootstrap();
+    }
+
+    /** From the villager tick of an outlaw: they may go to the exiles. */
+    public static void tickOutlaw(ServerLevel level, VillagerEntityMCA outlaw) {
+        Exiles.tick(level, outlaw);
     }
 
     public static boolean isBandit(Entity entity) {
@@ -118,7 +127,10 @@ public final class Bandits {
             return Optional.empty();
         }
         RandomSource random = level.getRandom();
-        bandit.setItemSlot(EquipmentSlot.MAINHAND, random.nextFloat() < 0.7F ? new ItemStack(Items.CROSSBOW) : new ItemStack(Items.IRON_AXE));
+        FactionTypes.Type type = FactionTypes.get(FactionData.get(level).faction(faction).map(FactionData.Faction::type).orElse(FactionTypes.RAIDERS));
+        Item weapon = type.weapon(random);
+        bandit.setItemSlot(EquipmentSlot.MAINHAND, weapon == null ? ItemStack.EMPTY : new ItemStack(weapon));
+        type.gear(random).forEach((slot, item) -> bandit.setItemSlot(slot, new ItemStack(item)));
         bandit.addTag(Factions.TAG_PREFIX + faction);
         bandit.setPersistenceRequired();
         if (captain) {
@@ -151,7 +163,7 @@ public final class Bandits {
         }
         Optional<Entity> current = bandit.getBrain().getMemoryInternal(MemoryModuleType.ATTACK_TARGET).map(Entity.class::cast);
         if (current.isPresent() && current.get() instanceof ServerPlayer player
-            && Factions.standing(level, player.getUUID(), faction) != Factions.Standing.HOSTILE && bandit.getLastHurtByMob() != player) {
+            && !Factions.hostileTo(level, player, faction) && bandit.getLastHurtByMob() != player) {
             bandit.getBrain().eraseMemory(MemoryModuleType.ATTACK_TARGET);
             return;
         }
@@ -160,10 +172,12 @@ public final class Bandits {
         }
         Optional<LivingEntity> target = level.players().stream()
                 .filter(p -> !p.isCreative() && !p.isSpectator() && p.distanceTo(bandit) < SPOT && bandit.hasLineOfSight(p))
-                .filter(p -> Factions.standing(level, p.getUUID(), faction) == Factions.Standing.HOSTILE)
+                .filter(p -> Factions.hostileTo(level, p, faction))
                 .min(Comparator.comparingDouble(p -> p.distanceTo(bandit)))
                 .map(LivingEntity.class::cast)
-                .or(() -> FactionWars.enemyNear(level, bandit, faction, SPOT)); // a band at war with its own
+                .or(() -> FactionWars.enemyNear(level, bandit, faction, SPOT)) // a band at war with its own
+                .or(() -> FactionMembers.brotherInArmsFoe(level, bandit, faction, SPOT)) // whoever a member fights
+                .or(() -> FactionRaids.prey(level, bandit, faction)); // the folk of a village it raids
         if (target.isPresent()) {
             bandit.getBrain().setMemory(MemoryModuleType.ATTACK_TARGET, target.get());
             return;
@@ -191,7 +205,7 @@ public final class Bandits {
             return false;
         }
         int faction = Factions.factionOf(bandit);
-        if (faction >= 0 && Factions.standing(level, player.getUUID(), faction) == Factions.Standing.HOSTILE) {
+        if (faction >= 0 && player instanceof ServerPlayer target && Factions.hostileTo(level, target, faction)) {
             if (player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendSystemMessage(Component.translatable("faction.no_talk"), true);
             }

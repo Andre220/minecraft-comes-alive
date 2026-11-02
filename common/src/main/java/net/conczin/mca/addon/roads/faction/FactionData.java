@@ -13,6 +13,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.entity.BannerPatternLayers;
 import net.minecraft.world.level.saveddata.SavedData;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ public class FactionData extends SavedData {
         final DyeColor base;
         final BannerPatternLayers patterns;
         final String type;
+        /** The player who founded and leads it; null for the bands of the world. */
+        @Nullable UUID leader;
 
         Faction(int id, String place, int template, DyeColor base, BannerPatternLayers patterns, String type) {
             this.id = id;
@@ -57,6 +60,15 @@ public class FactionData extends SavedData {
 
         public BannerPatternLayers patterns() {
             return patterns;
+        }
+
+        /** Its kind ({@link FactionTypes}): raiders, tribal, cult, military... */
+        public String type() {
+            return type;
+        }
+
+        public @Nullable UUID leader() {
+            return leader;
         }
     }
 
@@ -79,6 +91,8 @@ public class FactionData extends SavedData {
     private final Map<UUID, Set<Long>> known = new HashMap<>();
     /** Outposts that changed hands while nobody was near; their banners are swapped once someone comes. */
     private final Set<Long> repaint = new HashSet<>();
+    /** Players who joined a band, to the band. */
+    private final Map<UUID, Integer> members = new HashMap<>();
     private int nextId = 1;
 
     FactionData() {
@@ -94,6 +108,7 @@ public class FactionData extends SavedData {
                     : BannerPatternLayers.CODEC.parse(ops, tag.get("patterns")).result().orElse(BannerPatternLayers.EMPTY);
             Faction faction = new Faction(tag.getIntOr("id", 0), tag.getStringOr("place", "?"), tag.getIntOr("template", 0),
                     DyeColor.byName(tag.getStringOr("base", "black"), DyeColor.BLACK), patterns, tag.getStringOr("type", "raiders"));
+            tag.getString("leader").ifPresent(leader -> faction.leader = UUID.fromString(leader));
             factions.put(faction.id, faction);
         }
         for (Tag entry : nbt.getListOrEmpty("outposts")) {
@@ -130,6 +145,10 @@ public class FactionData extends SavedData {
         for (long pos : nbt.getLongArray("repaint").orElse(new long[0])) {
             repaint.add(pos);
         }
+        CompoundTag joined = nbt.getCompoundOrEmpty("members");
+        for (String player : joined.keySet()) {
+            members.put(UUID.fromString(player), joined.getIntOr(player, -1));
+        }
         nextId = nbt.getIntOr("nextId", 1);
     }
 
@@ -148,6 +167,9 @@ public class FactionData extends SavedData {
             tag.putInt("template", faction.template);
             tag.putString("base", faction.base.getSerializedName());
             tag.putString("type", faction.type);
+            if (faction.leader != null) {
+                tag.putString("leader", faction.leader.toString());
+            }
             BannerPatternLayers.CODEC.encodeStart(ops, faction.patterns).result().ifPresent(patterns -> tag.put("patterns", patterns));
             list.add(tag);
         }
@@ -183,6 +205,9 @@ public class FactionData extends SavedData {
         known.forEach((player, set) -> seen.putLongArray(player.toString(), set.stream().mapToLong(Long::longValue).toArray()));
         nbt.put("known", seen);
         nbt.putLongArray("repaint", repaint.stream().mapToLong(Long::longValue).toArray());
+        CompoundTag joined = new CompoundTag();
+        members.forEach((player, faction) -> joined.putInt(player.toString(), faction));
+        nbt.put("members", joined);
         nbt.putInt("nextId", nextId);
         return nbt;
     }
@@ -195,11 +220,41 @@ public class FactionData extends SavedData {
         return Optional.ofNullable(factions.get(id));
     }
 
-    Faction create(String place, int template, DyeColor base, BannerPatternLayers patterns) {
-        Faction faction = new Faction(nextId++, place, template, base, patterns, "raiders");
+    Faction create(String place, int template, DyeColor base, BannerPatternLayers patterns, String type) {
+        Faction faction = new Faction(nextId++, place, template, base, patterns, type);
         factions.put(faction.id, faction);
         setDirty();
         return faction;
+    }
+
+    /** Drops a band that has nothing left: its relations, truces and the players who rode with it. */
+    void remove(int id) {
+        factions.remove(id);
+        outposts.removeIf(o -> o.faction == id);
+        relations.keySet().removeIf(pair -> (int) (pair >> 32) == id || (int) (long) pair == id);
+        truces.removeIf(t -> t.faction == id);
+        members.values().removeIf(faction -> faction == id);
+        reputation.values().forEach(values -> values.remove(id));
+        setDirty();
+    }
+
+    /** The band a player joined, or -1. */
+    public boolean hasMembers(int faction) {
+        return members.values().stream().anyMatch(f -> f == faction);
+    }
+
+    public int memberOf(UUID player) {
+        Integer faction = members.get(player);
+        return faction == null || !factions.containsKey(faction) ? -1 : faction;
+    }
+
+    void setMember(UUID player, int faction) {
+        if (faction < 0) {
+            members.remove(player);
+        } else {
+            members.put(player, faction);
+        }
+        setDirty();
     }
 
     public List<Outpost> outposts() {
@@ -279,6 +334,17 @@ public class FactionData extends SavedData {
 
     public int reputation(UUID player, int faction, int start) {
         return reputation.getOrDefault(player, Map.of()).getOrDefault(faction, start);
+    }
+
+    /** Every player stands with a new band as they stood with the one it came from. */
+    void inheritReputation(int from, int to) {
+        reputation.values().forEach(values -> {
+            Integer value = values.get(from);
+            if (value != null) {
+                values.put(to, value);
+            }
+        });
+        setDirty();
     }
 
     void setReputation(UUID player, int faction, int value) {

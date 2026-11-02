@@ -3,6 +3,10 @@
   "values": [
     "#c:chests",
     {
+      "id": "#village_furnishings:crates",
+      "required": false
+    },
+    {
       "id": "farmersdelight:oak_cabinet",
       "required": false
     },

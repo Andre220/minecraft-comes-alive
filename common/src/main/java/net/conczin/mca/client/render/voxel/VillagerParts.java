@@ -109,12 +109,38 @@ public final class VillagerParts {
     public static Map<String, Placement> placements(ModelPart root, PoseStack base) {
         Map<String, Placement> placements = new HashMap<>();
         root.visit(base, (pose, path, cubeIndex, cube) -> {
-            if (cubeIndex == 0) {
+            if (cubeIndex == 0 && shown(root, path)) {
                 placements.putIfAbsent(path.substring(path.lastIndexOf('/') + 1),
                         new Placement(pose.copy(), cube.minX, cube.minY, cube.minZ));
             }
         });
         return placements;
+    }
+
+    /**
+     * Whether the parts a traversal path ("/head/hat") lies inside are visible. The traversal itself ignores
+     * visibility, so a head hidden in first person (First Person Model) would still get its hair cubes in front of the
+     * camera. The part's own flag is left out: flat outer layers are hidden on purpose where cubes replace them.
+     */
+    private static boolean shown(ModelPart root, String path) {
+        if (!root.visible) {
+            return false;
+        }
+        String[] names = path.split("/");
+        ModelPart part = root;
+        for (int i = 0; i < names.length - 1; i++) {
+            if (names[i].isEmpty()) {
+                continue;
+            }
+            if (!part.hasChild(names[i])) {
+                return true;
+            }
+            part = part.getChild(names[i]);
+            if (!part.visible) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** The placement of the first named part found, preferring EMF's own parts. */

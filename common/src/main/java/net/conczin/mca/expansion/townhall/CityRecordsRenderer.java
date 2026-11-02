@@ -17,7 +17,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-/** Draws the City Records' book with the enchanting table's model and texture, floating over the stand. */
+/**
+ * Draws the City Records' book with the enchanting table's model and texture, lying open on the lectern's slope where
+ * LecternRenderer puts its book.
+ */
 public class CityRecordsRenderer implements BlockEntityRenderer<CityRecordsBlockEntity, EnchantTableRenderState> {
     private final SpriteGetter sprites;
     private final BookModel book;
@@ -39,18 +42,20 @@ public class CityRecordsRenderer implements BlockEntityRenderer<CityRecordsBlock
         state.flip = Mth.lerp(partialTick, records.oFlip, records.flip);
         state.open = Mth.lerp(partialTick, records.oOpen, records.open);
         state.time = records.time + partialTick;
-        state.yRot = records.oRot + CityRecordsBlockEntity.wrap(records.rot - records.oRot) * partialTick;
+        state.yRot = records.getBlockState().getValue(CityRecordsBlock.FACING).getClockWise().toYRot();
     }
 
     @Override
     public void submit(EnchantTableRenderState state, PoseStack pose, SubmitNodeCollector collector, CameraRenderState camera) {
         pose.pushPose();
-        pose.translate(0.5F, 0.85F + Mth.sin(state.time * 0.1F) * 0.01F, 0.5F);
-        pose.mulPose(Axis.YP.rotation(-state.yRot));
-        pose.mulPose(Axis.ZP.rotationDegrees(80.0F));
+        pose.translate(0.5F, 1.0625F, 0.5F);
+        pose.mulPose(Axis.YP.rotationDegrees(-state.yRot));
+        pose.mulPose(Axis.ZP.rotationDegrees(67.5F));
+        pose.translate(0.0F, -0.125F, 0.0F);
         float left = Mth.frac(state.flip + 0.25F) * 1.6F - 0.3F;
         float right = Mth.frac(state.flip + 0.75F) * 1.6F - 0.3F;
-        BookModel.State bookState = BookModel.State.forAnimation(state.time, Mth.clamp(left, 0.0F, 1.0F), Mth.clamp(right, 0.0F, 1.0F), state.open);
+        BookModel.State bookState = BookModel.State.forAnimation(state.time, Mth.clamp(left, 0.0F, 1.0F), Mth.clamp(right, 0.0F, 1.0F),
+                1.0F + state.open * 0.2F);
         collector.submitModel(book, bookState, pose, state.lightCoords, OverlayTexture.NO_OVERLAY, -1,
                 EnchantTableRenderer.BOOK_TEXTURE, sprites, 0, state.breakProgress);
         pose.popPose();

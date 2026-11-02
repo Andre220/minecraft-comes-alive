@@ -1,0 +1,12 @@
+{
+  "kind": "inspect",
+  "blocks": ["#village_furnishings:racks"],
+  "contents": true,
+  "appeal": 1.2,
+  "rooms": {"weaponsmith": 1.5, "toolsmith": 1.5, "armorer": 1.5, "blacksmith": 1.5, "armory": 1.5},
+  "professions": {
+    "minecraft:weaponsmith": 1.6,
+    "minecraft:toolsmith": 1.6,
+    "minecraft:armorer": 1.4
+  }
+}
