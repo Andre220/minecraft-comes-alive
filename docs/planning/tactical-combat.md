@@ -191,6 +191,15 @@ Config: `puddleChance`, `boneBurstChance`, `blazeRodChance` e `maxBrokenRods`.
 - **Aldeões zumbis do MCA:** eles herdam de `Zombie`, então também perdem partes. Só que as camadas do MCA (pele, roupa, cabelo) ligam de novo todas as partes do modelo, então o membro perdido ainda aparece nelas. Esconder o membro nessas camadas fica para a fase 6.
 - **Config:** `headMultiplier`, `legSlowChance`, `armWeaknessChance`, `dismemberChance`, `decapitateChance`, `lostArmDamage`, `crawlSpeedPenalty`, `spiderLegChance`, `maxSpiderLegs`, `spiderLegsToStopClimbing`, `lostLegSpeed`, `phantomWingChance`, `golemCrackChance`, `crackDamageBonus` e `limbLifetimeTicks`.
 
+## Roda de habilidades (2026-11-02)
+**O problema:** com uma arma que tem habilidades, o Spell Engine pegava os números 1 a 9 para elas. Os números deixavam de trocar o item da barra.
+
+**A solução:** segurar **Z** abre um anel com as habilidades da arma.
+- O mouse aponta uma habilidade em vez de girar a cabeça. Ao soltar, ela vai para o **clique direito**, que é o primeiro slot do Spell Engine.
+- Os números nunca lançam habilidades por padrão. Quem quiser teclas próprias associa "Spell Hotbar Slot N" nos controles.
+- **Com escudo ou arco na mão**, o clique direito fica com o item. A habilidade escolhida vai para o "Spell Hotbar Slot 1", que precisa de uma tecla própria.
+- **Ainda não testado no jogo.**
+
 ## Fases
 
 | Fase | Conteúdo | Estado |

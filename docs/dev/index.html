@@ -113,9 +113,9 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <a href='#buildings' style='--c:var(--gold)'><span class='ic'>🏛️</span>Tipos de prédio</a>
 <a href='#icons' style='--c:var(--rose)'><span class='ic'>💬</span>Ícones e balões</a>
 </nav><main>
-<header class='hero'><div class='cube'></div><h1>Minecraft Comes Alive · guia do dev</h1><p>O que o MCA original já faz, o que a expansão acrescenta e como os aldeões pensam, trabalham e enfeitam a vila.</p><div class='chips'><span>21 flags</span><span>25 profissões</span><span>31 tipos de prédio</span><span>18 oportunidades</span><span>1368 ícones</span></div></header>
+<header class='hero'><div class='cube'></div><h1>Minecraft Comes Alive · guia do dev</h1><p>O que o MCA original já faz, o que a expansão acrescenta e como os aldeões pensam, trabalham e enfeitam a vila.</p><div class='chips'><span>21 flags</span><span>25 profissões</span><span>33 tipos de prédio</span><span>18 oportunidades</span><span>1646 ícones</span></div></header>
 <section class='sec' id='planning' style='--c:var(--sky)'><h2><span class='ic'>🗺️</span>Planejamento</h2>
-<p>Os 16 documentos de <code>docs/planning</code>: o que está em discussão (WIP), o que falta de arte (TODO) e os planos já feitos. Clique num cartão para abrir o documento.</p><div class='plans'>
+<p>Os 21 documentos de <code>docs/planning</code>: o que está em discussão (WIP), o que falta de arte (TODO) e os planos já feitos. Clique num cartão para abrir o documento.</p><div class='plans'>
 <a class='plan' href='#doc-proximos-passos' style='--k:var(--grass)'><span class='state'>índice</span><b>Próximos passos da expansão</b><p>Data: 2026-10-18. Continua vilas-consolidado.md e bountiful-producao-coletor.md. As fases 0 a 3 da economia</p></a>
 <a class='plan' href='#doc-gestao-da-vila' style='--k:var(--violet)'><span class='state'>WIP</span><b>Gestão da vila: prefeitura, chefe, empregos e a questline do ancião</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado). Os atributos, que dizem quem combina com cada posto, estão em atributos-e-niveis.md.</p></a>
 <a class='plan' href='#doc-interface-e-conversas' style='--k:var(--violet)'><span class='state'>WIP</span><b>Interface: informação atrás das conversas e visual editável</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado).</p></a>
@@ -123,15 +123,20 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <a class='plan' href='#doc-atributos-e-niveis' style='--k:var(--grass)'><span class='state'>feito</span><b>Atributos e níveis dos villagers</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado). A inspiração é o Fallout Shelter, mas com atributos próprios. O painel onde o chefe distribui os pontos está em gestao-da-vila.md.</p></a>
 <a class='plan' href='#doc-caravanas' style='--k:var(--grass)'><span class='state'>feito</span><b>Caravanas: comércio de verdade entre as vilas</b><p>Planejado e implementado em 2026-10-29 (ver Estado); falta testar em jogo. Substitui o mercador ambulante vanilla (um villager e duas lhamas) por uma caravana de 3 a 5 pessoas e alguns animais, que viaja de fato entre as…</p></a>
 <a class='plan' href='#doc-espelho-estudo' style='--k:var(--grass)'><span class='state'>feito</span><b>Espelhos: estudo técnico</b><p>Pedido do Andre: dois espelhos, um pequeno (de pôr em cima de mesa, cômoda, bancada e afins) e um grande (de</p></a>
+<a class='plan' href='#doc-faccoes' style='--k:var(--grass)'><span class='state'>feito</span><b>Facções: saqueadores como gente, com bandeira e reputação</b><p>Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é dar ao jogador um motivo para virar fora da …</p></a>
+<a class='plan' href='#doc-predios-e-niveis' style='--k:var(--grass)'><span class='state'>feito</span><b>Prédios e níveis: tela de prédios, oficinas que crescem, comida e água</b><p>Estado (2026-11-02): fases 1 a 3 feitas, sem teste em jogo. Compila, os testes passam e os GameTests de economia, progressão, bebidas, mentes e pedidos também.</p></a>
 <a class='plan' href='#doc-tracos-rimworld' style='--k:var(--grass)'><span class='state'>feito</span><b>Traços do RimWorld e crise mental</b><p>Planejado em 2026-10-28; parte já implementada (ver Estado). Continua o sistema de tracos-sims.md: mesmo builder (Traits.builder), efeitos tipados (TraitEffect), condições (TraitCondition) e jeito de andar (WalkStyle).</p></a>
 <a class='plan' href='#doc-tracos-sims' style='--k:var(--grass)'><span class='state'>feito</span><b>Traços estilo The Sims 4 para villagers do MCA</b><p>Hoje os traços (entity/ai/Traits.java) são quase só genéticos e visuais. Os poucos efeitos que eles têm não aparecem em lugar nenhum: o usuário só descobriu pela wiki que athletic dá +10% de velocidade e que tough dá ×1.…</p></a>
 <a class='plan' href='#doc-comercio-e-despensa' style='--k:var(--gold)'><span class='state'>referência</span><b>Comércio e despensa: comida em casa, despensa da vila e mercado entre aldeões</b><p>Data: 2026-10-31. Pedido do Andre, depois de olhar como os aldeões conseguem comida:</p></a>
-<a class='plan' href='#doc-faccoes' style='--k:var(--sky)'><span class='state'>em andamento</span><b>Facções: saqueadores como gente, com bandeira e reputação</b><p>Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é dar ao jogador um motivo para virar fora da …</p></a>
+<a class='plan' href='#doc-habilidades-e-qualidade' style='--k:var(--gold)'><span class='state'>referência</span><b>Habilidades por atividade e qualidade dos itens</b><p>Planejado em 2026-11-02. Substitui a habilidade por profissão (Skills.java, de 0 a 100) por habilidades por atividade, com níveis de 0 a 20 (estilo RimWorld/Stardew). Também cria a qualidade dos itens produzidos. Os ícon…</p></a>
+<a class='plan' href='#doc-lojas-e-receitas' style='--k:var(--gold)'><span class='state'>referência</span><b>Lojas, expositores e receitas por nível</b><p>Status: feito em 2026-11-04, sem teste em jogo e sem compilar o MCA (o cliente estava aberto; o IDE não aponta erros). O Village Furnishings compila. Complementa habilidades-e-qualidade.md e comercio-e-despensa.md.</p></a>
 <a class='plan' href='#doc-addons' style='--k:var(--gold)'><span class='state'>catálogo</span><b>MCA Reborn: catálogo de addons</b><p>Data: 2026-10-30. Este é o catálogo do que o fork tem hoje, agrupado nas expansões que vão virar addons instaláveis, no estilo The Sims: cada uma traz mecânicas, itens e conversas novas que conversam com o que já existe.</p></a>
 <a class='plan' href='#doc-bountiful-producao-coletor' style='--k:var(--gold)'><span class='state'>referência</span><b>Missões, produção e coletor: consolidado de planejamento</b><p>Resultado de uma conversa com o Andre sobre três temas ligados entre si:</p></a>
 <a class='plan' href='#doc-planejamento-de-obras' style='--k:var(--gold)'><span class='state'>referência</span><b>Planejamento de obras 2: rascunho, catálogo, seções de blueprint e formas</b><p>Data: 2026-11-01. Pedido do Andre, depois de usar a tela de planejamento (Cavar / Construir / Blueprint / Capturar):</p></a>
 <a class='plan' href='#doc-tactical-combat' style='--k:var(--sky)'><span class='state'>em andamento</span><b>Tactical Combat: corte, concussão e perfuração</b><p>Mod separado, em jar e repositório próprios (../tactical-combat, mod_id tactical_combat), planejado em 2026-10-31. Fases 0 a 5 feitas (ver Estado). Cada golpe físico se divide em corte, concussão e perfuração. Armas, arm…</p></a>
 <a class='plan' href='#doc-vilas-consolidado' style='--k:var(--gold)'><span class='state'>referência</span><b>Vilas: consolidado de planejamento</b><p>Documento de passagem para um chat único que vai juntar três temas ligados entre si:</p></a>
+<a class='plan' href='#doc-zeladoria-e-regrowth' style='--k:var(--gold)'><span class='state'>referência</span><b>Zeladoria da vila e ideias do Regrowth</b><p>Status: feito em 2026-11-05. Compila nos três loaders e os testes do common passam; sem teste em jogo. As ideias vêm do mod Regrowth (MacTso, licença MIT); o código é próprio.</p></a>
+<a class='plan' href='#doc-icones' style='--k:var(--gold)'><span class='state'>referência</span><b>Ícones da interface (pacotes CC0)</b><p>Status: feito em 2026-11-02, compilado, ainda não testado em jogo. As origens estão em docs/resourcers/: Sprites/ (16×16) e pixymoji-png/ (11×11, centralizado em 16×16), ambos CC0.</p></a>
 </div>
 <details class='doc' id='doc-proximos-passos' style='--k:var(--grass)'><summary><span class='state'>índice</span>Próximos passos da expansão <span class='muted'>· proximos-passos.md</span></summary><div class='body'><h1>Próximos passos da expansão</h1>
 <p>Data: 2026-10-18. Continua <code>vilas-consolidado.md</code> e <code>bountiful-producao-coletor.md</code>. As fases 0 a 3 da economia
@@ -174,8 +179,8 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <tr>
 <td>4</td>
 <td>Árvore de evolução de prédios e níveis da vila</td>
-<td>depois</td>
-<td>falta modelar</td>
+<td>feito</td>
+<td>tela de prédios e níveis 1 a 4, sem teste em jogo: <a href="#doc-predios-e-niveis">predios-e-niveis.md</a></td>
 </tr>
 <tr>
 <td>5</td>
@@ -210,13 +215,13 @@ section.sec{padding:4px 16px 18px}.hero{padding:24px 20px}.hero h1{font-size:26p
 <tr>
 <td>10</td>
 <td>Facções: saqueadores do MCA, bandeiras, reputação, caminho fora da lei</td>
-<td>fases 1 a 3, mapa e guerras feitos</td>
-<td>WIP: <a href="#doc-faccoes">faccoes.md</a></td>
+<td>fases 1 a 5, redenção, exílio, bando próprio e saques feitos, sem teste em jogo</td>
+<td><a href="#doc-faccoes">faccoes.md</a></td>
 </tr>
 <tr>
 <td>11</td>
 <td>Caravanas de 3 a 5 pessoas com animais, viajando e comerciando entre as vilas</td>
-<td>feito, sem teste em jogo (falta encomendas)</td>
+<td>feito, com encomendas, sem teste em jogo</td>
 <td><a href="#doc-caravanas">caravanas.md</a></td>
 </tr>
 <tr>
@@ -1022,6 +1027,11 @@ itens e profissões).</p>
 <td><a href="#doc-tracos-sims">tracos-sims.md</a></td>
 <td>opcional, ainda não decidida</td>
 </tr>
+<tr>
+<td><strong>Ícones de prédio</strong> em <code>textures/buildings.png</code> para as 15 oficinas (padaria, açougue, armeiro, bibliotecário, cartógrafo, pescador, flecheiro, coletor, caçador, curtidor, lenhador, pedreiro, ferramenteiro, armeiro de armas, tecelagem), restaurante e hortaliças</td>
+<td><a href="#doc-predios-e-niveis">predios-e-niveis.md</a></td>
+<td>opcional: sem ícone, a aba e o mapa mostram o item do bloco principal do tipo (defumador, cortador de pedra…). Cada ícone é uma célula 20×20 da textura, apontada por <code>iconU</code>/<code>iconV</code> no <code>building_types/&lt;tipo&gt;.json</code></td>
+</tr>
 </tbody>
 </table></div></details>
 <details class='doc' id='doc-atributos-e-niveis' style='--k:var(--grass)'><summary><span class='state'>feito</span>Atributos e níveis dos villagers <span class='muted'>· atributos-e-niveis.md</span></summary><div class='body'><h1>Atributos e níveis dos villagers (WIP)</h1>
@@ -1641,6 +1651,445 @@ olho do jogador.</p>
 </ul>
 </li>
 <li><strong>Quem pode usar:</strong> qualquer jogador, ou o espelho pertence a uma casa, como a futura posse dos guarda-roupas?</li>
+</ul></div></details>
+<details class='doc' id='doc-faccoes' style='--k:var(--grass)'><summary><span class='state'>feito</span>Facções: saqueadores como gente, com bandeira e reputação <span class='muted'>· faccoes.md</span></summary><div class='body'><h1>Facções: saqueadores como gente, com bandeira e reputação (WIP)</h1>
+<blockquote>
+<p><strong>Status: em andamento.</strong> Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é <strong>dar ao jogador um motivo para virar fora da lei</strong>.</p>
+</blockquote>
+<h2>Estado (2026-10-29)</h2>
+<p>Fases 1 a 3, território no mapa e guerras feitos, sem commit e sem teste em jogo, com a flag <code>villagerFactions</code> (ligada no cliente de desenvolvimento). Código em <code>expansion/faction</code>:</p>
+<ul>
+<li><strong>Facções do mundo</strong> (<code>FactionData</code>, salvo em <code>mca_factions</code>): <code>factionCount</code> (5) nascem quando o mundo precisa delas.<ul>
+<li>Cada uma tem um nome, um lugar do gerador de nomes de vila num de 6 moldes: "Corvos de X", "Irmandade de X", "Lobos de X"…</li>
+<li>E uma bandeira: cor base e 2 a 4 padrões de estandarte sorteados.</li>
+</ul>
+</li>
+<li><strong>Bases:</strong><ul>
+<li>A cada 20 segundos, para cada jogador, o jogo procura a base de saqueadores mais próxima (até 6 chunks). Uma base nova vai para a facção que tem outra base a até 1200 blocos.</li>
+<li>Se não houver, vai para uma facção ainda sem base. Se todas tiverem, nasce uma facção nova, até <code>factionMax</code> (8); senão, a menor facção leva.</li>
+<li>Os estandartes da base viram a bandeira da facção.</li>
+</ul>
+</li>
+<li><strong>Território:</strong> <code>factionTerritoryRadius</code> (96 blocos) em volta de cada base. Ao entrar, aparece na barra de ação: "Território: Corvos de X · hostil".</li>
+<li><strong>Membros:</strong> todo illager (saqueador, vindicador, evocador, bruxa, devastador) pertence à facção do território em que está, ou da base mais próxima a até 1200 blocos. A facção fica guardada numa tag.</li>
+<li><strong>Reputação por jogador e facção</strong>, de −100 a 100, começando em <code>factionStartReputation</code> (−15):<ul>
+<li>matar um membro: −<code>factionKillPenalty</code> (15);</li>
+<li>matar um villager: +3 com todas as facções;</li>
+<li>matar um golem de ferro: +5 com todas as facções;</li>
+<li>a mudança de faixa (hostil, neutro, amigo, aliado) é avisada no chat.</li>
+</ul>
+</li>
+<li>
+<p><strong>Trégua:</strong> com reputação neutra ou melhor, os membros da facção não escolhem o jogador como alvo, a não ser que ele os ataque primeiro.</p>
+</li>
+<li>
+<p><strong>Bandidos (fase 2, <code>Bandits</code>):</strong> em vez de uma entidade nova, o saqueador vira um villager do MCA com a profissão <code>mca:bandit</code>. Assim ele tem a mesma aparência, Fresh Animations, traços, humor e conversa dos outros.</p>
+<ul>
+<li>O <code>SpawnQueue</code> troca todo saqueador que entra no mundo <strong>fora de uma invasão</strong> (as invasões continuam vanilla, porque a raid precisa deles). Flag <code>factionPillagersAsPeople</code> (ligada).</li>
+<li>Recebe besta (70%) ou machado de ferro, a tag da facção e a de capitão se era líder de patrulha. Não some com a distância.</li>
+<li>Com 8 bandidos a até 48 blocos, os saqueadores novos daquela base não são trocados (as bases continuam gerando saqueadores, e os bandidos não contam no limite de monstros).</li>
+<li>Luta como o mercenário (ramo de combate do guarda). Uma vez por segundo, mira o jogador mais próximo a até 16 blocos com quem o bando é hostil, e larga o alvo quando a reputação deixa de ser hostil (a não ser que o jogador o tenha atacado).</li>
+<li>Com jogador hostil, não conversa: "Ele te encara e não diz nada".</li>
+<li>Nova pergunta "Quem são vocês?" (constraint <code>bandit</code>, ação <code>bandit_band</code>): diz o nome do bando e como ele vê o jogador.</li>
+<li>Roupas: as do curtidor e do guarda.</li>
+</ul>
+</li>
+<li>
+<p><strong>Território no mapa (<code>FactionMapMessages</code>, <code>FactionMapOverlay</code>):</strong></p>
+<ul>
+<li>o jogador "conhece" um posto quando o descobre ou anda no território dele;</li>
+<li>o mapa da prefeitura desenha um anel tracejado na cor da bandeira em volta de cada posto conhecido, com o estandarte em cima;</li>
+<li>um posto fora da área visível aparece com o estandarte na borda do mapa;</li>
+<li>ao passar o mouse: o nome do bando, como ele vê o jogador e as coordenadas.</li>
+</ul>
+</li>
+<li><strong>Guerras (<code>FactionWars</code>, flag <code>factionWars</code>, ligada):</strong><ul>
+<li>cada par de facções tem uma relação de −100 a 100; abaixo de −40 é guerra. Uma facção nova já nasce com relações sorteadas com as outras;</li>
+<li>uma vez por dia:<ul>
+<li>a relação volta devagar para −10;</li>
+<li>territórios que se encostam pioram 5;</li>
+<li>10% de chance de uma briga (−15) ou de um inimigo comum (+10);</li>
+</ul>
+</li>
+<li>guerra declarada e paz são avisadas no chat;</li>
+<li>cada par em guerra tem 35% de chance por dia de atacar o posto inimigo mais próximo dos seus:<ul>
+<li>longe dos jogadores, o resultado sai pela força (postos × 3 + sorte, e o defensor tem bônus); se o atacante vence, o posto muda de dono e os estandartes trocam quando alguém chegar perto. Aparece o boato "Boato: X tomaram um posto de Y";</li>
+<li>com um jogador a até 160 blocos, a luta é de verdade: um grupo de 4 bandidos nasce a 40 blocos e marcha até o posto;</li>
+</ul>
+</li>
+<li>os bandidos atacam membros de facções em guerra com a deles que estejam à vista;</li>
+<li>membros da mesma facção, ou de facções em paz, não se atacam (vale também para os saqueadores vanilla das invasões);</li>
+<li>mortes entre facções pioram a relação em 6.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ações (fase 3, <code>FactionDeals</code>):</strong></p>
+<ul>
+<li><strong>negociar:</strong> o botão de barganha já existente, agora com o que o bandido carrega: 2 a 4 itens roubados (pão, trigo, couro, ferro, ouro, flechas, sela…) e algumas esmeraldas;</li>
+<li><strong>"Venha lutar por mim"</strong> (só com reputação amigo ou melhor): 8 esmeraldas por 3 dias ou 16 por uma semana. O bandido sai do bando e vira mercenário;</li>
+<li><strong>"Deixem a vila em paz"</strong>: <code>factionTruceCost</code> (24) esmeraldas dão <code>factionTruceDays</code> (7) dias de trégua para a vila mais próxima do jogador (até 2000 blocos):<ul>
+<li>os membros do bando não atacam os villagers e golens dela;</li>
+<li>as patrulhas do bando não aparecem até 64 blocos além da borda da vila;</li>
+</ul>
+</li>
+<li>os pedidos ("traga X") continuam pelo sistema de pedidos que já existe.</li>
+</ul>
+</li>
+<li>
+<p><strong>Fase 4, entrar no bando (<code>FactionMembers</code>, 2026-11-01):</strong></p>
+<ul>
+<li>com reputação <strong>aliado</strong>, "Quero andar com vocês" (constraint <code>bandit_can_join</code>): o jogador vira membro (um bando por vez) e ganha a bandeira; perde 20 com os bandos em guerra com o seu;</li>
+<li><strong>fora da lei:</strong> a tarefa de rank <code>faction_free</code> (<code>data/mca_roads/tasks/peasant.json</code>) faz toda vila ver o membro como <code>OUTLAW</code>;</li>
+<li>os bandidos do bando lutam ao lado do membro: atacam quem ele acabou de bater ou quem o atacou (jogadores, só se atacaram primeiro);</li>
+<li>"Venha comigo, irmão" (<code>bandit_rally</code>): um bandido vira mercenário por 1 dia, de graça. Para membros, a opção paga de contratar some;</li>
+<li>os bandos em guerra com o do jogador o tratam como inimigo, mesmo com reputação boa;</li>
+<li>"Vou sair do bando": sai, com −40 de reputação (traição). Abaixo de amigo, o bando o expulsa.</li>
+</ul>
+</li>
+<li><strong>Redenção (<code>Redemption</code>):</strong> "Como acerto minhas contas com a vila?" e "Pagar a multa" com qualquer morador de uma vila que vê o jogador como fora da lei (constraint <code>village_debt</code>):<ul>
+<li>multa de 8 esmeraldas + 1 por 5 pontos de reputação negativa + 24 se for membro de bando, até 96;</li>
+<li>pagar devolve a reputação da vila para um pouco acima de zero e tira o jogador do bando como traidor.</li>
+</ul>
+</li>
+<li><strong>Tipos de facção (fase 5, <code>FactionTypes</code>):</strong> arquivos <code>data/&lt;ns&gt;/faction_types/*.json</code> com peso, número de nomes, força na guerra simulada e armas, mão secundária e armaduras com chance:<ul>
+<li><code>raiders</code> (besta e machado), <code>tribal</code> (arco, machado de pedra, tridente, couro), <code>cult</code> (espadas de ferro e ouro, capacete de ouro, totem raro), <code>military</code> (espada, besta, escudo, ferro e malha);</li>
+<li>nomes próprios por tipo ("Tribo de X", "Culto de X", "Legião de X"…); bandos antigos continuam <code>raiders</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Facções novas e fim (<code>FactionSplits</code>):</strong></p>
+<ul>
+<li><strong>racha:</strong> uma vez por dia, um bando com 3 postos ou mais tem 5% de chance de perder o posto mais afastado para um bando novo do mesmo tipo, nascido em guerra com ele (−70); os jogadores ficam com a mesma reputação nos dois. Boato no chat;</li>
+<li><strong>fim:</strong> um bando que perde o último posto na guerra some, se houver mais bandos que <code>factionCount</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pena e serviço (<code>Redemption</code>, 2026-11-01):</strong> além da multa, com qualquer morador:</p>
+<ul>
+<li>"Cumpro pena na prisão de vocês" (só se a vila tem um prédio <code>prison</code>): o jogador vai para a cela por 30 ticks por ponto de reputação negativa, de 2 a 10 minutos. Sair do prédio é fuga: a pena acaba e a vila tira mais 20. Cumprida, vale como multa paga;</li>
+<li>"Deixe-me pagar com trabalho": de 1 a 5 pedidos (1 por 25 pontos negativos) de moradores da vila. Cada pedido feito (gancho <code>McaAddon.requestCompleted</code>) desconta um; o último perdoa;</li>
+<li>pena e serviço ficam em tags do jogador (<code>mca_jail:</code>, <code>mca_service:</code>). Enquanto cumpre, a multa e as penas não aparecem.</li>
+</ul>
+</li>
+<li><strong>Morar no posto (<code>FactionMembers</code>):</strong> "Posso ficar aqui com vocês?" a até 48 blocos de um posto do bando muda o ponto de renascer para ali.</li>
+<li><strong>Saquear com o bando (<code>FactionRaids</code>):</strong> "Vamos atacar a vila aqui perto": o bandido e mais 3 marcham para a vila mais próxima (até 320 blocos), por 5 minutos:<ul>
+<li>dentro da vila atacam aldeões adultos e golens; cada um que derrubam dá 2 esmeraldas (4 por golem) e +2 de reputação ao membro;</li>
+<li>a vila tira 15 de quem trouxe o bando; uma vez por dia; nunca contra uma vila com trégua paga. Depois, voltam ao posto mais próximo.</li>
+</ul>
+</li>
+<li><strong>Fundar o próprio bando (<code>FactionFounding</code>):</strong> um membro aliado, com uma bandeira na mão e 32 esmeraldas, funda o "Bando de <nome>":<ul>
+<li>tipo <code>founded</code> (equipado como saqueadores), com a bandeira da mão, o acampamento onde o jogador está e o jogador como líder (<code>leader</code> no save);</li>
+<li>o bando de origem fica em bons termos (+40), e o bandido da conversa vem junto;</li>
+<li>o líder recruta bandidos de bandos que confiam nele (8 esmeraldas) e aldeões fora da lei (de graça);</li>
+<li>não racha, não ganha postos descobertos de graça, não expulsa o líder e não some enquanto tiver membros. Se o líder sai, o bando fica sem líder.</li>
+</ul>
+</li>
+<li>
+<p><strong>Exílio (<code>Exiles</code>):</strong> um aldeão com a profissão <code>outlaw</code> (o "executar" do MCA) que sobrevive vai para o acampamento de exilados mais próximo (até 600 blocos) e vira bandido dele. Sem acampamento, e com vaga no teto, monta um a 48–80 blocos com fogueira e bandeira: um bando novo do tipo <code>exiles</code> (peso 0, nunca sorteado; espada de pedra, machado de madeira, arco). Boato no chat.</p>
+</li>
+<li>
+<p><strong>Nome, postos e prisão (2026-11-02):</strong></p>
+<ul>
+<li>uma bandeira renomeada na bigorna dá o nome ao bando fundado (<code>Faction.title</code>, salvo como <code>title</code>);</li>
+<li>o líder, num posto de outro bando (até 40 blocos) sem ninguém do bando dono a 32 blocos, diz a um dos seus "Este posto agora é nosso" (<code>faction_claim</code>, constraint <code>faction_can_claim</code>). O posto troca de dono, os dois bandos entram em guerra (−70) e o perdedor pode acabar;</li>
+<li>na pena de prisão, as portas do prédio se fecham; quem foge tem os guardas e arqueiros a 32 blocos atrás dele.</li>
+</ul>
+</li>
+</ul>
+<p>Falta: guardas parados na porta da prisão durante a pena, e a linha de missões (adiada).</p>
+<h2>O que já existe e será reaproveitado</h2>
+<ul>
+<li><strong>Villager zumbi do MCA:</strong> <code>ZombieVillagerEntityMCA</code> estende o zumbi vanilla e implementa <code>VillagerLike</code>. É o molde para o <strong>saqueador do MCA</strong>: mesma genética, pele, roupa, cabelo, traços e diálogos.</li>
+<li><strong>Troca automática:</strong> o <code>SpawnQueue</code> troca os villagers e zumbis vanilla pelos do MCA (<code>overwriteOriginalVillagers</code>, <code>overwriteOriginalZombieVillagers</code>). Os saqueadores ganham a mesma troca (<code>overwriteOriginalPillagers</code>).</li>
+<li><strong>Fora da lei:</strong> já existem o rank <code>OUTLAW</code> (reputação baixa na vila), a profissão <code>outlaw</code> e as constraints <code>outlawed</code> / <code>!outlawed</code> nos diálogos.</li>
+<li><strong>Caçador de recompensas:</strong> <code>VillageManager.spawnBountyHunter</code> já manda saqueadores atrás de quem a vila odeia, um gancho natural para "a facção te protege".</li>
+<li><strong>Nomes:</strong> <code>data/mca/mca_names</code> (55 culturas) gera nomes de pessoas e vilas, e serve também para nomes de facção.</li>
+<li><strong>Postos de saqueadores:</strong> a estrutura vanilla <code>minecraft:pillager_outpost</code>, que já está na lista de estruturas do MCA (<code>Config</code>).</li>
+<li><strong>Bandeira:</strong> estandartes vanilla com padrões (<code>BannerPatternLayers</code>), dispensando arte nova.</li>
+<li><strong>Diálogos, traços, opiniões e humor:</strong> valem para qualquer <code>VillagerLike</code>.</li>
+</ul>
+<h2>1. A facção</h2>
+<ul>
+<li><strong>Geração:</strong> algumas facções nascem com o mundo (config: quantidade). Cada uma recebe:<ul>
+<li><strong>nome</strong>, de uma cultura de <code>mca_names</code> com um molde (por exemplo "Os Corvos de Vardholm", "Irmandade de X");</li>
+<li><strong>bandeira</strong>, um estandarte com cor base e 2 a 4 padrões sorteados, guardado como <code>BannerPatternLayers</code>;</li>
+<li><strong>tipo</strong> (seção 5; na fase 1 todas são "saqueadores");</li>
+<li><strong>sede:</strong> os postos de saqueadores que forem sendo achados.</li>
+</ul>
+</li>
+<li><strong>Dados do mundo:</strong> SavedData <code>FactionData</code>, com as facções, a reputação de cada jogador com cada facção, os postos e a relação com cada vila.</li>
+<li><strong>Posto de saqueadores:</strong><ul>
+<li>quando um posto é gerado ou visto pela primeira vez, ele <strong>ganha a facção</strong> (a mais próxima ou uma nova);</li>
+<li>o estandarte ominoso do posto vira a <strong>bandeira da facção</strong>;</li>
+<li>quem nasce ali pertence à facção.</li>
+</ul>
+</li>
+</ul>
+<h2>2. Saqueadores do MCA (<code>PillagerEntityMCA</code>)</h2>
+<ul>
+<li><strong>A entidade:</strong> estende o <code>Pillager</code> vanilla, implementando <code>VillagerLike</code> como o zumbi do MCA.</li>
+<li><strong>Visual:</strong><ul>
+<li>modelo humano, genética, pele, roupa (roupas de saqueador no catálogo de roupas) e cabelo;</li>
+<li>o estandarte nas costas do capitão.</li>
+</ul>
+</li>
+<li><strong>Por dentro:</strong> traços, humor, opiniões e nomes.</li>
+<li><strong>Membros:</strong> cada saqueador pertence a uma facção (parâmetro sincronizado) e tem um <strong>cargo</strong>: batedor, guerreiro, capitão, líder da facção.</li>
+<li><strong>Comportamento:</strong><ul>
+<li><strong>hostil</strong> (como hoje) com quem tem reputação baixa na facção;</li>
+<li><strong>neutro</strong> com quem tem reputação média: não ataca e aceita conversa;</li>
+<li><strong>aliado</strong> com quem tem reputação alta: luta junto e protege dos caçadores de recompensa.</li>
+</ul>
+</li>
+<li><strong>Ataques a vilas:</strong> os raids e patrulhas vanilla continuam, agora com saqueadores do MCA.</li>
+</ul>
+<h2>3. Reputação com a facção</h2>
+<ul>
+<li><strong>Como sobe:</strong><ul>
+<li>roubar ou atacar vilas (a mesma ação que derruba o rank da vila);</li>
+<li>ajudar a facção: entregar itens pedidos, matar golens e caçadores de recompensa;</li>
+<li>presentes ao líder.</li>
+</ul>
+</li>
+<li><strong>Como cai:</strong> matar membros, ajudar vilas contra raids, ser herói da vila.</li>
+<li><strong>Faixas:</strong> hostil → desconfiado → neutro → amigo → membro.</li>
+<li><strong>O jogo dos dois lados:</strong> reputação alta com a facção e baixa com as vilas é o caminho do <strong>fora da lei</strong>. Vilas fecham as portas e mandam caçadores; a facção vira casa.</li>
+</ul>
+<h2>4. Conversa e interação</h2>
+<ul>
+<li><strong>Interação:</strong> a mesma tela dos villagers (menu circular, conversa, presentes, traços, perguntas da conversa), com respostas e falas próprias de saqueador (<code>DialogueType.PILLAGER</code>, com volta para adulto).</li>
+<li><strong>Ações de facção</strong> (dependem da faixa):<ul>
+<li><strong>negociar:</strong> troca com itens roubados (o sistema de barganha da expansão);</li>
+<li><strong>pedidos:</strong> "traga X" ou "derrube Y", reaproveitando o sistema de pedidos;</li>
+<li><strong>recrutar</strong> um saqueador como mercenário (<code>mca:mercenary</code>);</li>
+<li><strong>entrar para a facção:</strong> ganha a bandeira, a armadura da facção e o rank fora da lei nas vilas;</li>
+<li><strong>pedir trégua:</strong> pagar tributo para parar os ataques a uma vila.</li>
+</ul>
+</li>
+<li><strong>Fora da lei:</strong> quem entra pode morar no posto, levar saqueadores a um raid e tirar a parte de um saque.</li>
+</ul>
+<h2>5. Tipos de facção (depois)</h2>
+<table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Armas e aliados</th>
+<th>Gancho</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Tribal</strong></td>
+<td>arco, machado, montaria de devastador (o "rinoceronte")</td>
+<td>postos mais selvagens, rituais em fogueiras</td>
+</tr>
+<tr>
+<td><strong>Religiosa</strong></td>
+<td>seguidores do warden, do End ou do Nether; magia dos evocadores</td>
+<td>evocadores e vex, altares</td>
+</tr>
+<tr>
+<td><strong>Tecnológica / militar</strong></td>
+<td>besta, TNT, espadas, armadura de ferro</td>
+<td>fortes, catapultas de TNT</td>
+</tr>
+</tbody>
+</table>
+<p>Cada tipo é um arquivo de dados (<code>data/mca/faction_types/*.json</code>): armas, roupas, estruturas e falas.</p>
+<h2>Fases</h2>
+<ol>
+<li><strong>Facção básica:</strong> <code>FactionData</code>, nome e bandeira gerados, postos ganham facção, reputação por facção, saqueadores neutros ou hostis conforme a reputação.</li>
+<li><strong>Saqueador do MCA:</strong> <code>PillagerEntityMCA</code> com o visual e a interação do MCA, troca automática e falas de saqueador.</li>
+<li><strong>Ações de facção:</strong> negociar, pedidos, recrutar, trégua.</li>
+<li><strong>Entrar para a facção:</strong> caminho fora da lei, morar no posto, raids com o jogador.</li>
+<li><strong>Tipos de facção:</strong> tribal, religiosa, tecnológica.</li>
+</ol>
+<h2>Decisões (2026-10-29)</h2>
+<ul>
+<li><strong>Quantidade:</strong> 5 facções por mundo por padrão, ajustável na config do MCA (<code>factionCount</code>).</li>
+<li><strong>Facções novas com o tempo:</strong> sim, se der para fazer bem. A proposta está na seção 6.</li>
+<li><strong>Postos:</strong> uma facção tem <strong>vários postos</strong>.</li>
+<li><strong>Território:</strong> cada posto marca uma área em volta dele (o que a facção "vê"). Ela pode ser vista no mapa (seção 7).</li>
+<li><strong>Outros illagers:</strong> entram. Vindicadores, evocadores e bruxas viram gente do MCA; o devastador fica como montaria (bicho), com a bandeira da facção.</li>
+<li><strong>Guerras:</strong> as facções brigam entre si (seção 8).</li>
+<li><strong>Redenção:</strong> se der para implementar, o fora da lei pode voltar a ser bem-vindo nas vilas (seção 9).</li>
+</ul>
+<h2>6. Facções novas com o tempo</h2>
+<p>Quatro jeitos, todos com config e com um teto de facções vivas:</p>
+<ul>
+<li><strong>Racha:</strong> quando o líder de uma facção grande (muitos postos ou membros) morre, os capitães disputam o posto. Às vezes um posto se separa com o capitão mais ambicioso e vira uma facção nova, nascida inimiga da antiga.</li>
+<li><strong>Posto sem dono:</strong> um posto de saqueadores gerado longe de qualquer território vira uma facção nova, se houver vaga no teto. Senão, a facção mais próxima o anexa.</li>
+<li><strong>Exilados:</strong> villagers expulsos ou fora da lei (profissão <code>outlaw</code>) que se juntam em grupo formam um bando. O bando cresce até virar facção, com um acampamento.</li>
+<li><strong>Fundada pelo jogador:</strong> o fora da lei com reputação alta pode fundar a <strong>própria facção</strong>, com nome e bandeira escolhidos, e recrutar saqueadores e villagers fora da lei.</li>
+<li><strong>Fim de uma facção:</strong> uma facção sem postos e sem membros desaparece, e os postos dela viram território livre.</li>
+</ul>
+<h2>7. Território</h2>
+<ul>
+<li><strong>Área:</strong> um raio em volta de cada posto (config, por exemplo 64 blocos). A soma dos raios é o território da facção.</li>
+<li><strong>Ao entrar:</strong> aparece um título discreto, como ao entrar numa vila: "Território dos Corvos de Vardholm (hostil)".</li>
+<li><strong>No mapa:</strong><ul>
+<li>o mapa da prefeitura e o do Blueprint desenham o território com a cor da bandeira, tracejado como a borda da vila;</li>
+<li>o ícone da bandeira fica sobre cada posto conhecido;</li>
+<li>só aparecem os postos que o jogador já viu.</li>
+</ul>
+</li>
+<li><strong>Vigilância:</strong> dentro do território, os batedores notam o jogador de mais longe e avisam o posto. Com reputação baixa vêm patrulhas, com reputação alta vêm guias.</li>
+</ul>
+<h2>8. Guerras entre facções</h2>
+<ul>
+<li><strong>Relações:</strong> cada par de facções tem uma relação, de guerra até aliança. Ela muda com incidentes: território sobreposto, membros mortos, saques no mesmo alvo.</li>
+<li><strong>Simulação:</strong> a guerra é simulada em chunks descarregados, para não pesar. De tempos em tempos, um posto em guerra ataca outro e o resultado é sorteado pela força de cada facção (membros, postos, tipo). O perdedor pode perder o posto.</li>
+<li><strong>Lutas de verdade:</strong> perto do jogador, a luta é real, com saqueadores de bandeiras diferentes se enfrentando.</li>
+<li><strong>As vilas:</strong> são um alvo a mais. Facções em paz com uma vila (por trégua ou tributo) deixam ela em paz.</li>
+<li><strong>O jogador entra no jogo:</strong> pode tomar partido, levar recados, trair, ou pagar uma facção para atacar outra.</li>
+</ul>
+<h2>9. Redenção do fora da lei</h2>
+<ul>
+<li><strong>Multa:</strong> paga nos Registros da Cidade da vila, em esmeraldas, proporcional ao mal feito. Volta a reputação para neutra.</li>
+<li><strong>Pena:</strong> cumprir tempo na prisão da vila (o tipo de prédio <code>prison</code> do MCA). O jogador fica preso alguns dias de jogo, com a porta trancada pelos guardas, e sai com a reputação de volta.</li>
+<li><strong>Serviço:</strong> pedidos da vila "pagam" a dívida aos poucos, com o sistema de pedidos que já existe.</li>
+<li><strong>Do lado da facção:</strong> voltar para a vila derruba a reputação com a facção, que passa a ver o jogador como traidor.</li>
+</ul>
+<p>Perguntas que ainda ficam:</p>
+<ul>
+<li>O jogador fora da lei vê o território de todas as facções, ou só das que conhece?</li>
+<li>Na pena de prisão, o jogador pode fugir (e o que acontece)?</li>
+</ul></div></details>
+<details class='doc' id='doc-predios-e-niveis' style='--k:var(--grass)'><summary><span class='state'>feito</span>Prédios e níveis: tela de prédios, oficinas que crescem, comida e água <span class='muted'>· predios-e-niveis.md</span></summary><div class='body'><h1>Prédios e níveis: tela de prédios, oficinas que crescem, comida e água</h1>
+<p><strong>Estado (2026-11-02):</strong> fases 1 a 3 feitas, sem teste em jogo. Compila, os testes passam e os GameTests de economia, progressão, bebidas, mentes e pedidos também.</p>
+<p><strong>Objetivo:</strong> guiar o jogador sobre o que cada prédio precisa ter, sem desenhar blueprints para cada tipo de casa. O catálogo e a lista de prédios da vila viraram uma tela só, com níveis.</p>
+<h2>1. Navegação</h2>
+<ul>
+<li>O item Blueprint abre o mesmo menu radial dos Registros da Cidade (<code>TownHallScreen</code>). A coluna antiga de botões do <code>BlueprintScreen</code> saiu, junto com as páginas antigas de catálogo e de moradores.</li>
+<li>O botão Voltar fica sempre embaixo à esquerda (<code>McaBackButton</code>, em 10, altura−26). Vale para mapa, regras, posto, progresso, moradores, empregos e prédios, e todos voltam para o radial.</li>
+</ul>
+<h2>2. Tela de prédios (<code>client/gui/BuildingsScreen</code>)</h2>
+<ul>
+<li><strong>Abas:</strong> uma por tipo de prédio visível (mais "casa"), ordenadas por prioridade.<ul>
+<li>Cada aba mostra o ícone de <code>buildings.png</code>, ou o item do bloco principal do tipo, e quantos prédios a vila tem.</li>
+</ul>
+</li>
+<li><strong>Grade:</strong> os prédios da vila daquele tipo. Cada cartão mostra o morador (ou "Padaria 2") e o selo do nível.</li>
+<li><strong>Inspetor:</strong><ul>
+<li><strong>topo:</strong> a planta do prédio, com todos os cômodos na cor do tipo;</li>
+<li><strong>meio:</strong> a descrição, quem mora, quem trabalha, o que produz, os ganhos do nível escolhido, a área e os cômodos, e os requisitos em verde/vermelho (<code>tem/precisa</code>). No nível atual, mostra também o resto do que o prédio tem;</li>
+<li><strong>rodapé:</strong> abas Nv 1 a 4, abrindo no nível atual.</li>
+</ul>
+</li>
+<li><strong>Nome e lugar (2026-11-04):</strong> cada prédio pode ser renomeado no inspetor (lápis sobre a planta; <code>RenameBuildingMessage</code>, salvo em <code>Village.buildingNames</code>). Sem nome, vale "Tipo N". O cartão mostra a distância e a direção ("34 m NE"), e o inspetor, as coordenadas.</li>
+<li><strong>Tipo sem prédio na vila:</strong> a tela mostra o Nv 1 como guia para construir.</li>
+<li><strong>Atualização:</strong> a tela pede os dados de novo a cada 10 s (<code>GetVillageRequest</code> e <code>BuildingLevelMessages</code>).</li>
+<li><strong>Dados:</strong> <code>expansion/progression/BuildingLevelMessages</code> manda, para cada prédio, o relatório (<code>BuildingTiers.report</code>), quem trabalha e o que produz, e os níveis de cada tipo.</li>
+</ul>
+<h2>3. Níveis (<code>data/mca/building_tiers/*.json</code>)</h2>
+<p>Cada nível do formato de <code>building_tiers</code> pode ter:</p>
+<ul>
+<li><code>minArea</code>: o piso do cômodo principal (o salão da taverna);</li>
+<li><code>rooms</code>: os cômodos do prédio lógico;</li>
+<li><code>blocks</code>: blocos ou <code>#tags</code>, contados varrendo o mundo dentro do prédio;</li>
+<li><code>items</code>: itens guardados nos baús do prédio (os instrumentos da taverna);</li>
+<li><code>workers</code>, <code>speed</code> e <code>storage</code>: o que a oficina ganha naquele nível.</li>
+</ul>
+<p>Hoje há arquivos para 29 tipos:</p>
+<ul>
+<li><strong>15 oficinas:</strong> padrão de 1 a 4 mesas e piso de 9, 20, 35 e 55, mais baús, enfeites e o próprio de cada ofício;</li>
+<li><strong>restaurante e hortaliças;</strong></li>
+<li><strong>taverna:</strong> o salão vai de 30 a 120 de piso, de 1 a 7 cômodos, jukebox, instrumentos de 1 a 4 e água;</li>
+<li><strong>casa:</strong> pede água para beber a partir da Casa grande;</li>
+<li><strong>outros:</strong> armazém, biblioteca, escola, enfermaria, arsenal, ferraria, prisão, prefeitura, cemitério e loja de música.</li>
+</ul>
+<p><strong>Ganhos</strong> (<code>BuildingPerks</code>, calculado a cada 1200 ticks):</p>
+<ul>
+<li><strong>workers:</strong> quantos trabalham ao mesmo tempo. Quem passa do limite fica parado, nas oficinas e nos coletores;</li>
+<li><strong>speed:</strong> divide o tempo do lote;</li>
+<li><strong>storage:</strong> a porcentagem do teto de estoque (<code>economyStorageCap</code>) que a vila guarda antes de a oficina parar.</li>
+</ul>
+<p><strong>Abaixo do Nv 1:</strong> a oficina trabalha com uma pessoa.</p>
+<p><strong>Progressão:</strong> <code>VillageGrowth</code> avisa quando um prédio sobe de nível (<code>villageStage.level_up</code>), e <code>VillageProgress</code> conta as oficinas pelo nível novo.</p>
+<h2>4. Comida e mods</h2>
+<ul>
+<li><strong>Tags novas:</strong><ul>
+<li><code>mca:counters</code>: mesa de trabalho, as 72 bancadas do Storage Delight e a tábua de corte do FD;</li>
+<li><code>mca:cooking_stations</code>: fogueira, e panela, fogão e frigideira do FD;</li>
+<li><code>mca:food_crates</code>: fardo de feno, caixas do FD e caixotes do Village Furnishings;</li>
+<li>itens: <code>mca:crops</code>, <code>mca:plantable</code> e <code>mca:instruments</code>.</li>
+</ul>
+</li>
+<li><strong>Restaurante:</strong> defumador + lugar de cozinhar. As 6 receitas do FD saíram da taverna (que não é oficina e não as rodava) e foram para cá. Também faz ensopado de cogumelo, sopa de beterraba, ensopado de coelho e batata assada.</li>
+<li><strong>Hortaliças:</strong> composteiro + caixas. O fazendeiro dali deixa a parte da vila da colheita nos baús da banca.</li>
+<li><strong>Padaria:</strong> pão, biscoitos e torta de abóbora. Padaria e açougue pedem bancadas a partir do Nv 2.</li>
+<li><strong>Farmer's Delight:</strong><ul>
+<li>as plantações entram na parte da colheita e no plantio (<code>mca:crops</code>, <code>mca:plantable</code>);</li>
+<li>massas, massa crua, tortas e doces entram na dieta;</li>
+<li>cidra, suco de melão e chocolate quente contam como bebida refrescante.</li>
+</ul>
+</li>
+</ul>
+<h2>5. Água e casa</h2>
+<ul>
+<li><strong>Beber gasta água:</strong> a cada 30 de sede (<code>Needs.SIP</code>), sai um copo da fonte (<code>Needs.drawWater</code>):<ul>
+<li>caldeirão e pia descem um nível;</li>
+<li>o barril do Village Furnishings perde uma dose pela torneira (<code>Container</code>);</li>
+<li>o poço nunca seca.</li>
+</ul>
+</li>
+<li><strong>Barril do Village Furnishings:</strong><ul>
+<li>o bloco ganhou <code>water=true/false</code>;</li>
+<li>a água purificada do Tough As Nails pode ir para dentro;</li>
+<li><code>mca:drinking_water</code> inclui <code>#village_furnishings:casks</code>.</li>
+</ul>
+</li>
+<li><strong>Cuidar da casa</strong> (<code>HomeUpkeepTask</code>): um adulto, no tempo livre, a cada 1 ou 2 dias de jogo:<ul>
+<li>enche o caldeirão, a pia ou o barril da casa. Busca primeiro num barril de água da vila fora de casa (9 doses pela torneira; água purificada continua purificada); se não houver, usa um balde de rio ou poço a até 24 blocos;</li>
+<li>traz até 12 comidas do armazém quando a despensa tem menos de 4 por morador (guardando 2 para si).</li>
+</ul>
+</li>
+</ul>
+<h2>6. Cemitério</h2>
+<ul>
+<li>Quem morre sem lápide vazia por perto é enterrado junto ao cemitério da vila (<code>Relationship.burialGround</code> e <code>placeGrave</code>): a cruz nova vai para o chão livre mais perto de uma lápide do cemitério, com um bloco de espaço entre as covas, até 10 blocos de distância.</li>
+<li>Sem cemitério, ela vai para junto da lápide mais próxima do centro da vila. Sem lápide nenhuma, fica onde o aldeão morreu e vira o começo do cemitério.</li>
+</ul>
+<h2>O que testar em jogo</h2>
+<ul>
+<li><strong>Navegação:</strong> o Blueprint abre o radial; cada seção volta com o Voltar embaixo.</li>
+<li><strong>Tela de prédios:</strong> abas, grade, inspetor no nível atual, troca de nível em verde e vermelho, aba vazia como guia.</li>
+<li><strong>Oficinas:</strong><ul>
+<li>uma padaria com 2 defumadores e área pequena: só um padeiro trabalha;</li>
+<li>aumentar o cômodo e ver o aviso de nível novo.</li>
+</ul>
+</li>
+<li><strong>Restaurante:</strong> defumador + fogueira (ou fogão do FD) vira restaurante e cozinha as receitas do FD.</li>
+<li><strong>Hortaliças:</strong> composteiro + 2 fardos de feno; a colheita aparece nos baús.</li>
+<li><strong>Água:</strong><ul>
+<li>aldeões bebendo esvaziam o caldeirão e a pia;</li>
+<li>o dono da casa enche de novo com balde;</li>
+<li>um barril com água (ou água purificada) serve de fonte.</li>
+</ul>
+</li>
+<li><strong>Despensa:</strong> sem comida em casa e com pão no armazém, o adulto traz comida.</li>
+</ul>
+<h2>Falta</h2>
+<ul>
+<li><strong>Ícones</strong> próprios na textura para as oficinas, o restaurante e as hortaliças. Hoje elas mostram o item do bloco; está anotado em <a href="#doc-todo-arte">todo-arte.md</a>.</li>
+<li><strong>Prisão:</strong> os guardas não ficam parados na porta; ela só se fecha.</li>
+<li><strong>Retratos (Moradores):</strong> testar em jogo a correção do cabelo que não acompanhava a cabeça e do tremor com o Fresh Animations.<ul>
+<li><strong>O que mudou:</strong> <code>VillagerLayer</code> passou a chamar <code>VillagerParts.poseNow</code>, que agora posa uma vez por quadro.</li>
+<li><strong>Se voltar, anotar:</strong> se acontece também no mundo, se começa ao abrir ou depois de um tempo, e se acontece com todos os aldeões.</li>
+</ul>
+</li>
+<li><strong>Detecção de prédios:</strong> analisar no save do usuário quando o cliente voltar a abrir (pasta em <code>fabric/run/saves</code>, mais o prédio e o que se esperava detectar).</li>
+<li><strong>Testes instáveis</strong> (já falhavam antes destas mudanças):<ul>
+<li><code>VillageMourningGameTests</code>: as montagens dos testes falham e uma derruba o servidor de teste;</li>
+<li><code>TombstoneBlockGameTests.resurrectionClearsExactGraveLocation</code>: falha às vezes;</li>
+<li><code>MindsGameTests</code>: <code>skillGrowsUpToTheIntelligenceCap</code> e a luz da casa aconchegante falham às vezes.</li>
+</ul>
+</li>
+<li><strong>Commit (2026-11-05):</strong><ul>
+<li><strong>MCA:</strong> sem commit desde o <code>0dd4913be</code> (tela de prédios, níveis, comida, água, cuidar da casa, nomes, moradores, progresso, retratos e cemitério);</li>
+<li><strong>Village Furnishings:</strong> sem commit (propriedade <code>water</code> no barril e água purificada).</li>
+</ul>
+</li>
 </ul></div></details>
 <details class='doc' id='doc-tracos-rimworld' style='--k:var(--grass)'><summary><span class='state'>feito</span>Traços do RimWorld e crise mental <span class='muted'>· tracos-rimworld.md</span></summary><div class='body'><h1>Traços do RimWorld e crise mental (WIP)</h1>
 <blockquote>
@@ -2951,299 +3400,719 @@ barracas viram uma "vitrine" do armazém, com o dono por perto). <strong>C</stro
       das vendas em esmeraldas?</li>
 <li><strong>Caixa vazio:</strong> o armazém compra fiado ou deixa de comprar?</li>
 </ol></div></details>
-<details class='doc' id='doc-faccoes' style='--k:var(--sky)'><summary><span class='state'>em andamento</span>Facções: saqueadores como gente, com bandeira e reputação <span class='muted'>· faccoes.md</span></summary><div class='body'><h1>Facções: saqueadores como gente, com bandeira e reputação (WIP)</h1>
+<details class='doc' id='doc-habilidades-e-qualidade' style='--k:var(--gold)'><summary><span class='state'>referência</span>Habilidades por atividade e qualidade dos itens <span class='muted'>· habilidades-e-qualidade.md</span></summary><div class='body'><h1>Habilidades por atividade e qualidade dos itens (WIP)</h1>
 <blockquote>
-<p><strong>Status: em andamento.</strong> Planejado em 2026-10-29; fase 1 implementada (ver Estado). A inspiração é o RimWorld: tribos e facções com quem dá para conversar, negociar ou guerrear. O objetivo principal é <strong>dar ao jogador um motivo para virar fora da lei</strong>.</p>
+<p><strong>Status: em andamento.</strong> Planejado em 2026-11-02. Substitui a habilidade por profissão (<code>Skills.java</code>, de 0 a 100) por habilidades por atividade, com níveis de 0 a 20 (estilo RimWorld/Stardew). Também cria a qualidade dos itens produzidos. Os ícones estão em <a href="#doc-icones">icones.md</a>, e os atributos em <a href="#doc-atributos-e-niveis">atributos-e-niveis.md</a>.</p>
 </blockquote>
-<h2>Estado (2026-10-29)</h2>
-<p>Fases 1 a 3, território no mapa e guerras feitos, sem commit e sem teste em jogo, com a flag <code>villagerFactions</code> (ligada no cliente de desenvolvimento). Código em <code>expansion/faction</code>:</p>
+<h2>Ideia</h2>
 <ul>
-<li><strong>Facções do mundo</strong> (<code>FactionData</code>, salvo em <code>mca_factions</code>): <code>factionCount</code> (5) nascem quando o mundo precisa delas.<ul>
-<li>Cada uma tem um nome, um lugar do gerador de nomes de vila num de 6 moldes: "Corvos de X", "Irmandade de X", "Lobos de X"…</li>
-<li>E uma bandeira: cor base e 2 a 4 padrões de estandarte sorteados.</li>
+<li>O trabalho dos villagers tem progressão: quanto maior o nível, mais rápido o trabalho, mais itens, mais raros e <strong>melhor qualidade</strong>.</li>
+<li>As receitas avançadas só liberam a partir de um nível mínimo.</li>
+<li>Habilidade é por <strong>atividade</strong>, não por profissão. Colher numa tarefa (chore) também treina Cultivo, e quem troca de emprego leva o que aprendeu.</li>
 </ul>
-</li>
-<li><strong>Bases:</strong><ul>
-<li>A cada 20 segundos, para cada jogador, o jogo procura a base de saqueadores mais próxima (até 6 chunks). Uma base nova vai para a facção que tem outra base a até 1200 blocos.</li>
-<li>Se não houver, vai para uma facção ainda sem base. Se todas tiverem, nasce uma facção nova, até <code>factionMax</code> (8); senão, a menor facção leva.</li>
-<li>Os estandartes da base viram a bandeira da facção.</li>
-</ul>
-</li>
-<li><strong>Território:</strong> <code>factionTerritoryRadius</code> (96 blocos) em volta de cada base. Ao entrar, aparece na barra de ação: "Território: Corvos de X · hostil".</li>
-<li><strong>Membros:</strong> todo illager (saqueador, vindicador, evocador, bruxa, devastador) pertence à facção do território em que está, ou da base mais próxima a até 1200 blocos. A facção fica guardada numa tag.</li>
-<li><strong>Reputação por jogador e facção</strong>, de −100 a 100, começando em <code>factionStartReputation</code> (−15):<ul>
-<li>matar um membro: −<code>factionKillPenalty</code> (15);</li>
-<li>matar um villager: +3 com todas as facções;</li>
-<li>matar um golem de ferro: +5 com todas as facções;</li>
-<li>a mudança de faixa (hostil, neutro, amigo, aliado) é avisada no chat.</li>
-</ul>
-</li>
-<li>
-<p><strong>Trégua:</strong> com reputação neutra ou melhor, os membros da facção não escolhem o jogador como alvo, a não ser que ele os ataque primeiro.</p>
-</li>
-<li>
-<p><strong>Bandidos (fase 2, <code>Bandits</code>):</strong> em vez de uma entidade nova, o saqueador vira um villager do MCA com a profissão <code>mca:bandit</code>. Assim ele tem a mesma aparência, Fresh Animations, traços, humor e conversa dos outros.</p>
+<h2>Modelo</h2>
 <ul>
-<li>O <code>SpawnQueue</code> troca todo saqueador que entra no mundo <strong>fora de uma invasão</strong> (as invasões continuam vanilla, porque a raid precisa deles). Flag <code>factionPillagersAsPeople</code> (ligada).</li>
-<li>Recebe besta (70%) ou machado de ferro, a tag da facção e a de capitão se era líder de patrulha. Não some com a distância.</li>
-<li>Com 8 bandidos a até 48 blocos, os saqueadores novos daquela base não são trocados (as bases continuam gerando saqueadores, e os bandidos não contam no limite de monstros).</li>
-<li>Luta como o mercenário (ramo de combate do guarda). Uma vez por segundo, mira o jogador mais próximo a até 16 blocos com quem o bando é hostil, e larga o alvo quando a reputação deixa de ser hostil (a não ser que o jogador o tenha atacado).</li>
-<li>Com jogador hostil, não conversa: "Ele te encara e não diz nada".</li>
-<li>Nova pergunta "Quem são vocês?" (constraint <code>bandit</code>, ação <code>bandit_band</code>): diz o nome do bando e como ele vê o jogador.</li>
-<li>Roupas: as do curtidor e do guarda.</li>
+<li><strong>Nível de 0 a 20.</strong> XP para passar do nível n: <code>100 × 1,15^n</code>.</li>
+<li><strong>Teto por villager:</strong> de 8 a 20. Vem do <code>cap()</code> antigo (gene INTELIGÊNCIA mais o bônus de Sabedoria).</li>
+<li><strong>Interesse</strong> (paixão do RimWorld): 0, 1 ou 2 chamas por habilidade, que multiplicam o XP por 0,5, 1 ou 1,5.<ul>
+<li>É sorteado quando o villager é criado.</li>
+<li>Os traços puxam o interesse (ex.: <code>plant_lover</code> dá interesse em Cultivo).</li>
 </ul>
 </li>
-<li>
-<p><strong>Território no mapa (<code>FactionMapMessages</code>, <code>FactionMapOverlay</code>):</strong></p>
-<ul>
-<li>o jogador "conhece" um posto quando o descobre ou anda no território dele;</li>
-<li>o mapa da prefeitura desenha um anel tracejado na cor da bandeira em volta de cada posto conhecido, com o estandarte em cima;</li>
-<li>um posto fora da área visível aparece com o estandarte na borda do mapa;</li>
-<li>ao passar o mouse: o nome do bando, como ele vê o jogador e as coordenadas.</li>
+<li><strong>Profissão → habilidades:</strong> cada profissão tem uma habilidade principal e uma secundária. A secundária ganha 40% do XP.<ul>
+<li>O mapa é data-driven em <code>data/&lt;ns&gt;/profession_skills/*.json</code>, no formato <code>{"profession": "minecraft:farmer", "primary": "mca:farming", "secondary": "mca:husbandry"}</code>.</li>
+<li>Assim outros mods entram por arquivo.</li>
 </ul>
 </li>
-<li><strong>Guerras (<code>FactionWars</code>, flag <code>factionWars</code>, ligada):</strong><ul>
-<li>cada par de facções tem uma relação de −100 a 100; abaixo de −40 é guerra. Uma facção nova já nasce com relações sorteadas com as outras;</li>
-<li>uma vez por dia:<ul>
-<li>a relação volta devagar para −10;</li>
-<li>territórios que se encostam pioram 5;</li>
-<li>10% de chance de uma briga (−15) ou de um inimigo comum (+10);</li>
+<li><strong>Armazenamento:</strong> parâmetro rastreado <code>"Skills"</code>, no formato <code>{id: {xp, passion}}</code>.<ul>
+<li>Migração: o valor antigo de <code>"ProfessionSkills"</code> vai para a habilidade principal da profissão (nível ≈ valor/5).</li>
 </ul>
 </li>
-<li>guerra declarada e paz são avisadas no chat;</li>
-<li>cada par em guerra tem 35% de chance por dia de atacar o posto inimigo mais próximo dos seus:<ul>
-<li>longe dos jogadores, o resultado sai pela força (postos × 3 + sorte, e o defensor tem bônus); se o atacante vence, o posto muda de dono e os estandartes trocam quando alguém chegar perto. Aparece o boato "Boato: X tomaram um posto de Y";</li>
-<li>com um jogador a até 160 blocos, a luta é de verdade: um grupo de 4 bandidos nasce a 40 blocos e marcha até o posto;</li>
-</ul>
-</li>
-<li>os bandidos atacam membros de facções em guerra com a deles que estejam à vista;</li>
-<li>membros da mesma facção, ou de facções em paz, não se atacam (vale também para os saqueadores vanilla das invasões);</li>
-<li>mortes entre facções pioram a relação em 6.</li>
-</ul>
-</li>
-<li>
-<p><strong>Ações (fase 3, <code>FactionDeals</code>):</strong></p>
-<ul>
-<li><strong>negociar:</strong> o botão de barganha já existente, agora com o que o bandido carrega: 2 a 4 itens roubados (pão, trigo, couro, ferro, ouro, flechas, sela…) e algumas esmeraldas;</li>
-<li><strong>"Venha lutar por mim"</strong> (só com reputação amigo ou melhor): 8 esmeraldas por 3 dias ou 16 por uma semana. O bandido sai do bando e vira mercenário;</li>
-<li><strong>"Deixem a vila em paz"</strong>: <code>factionTruceCost</code> (24) esmeraldas dão <code>factionTruceDays</code> (7) dias de trégua para a vila mais próxima do jogador (até 2000 blocos):<ul>
-<li>os membros do bando não atacam os villagers e golens dela;</li>
-<li>as patrulhas do bando não aparecem até 64 blocos além da borda da vila;</li>
-</ul>
-</li>
-<li>os pedidos ("traga X") continuam pelo sistema de pedidos que já existe.</li>
-</ul>
-</li>
-<li>
-<p><strong>Fase 4, entrar no bando (<code>FactionMembers</code>, 2026-11-01):</strong></p>
-<ul>
-<li>com reputação <strong>aliado</strong>, "Quero andar com vocês" (constraint <code>bandit_can_join</code>): o jogador vira membro (um bando por vez) e ganha a bandeira; perde 20 com os bandos em guerra com o seu;</li>
-<li><strong>fora da lei:</strong> a tarefa de rank <code>faction_free</code> (<code>data/mca_roads/tasks/peasant.json</code>) faz toda vila ver o membro como <code>OUTLAW</code>;</li>
-<li>os bandidos do bando lutam ao lado do membro: atacam quem ele acabou de bater ou quem o atacou (jogadores, só se atacaram primeiro);</li>
-<li>"Venha comigo, irmão" (<code>bandit_rally</code>): um bandido vira mercenário por 1 dia, de graça. Para membros, a opção paga de contratar some;</li>
-<li>os bandos em guerra com o do jogador o tratam como inimigo, mesmo com reputação boa;</li>
-<li>"Vou sair do bando": sai, com −40 de reputação (traição). Abaixo de amigo, o bando o expulsa.</li>
-</ul>
-</li>
-<li><strong>Redenção (<code>Redemption</code>):</strong> "Como acerto minhas contas com a vila?" e "Pagar a multa" com qualquer morador de uma vila que vê o jogador como fora da lei (constraint <code>village_debt</code>):<ul>
-<li>multa de 8 esmeraldas + 1 por 5 pontos de reputação negativa + 24 se for membro de bando, até 96;</li>
-<li>pagar devolve a reputação da vila para um pouco acima de zero e tira o jogador do bando como traidor.</li>
-</ul>
-</li>
-<li><strong>Tipos de facção (fase 5, <code>FactionTypes</code>):</strong> arquivos <code>data/&lt;ns&gt;/faction_types/*.json</code> com peso, número de nomes, força na guerra simulada e armas, mão secundária e armaduras com chance:<ul>
-<li><code>raiders</code> (besta e machado), <code>tribal</code> (arco, machado de pedra, tridente, couro), <code>cult</code> (espadas de ferro e ouro, capacete de ouro, totem raro), <code>military</code> (espada, besta, escudo, ferro e malha);</li>
-<li>nomes próprios por tipo ("Tribo de X", "Culto de X", "Legião de X"…); bandos antigos continuam <code>raiders</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Facções novas e fim (<code>FactionSplits</code>):</strong></p>
-<ul>
-<li><strong>racha:</strong> uma vez por dia, um bando com 3 postos ou mais tem 5% de chance de perder o posto mais afastado para um bando novo do mesmo tipo, nascido em guerra com ele (−70); os jogadores ficam com a mesma reputação nos dois. Boato no chat;</li>
-<li><strong>fim:</strong> um bando que perde o último posto na guerra some, se houver mais bandos que <code>factionCount</code>.</li>
-</ul>
-</li>
-<li>
-<p><strong>Pena e serviço (<code>Redemption</code>, 2026-11-01):</strong> além da multa, com qualquer morador:</p>
-<ul>
-<li>"Cumpro pena na prisão de vocês" (só se a vila tem um prédio <code>prison</code>): o jogador vai para a cela por 30 ticks por ponto de reputação negativa, de 2 a 10 minutos. Sair do prédio é fuga: a pena acaba e a vila tira mais 20. Cumprida, vale como multa paga;</li>
-<li>"Deixe-me pagar com trabalho": de 1 a 5 pedidos (1 por 25 pontos negativos) de moradores da vila. Cada pedido feito (gancho <code>McaAddon.requestCompleted</code>) desconta um; o último perdoa;</li>
-<li>pena e serviço ficam em tags do jogador (<code>mca_jail:</code>, <code>mca_service:</code>). Enquanto cumpre, a multa e as penas não aparecem.</li>
-</ul>
-</li>
-<li><strong>Morar no posto (<code>FactionMembers</code>):</strong> "Posso ficar aqui com vocês?" a até 48 blocos de um posto do bando muda o ponto de renascer para ali.</li>
-<li><strong>Saquear com o bando (<code>FactionRaids</code>):</strong> "Vamos atacar a vila aqui perto": o bandido e mais 3 marcham para a vila mais próxima (até 320 blocos), por 5 minutos:<ul>
-<li>dentro da vila atacam aldeões adultos e golens; cada um que derrubam dá 2 esmeraldas (4 por golem) e +2 de reputação ao membro;</li>
-<li>a vila tira 15 de quem trouxe o bando; uma vez por dia; nunca contra uma vila com trégua paga. Depois, voltam ao posto mais próximo.</li>
-</ul>
-</li>
-<li><strong>Fundar o próprio bando (<code>FactionFounding</code>):</strong> um membro aliado, com uma bandeira na mão e 32 esmeraldas, funda o "Bando de <nome>":<ul>
-<li>tipo <code>founded</code> (equipado como saqueadores), com a bandeira da mão, o acampamento onde o jogador está e o jogador como líder (<code>leader</code> no save);</li>
-<li>o bando de origem fica em bons termos (+40), e o bandido da conversa vem junto;</li>
-<li>o líder recruta bandidos de bandos que confiam nele (8 esmeraldas) e aldeões fora da lei (de graça);</li>
-<li>não racha, não ganha postos descobertos de graça, não expulsa o líder e não some enquanto tiver membros. Se o líder sai, o bando fica sem líder.</li>
-</ul>
-</li>
-<li><strong>Exílio (<code>Exiles</code>):</strong> um aldeão com a profissão <code>outlaw</code> (o "executar" do MCA) que sobrevive vai para o acampamento de exilados mais próximo (até 600 blocos) e vira bandido dele. Sem acampamento, e com vaga no teto, monta um a 48–80 blocos com fogueira e bandeira: um bando novo do tipo <code>exiles</code> (peso 0, nunca sorteado; espada de pedra, machado de madeira, arco). Boato no chat.</li>
-</ul>
-<p>Falta: o jogador escolher o nome do bando (hoje é o nome dele), postos de verdade para o bando do jogador (tomar um posto inimigo) e a pena com porta trancada pelos guardas.</p>
-<h2>O que já existe e será reaproveitado</h2>
-<ul>
-<li><strong>Villager zumbi do MCA:</strong> <code>ZombieVillagerEntityMCA</code> estende o zumbi vanilla e implementa <code>VillagerLike</code>. É o molde para o <strong>saqueador do MCA</strong>: mesma genética, pele, roupa, cabelo, traços e diálogos.</li>
-<li><strong>Troca automática:</strong> o <code>SpawnQueue</code> troca os villagers e zumbis vanilla pelos do MCA (<code>overwriteOriginalVillagers</code>, <code>overwriteOriginalZombieVillagers</code>). Os saqueadores ganham a mesma troca (<code>overwriteOriginalPillagers</code>).</li>
-<li><strong>Fora da lei:</strong> já existem o rank <code>OUTLAW</code> (reputação baixa na vila), a profissão <code>outlaw</code> e as constraints <code>outlawed</code> / <code>!outlawed</code> nos diálogos.</li>
-<li><strong>Caçador de recompensas:</strong> <code>VillageManager.spawnBountyHunter</code> já manda saqueadores atrás de quem a vila odeia, um gancho natural para "a facção te protege".</li>
-<li><strong>Nomes:</strong> <code>data/mca/mca_names</code> (55 culturas) gera nomes de pessoas e vilas, e serve também para nomes de facção.</li>
-<li><strong>Postos de saqueadores:</strong> a estrutura vanilla <code>minecraft:pillager_outpost</code>, que já está na lista de estruturas do MCA (<code>Config</code>).</li>
-<li><strong>Bandeira:</strong> estandartes vanilla com padrões (<code>BannerPatternLayers</code>), dispensando arte nova.</li>
-<li><strong>Diálogos, traços, opiniões e humor:</strong> valem para qualquer <code>VillagerLike</code>.</li>
-</ul>
-<h2>1. A facção</h2>
-<ul>
-<li><strong>Geração:</strong> algumas facções nascem com o mundo (config: quantidade). Cada uma recebe:<ul>
-<li><strong>nome</strong>, de uma cultura de <code>mca_names</code> com um molde (por exemplo "Os Corvos de Vardholm", "Irmandade de X");</li>
-<li><strong>bandeira</strong>, um estandarte com cor base e 2 a 4 padrões sorteados, guardado como <code>BannerPatternLayers</code>;</li>
-<li><strong>tipo</strong> (seção 5; na fase 1 todas são "saqueadores");</li>
-<li><strong>sede:</strong> os postos de saqueadores que forem sendo achados.</li>
-</ul>
-</li>
-<li><strong>Dados do mundo:</strong> SavedData <code>FactionData</code>, com as facções, a reputação de cada jogador com cada facção, os postos e a relação com cada vila.</li>
-<li><strong>Posto de saqueadores:</strong><ul>
-<li>quando um posto é gerado ou visto pela primeira vez, ele <strong>ganha a facção</strong> (a mais próxima ou uma nova);</li>
-<li>o estandarte ominoso do posto vira a <strong>bandeira da facção</strong>;</li>
-<li>quem nasce ali pertence à facção.</li>
+<li><strong>Idosos</strong> aprendem a 0,8×. O traço WISE é isento, como manda <a href="#doc-tracos-sims">tracos-sims.md</a>.</li>
+<li><strong>Receitas</strong> (<code>data/mca/production/*.json</code>) ganham três campos:<ul>
+<li><code>skill</code>: a habilidade usada (padrão: a principal da profissão);</li>
+<li><code>min_level</code>: o nível mínimo para fazer a receita;</li>
+<li><code>quality</code>: se a saída recebe qualidade.</li>
 </ul>
 </li>
 </ul>
-<h2>2. Saqueadores do MCA (<code>PillagerEntityMCA</code>)</h2>
-<ul>
-<li><strong>A entidade:</strong> estende o <code>Pillager</code> vanilla, implementando <code>VillagerLike</code> como o zumbi do MCA.</li>
-<li><strong>Visual:</strong><ul>
-<li>modelo humano, genética, pele, roupa (roupas de saqueador no catálogo de roupas) e cabelo;</li>
-<li>o estandarte nas costas do capitão.</li>
-</ul>
-</li>
-<li><strong>Por dentro:</strong> traços, humor, opiniões e nomes.</li>
-<li><strong>Membros:</strong> cada saqueador pertence a uma facção (parâmetro sincronizado) e tem um <strong>cargo</strong>: batedor, guerreiro, capitão, líder da facção.</li>
-<li><strong>Comportamento:</strong><ul>
-<li><strong>hostil</strong> (como hoje) com quem tem reputação baixa na facção;</li>
-<li><strong>neutro</strong> com quem tem reputação média: não ataca e aceita conversa;</li>
-<li><strong>aliado</strong> com quem tem reputação alta: luta junto e protege dos caçadores de recompensa.</li>
-</ul>
-</li>
-<li><strong>Ataques a vilas:</strong> os raids e patrulhas vanilla continuam, agora com saqueadores do MCA.</li>
-</ul>
-<h2>3. Reputação com a facção</h2>
-<ul>
-<li><strong>Como sobe:</strong><ul>
-<li>roubar ou atacar vilas (a mesma ação que derruba o rank da vila);</li>
-<li>ajudar a facção: entregar itens pedidos, matar golens e caçadores de recompensa;</li>
-<li>presentes ao líder.</li>
-</ul>
-</li>
-<li><strong>Como cai:</strong> matar membros, ajudar vilas contra raids, ser herói da vila.</li>
-<li><strong>Faixas:</strong> hostil → desconfiado → neutro → amigo → membro.</li>
-<li><strong>O jogo dos dois lados:</strong> reputação alta com a facção e baixa com as vilas é o caminho do <strong>fora da lei</strong>. Vilas fecham as portas e mandam caçadores; a facção vira casa.</li>
-</ul>
-<h2>4. Conversa e interação</h2>
-<ul>
-<li><strong>Interação:</strong> a mesma tela dos villagers (menu circular, conversa, presentes, traços, perguntas da conversa), com respostas e falas próprias de saqueador (<code>DialogueType.PILLAGER</code>, com volta para adulto).</li>
-<li><strong>Ações de facção</strong> (dependem da faixa):<ul>
-<li><strong>negociar:</strong> troca com itens roubados (o sistema de barganha da expansão);</li>
-<li><strong>pedidos:</strong> "traga X" ou "derrube Y", reaproveitando o sistema de pedidos;</li>
-<li><strong>recrutar</strong> um saqueador como mercenário (<code>mca:mercenary</code>);</li>
-<li><strong>entrar para a facção:</strong> ganha a bandeira, a armadura da facção e o rank fora da lei nas vilas;</li>
-<li><strong>pedir trégua:</strong> pagar tributo para parar os ataques a uma vila.</li>
-</ul>
-</li>
-<li><strong>Fora da lei:</strong> quem entra pode morar no posto, levar saqueadores a um raid e tirar a parte de um saque.</li>
-</ul>
-<h2>5. Tipos de facção (depois)</h2>
+<h2>Lista de habilidades</h2>
 <table>
 <thead>
 <tr>
-<th>Tipo</th>
-<th>Armas e aliados</th>
-<th>Gancho</th>
+<th>Habilidade (id)</th>
+<th>Quem treina</th>
+<th>Afeta</th>
+<th>Itens afetados</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><strong>Tribal</strong></td>
-<td>arco, machado, montaria de devastador (o "rinoceronte")</td>
-<td>postos mais selvagens, rituais em fogueiras</td>
+<td><strong>Cultivo</strong> <code>farming</code></td>
+<td>fazendeiro, horticultor, chore de colheita</td>
+<td>velocidade de plantar e colher; colheita extra; <strong>qualidade</strong>; semente extra</td>
+<td>trigo, cenoura, batata, beterraba, melancia, abóbora, cacau; hortaliças do Farmer's Delight (repolho, tomate, cebola, arroz)</td>
 </tr>
 <tr>
-<td><strong>Religiosa</strong></td>
-<td>seguidores do warden, do End ou do Nether; magia dos evocadores</td>
-<td>evocadores e vex, altares</td>
+<td><strong>Pecuária</strong> <code>husbandry</code></td>
+<td>pastor, açougueiro; secundária do fazendeiro</td>
+<td>lã, leite e ovos extras; velocidade de tosquia; qualidade de leite e ovos</td>
+<td>lã, leite, ovo, couro de abate</td>
 </tr>
 <tr>
-<td><strong>Tecnológica / militar</strong></td>
-<td>besta, TNT, espadas, armadura de ferro</td>
-<td>fortes, catapultas de TNT</td>
+<td><strong>Coleta</strong> <code>foraging</code></td>
+<td>coletor</td>
+<td>quantidade (hoje fixa em 1–3); raros (cogumelo, mel); qualidade</td>
+<td>frutas silvestres e luminosas, cogumelos, mel, flores, sementes</td>
+</tr>
+<tr>
+<td><strong>Lenhador</strong> <code>woodcutting</code></td>
+<td>lenhador, chore de corte</td>
+<td>velocidade de derrubada; toras e mudas extras; maçã e graveto raros</td>
+<td>toras, mudas, maçã, graveto (<strong>sem qualidade</strong>)</td>
+</tr>
+<tr>
+<td><strong>Mineração</strong> <code>mining</code></td>
+<td>minerador (dig site), ordens de cavar</td>
+<td>velocidade de cavar; minério extra; raros (diamante, esmeralda)</td>
+<td>pedra, carvão, ferro, cobre, ouro, gemas (<strong>sem qualidade</strong>)</td>
+</tr>
+<tr>
+<td><strong>Pesca</strong> <code>fishing</code></td>
+<td>pescador, chore de pesca</td>
+<td>espera menor; sorte na loot table (sorte da vara + nível/5); qualidade do peixe</td>
+<td>bacalhau, salmão, tropical, baiacu, tesouros</td>
+</tr>
+<tr>
+<td><strong>Caça</strong> <code>hunting</code></td>
+<td>caçador, chore de caça</td>
+<td>tempo de saque; drops extras ao recolher; qualidade da carne</td>
+<td>carnes cruas, couro, pena, coelho</td>
+</tr>
+<tr>
+<td><strong>Culinária</strong> <code>cooking</code></td>
+<td>padeiro, açougueiro, pão de casa, receitas do FD</td>
+<td>velocidade; menos ingredientes (pão com 2 trigos a partir do nível 10); <strong>qualidade</strong> (saciedade)</td>
+<td>pão, carnes assadas, ensopados, tortas, refeições do FD</td>
+</tr>
+<tr>
+<td><strong>Forja</strong> <code>smithing</code></td>
+<td>armeiro, ferreiro de armas e de ferramentas</td>
+<td>velocidade; <strong>qualidade</strong> (durabilidade, dano, armadura); obra-prima encantada; diamante a partir do nível 10</td>
+<td>ferramentas, armas, armaduras</td>
+</tr>
+<tr>
+<td><strong>Ofícios</strong> <code>crafting</code></td>
+<td>curtidor, flecheiro, pastor (tecido)</td>
+<td>velocidade; qualidade; flechas extras</td>
+<td>couro, armadura de couro, flechas, arcos, lã tingida, camas, tapetes</td>
+</tr>
+<tr>
+<td><strong>Construção</strong> <code>construction</code></td>
+<td>construtor, pedreiro, ordens de construir</td>
+<td>velocidade de colocar e cavar nas obras; economia de material; receitas melhores do pedreiro</td>
+<td>blocos lapidados, terracota (<strong>sem qualidade</strong>)</td>
+</tr>
+<tr>
+<td><strong>Erudição</strong> <code>scholarship</code></td>
+<td>bibliotecário, cartógrafo, professor</td>
+<td>velocidade; nível dos livros encantados; força das aulas da escola</td>
+<td>livros, livros encantados, mapas, papel</td>
+</tr>
+<tr>
+<td><strong>Medicina</strong> <code>medicine</code></td>
+<td>clérigo</td>
+<td>velocidade; qualidade das poções (duração); cura de villagers</td>
+<td>poções, garrafas de XP, redstone, glowstone</td>
+</tr>
+<tr>
+<td><strong>Combate</strong> <code>melee</code></td>
+<td>guarda, mercenário</td>
+<td>dano, bloqueio e recuo (soma com a Força)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Pontaria</strong> <code>archery</code></td>
+<td>arqueiro; secundária do caçador</td>
+<td>precisão e tempo de saque</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Comércio</strong> <code>trade</code></td>
+<td>trocas com o jogador, mercado entre villagers, caravanas, líder</td>
+<td>preços melhores para a vila; venda × qualidade</td>
+<td>esmeraldas, trocas</td>
+</tr>
+<tr>
+<td><strong>Transporte</strong> <code>hauling</code></td>
+<td>carregador</td>
+<td>velocidade carregado; capacidade por viagem</td>
+<td>—</td>
 </tr>
 </tbody>
 </table>
-<p>Cada tipo é um arquivo de dados (<code>data/mca/faction_types/*.json</code>): armas, roupas, estruturas e falas.</p>
-<h2>Fases</h2>
-<ol>
-<li><strong>Facção básica:</strong> <code>FactionData</code>, nome e bandeira gerados, postos ganham facção, reputação por facção, saqueadores neutros ou hostis conforme a reputação.</li>
-<li><strong>Saqueador do MCA:</strong> <code>PillagerEntityMCA</code> com o visual e a interação do MCA, troca automática e falas de saqueador.</li>
-<li><strong>Ações de facção:</strong> negociar, pedidos, recrutar, trégua.</li>
-<li><strong>Entrar para a facção:</strong> caminho fora da lei, morar no posto, raids com o jogador.</li>
-<li><strong>Tipos de facção:</strong> tribal, religiosa, tecnológica.</li>
-</ol>
-<h2>Decisões (2026-10-29)</h2>
+<p><strong>Atributo ligado a cada habilidade:</strong></p>
 <ul>
-<li><strong>Quantidade:</strong> 5 facções por mundo por padrão, ajustável na config do MCA (<code>factionCount</code>).</li>
-<li><strong>Facções novas com o tempo:</strong> sim, se der para fazer bem. A proposta está na seção 6.</li>
-<li><strong>Postos:</strong> uma facção tem <strong>vários postos</strong>.</li>
-<li><strong>Território:</strong> cada posto marca uma área em volta dele (o que a facção "vê"). Ela pode ser vista no mapa (seção 7).</li>
-<li><strong>Outros illagers:</strong> entram. Vindicadores, evocadores e bruxas viram gente do MCA; o devastador fica como montaria (bicho), com a bandeira da facção.</li>
-<li><strong>Guerras:</strong> as facções brigam entre si (seção 8).</li>
-<li><strong>Redenção:</strong> se der para implementar, o fora da lei pode voltar a ser bem-vindo nas vilas (seção 9).</li>
+<li>Percepção: Cultivo e Coleta;</li>
+<li>Força: Mineração e Lenhador;</li>
+<li>Destreza: Forja e Ofícios;</li>
+<li>Sabedoria: Erudição e Medicina;</li>
+<li>Social: Comércio;</li>
+<li>Vigor: Transporte.</li>
 </ul>
-<h2>6. Facções novas com o tempo</h2>
-<p>Quatro jeitos, todos com config e com um teto de facções vivas:</p>
+<h2>Fórmulas</h2>
 <ul>
-<li><strong>Racha:</strong> quando o líder de uma facção grande (muitos postos ou membros) morre, os capitães disputam o posto. Às vezes um posto se separa com o capitão mais ambicioso e vira uma facção nova, nascida inimiga da antiga.</li>
-<li><strong>Posto sem dono:</strong> um posto de saqueadores gerado longe de qualquer território vira uma facção nova, se houver vaga no teto. Senão, a facção mais próxima o anexa.</li>
-<li><strong>Exilados:</strong> villagers expulsos ou fora da lei (profissão <code>outlaw</code>) que se juntam em grupo formam um bando. O bando cresce até virar facção, com um acampamento.</li>
-<li><strong>Fundada pelo jogador:</strong> o fora da lei com reputação alta pode fundar a <strong>própria facção</strong>, com nome e bandeira escolhidos, e recrutar saqueadores e villagers fora da lei.</li>
-<li><strong>Fim de uma facção:</strong> uma facção sem postos e sem membros desaparece, e os postos dela viram território livre.</li>
-</ul>
-<h2>7. Território</h2>
-<ul>
-<li><strong>Área:</strong> um raio em volta de cada posto (config, por exemplo 64 blocos). A soma dos raios é o território da facção.</li>
-<li><strong>Ao entrar:</strong> aparece um título discreto, como ao entrar numa vila: "Território dos Corvos de Vardholm (hostil)".</li>
-<li><strong>No mapa:</strong><ul>
-<li>o mapa da prefeitura e o do Blueprint desenham o território com a cor da bandeira, tracejado como a borda da vila;</li>
-<li>o ícone da bandeira fica sobre cada posto conhecido;</li>
-<li>só aparecem os postos que o jogador já viu.</li>
+<li><strong>Velocidade:</strong> (1 + nível × 0,05) × aptidão do atributo × traço <code>WorkSpeed</code> × humor. O humor ruim dá 0,9 e o ótimo dá 1,1.</li>
+<li><strong>Item extra:</strong> chance de nível × 2,5% × Destreza. Acima do nível 15 pode sair +2.</li>
+<li><strong>Raros:</strong> 1 + nível/10, vezes o fator de Percepção.</li>
+<li><strong>Qualidade:</strong> soma nível + ferramenta (ferro +1, diamante +2) + perk da construção + humor ±1 + um sorteio de 0 a 5.<ul>
+<li>Até 7: Comum.</li>
+<li>De 8 a 13: Boa.</li>
+<li>De 14 a 19: Excelente.</li>
+<li>20 ou mais: Obra-prima (só a partir do nível 12).</li>
 </ul>
 </li>
-<li><strong>Vigilância:</strong> dentro do território, os batedores notam o jogador de mais longe e avisam o posto. Com reputação baixa vêm patrulhas, com reputação alta vêm guias.</li>
 </ul>
-<h2>8. Guerras entre facções</h2>
+<h2>Qualidade dos itens (<code>mca:quality</code>)</h2>
+<p>É um data component de 0 a 3. A tooltip mostra a estrela colorida. Os efeitos são carimbados nos componentes vanilla na hora da produção:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Comum</th>
+<th>Boa</th>
+<th>Excelente</th>
+<th>Obra-prima</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Comida: nutrição e saturação</td>
+<td>×1</td>
+<td>×1,2</td>
+<td>×1,4</td>
+<td>×1,75</td>
+</tr>
+<tr>
+<td>Ferramenta, arma e armadura: durabilidade</td>
+<td>×1</td>
+<td>×1,25</td>
+<td>×1,5</td>
+<td>×2</td>
+</tr>
+<tr>
+<td>Arma: dano extra</td>
+<td>+0</td>
+<td>+0,5</td>
+<td>+1</td>
+<td>+1,5</td>
+</tr>
+<tr>
+<td>Poção: duração</td>
+<td>×1</td>
+<td>×1,25</td>
+<td>×1,5</td>
+<td>×2</td>
+</tr>
+<tr>
+<td>Preço de venda</td>
+<td>×1</td>
+<td>×1,25</td>
+<td>×1,6</td>
+<td>×2,5</td>
+</tr>
+</tbody>
+</table>
 <ul>
-<li><strong>Relações:</strong> cada par de facções tem uma relação, de guerra até aliança. Ela muda com incidentes: território sobreposto, membros mortos, saques no mesmo alvo.</li>
-<li><strong>Simulação:</strong> a guerra é simulada em chunks descarregados, para não pesar. De tempos em tempos, um posto em guerra ataca outro e o resultado é sorteado pela força de cada facção (membros, postos, tipo). O perdedor pode perder o posto.</li>
-<li><strong>Lutas de verdade:</strong> perto do jogador, a luta é real, com saqueadores de bandeiras diferentes se enfrentando.</li>
-<li><strong>As vilas:</strong> são um alvo a mais. Facções em paz com uma vila (por trégua ou tributo) deixam ela em paz.</li>
-<li><strong>O jogador entra no jogo:</strong> pode tomar partido, levar recados, trair, ou pagar uma facção para atacar outra.</li>
+<li>A obra-prima também recebe o encantamento de <code>masterwork()</code>.</li>
+<li><strong>Materiais brutos</strong> (tora, minério, pedra, blocos) <strong>nunca</strong> recebem qualidade, para não quebrar pilhas de construção.</li>
+<li>Itens de qualidades diferentes não empilham.</li>
+<li>Comer comida melhor dá um humor positivo extra.</li>
+<li><strong>Village Furnishings (opcional):</strong> o cask passa a qualidade da bebida de entrada para a envelhecida.</li>
 </ul>
-<h2>9. Redenção do fora da lei</h2>
+<h2>Onde liga no código</h2>
 <ul>
-<li><strong>Multa:</strong> paga nos Registros da Cidade da vila, em esmeraldas, proporcional ao mal feito. Volta a reputação para neutra.</li>
-<li><strong>Pena:</strong> cumprir tempo na prisão da vila (o tipo de prédio <code>prison</code> do MCA). O jogador fica preso alguns dias de jogo, com a porta trancada pelos guardas, e sai com a reputação de volta.</li>
-<li><strong>Serviço:</strong> pedidos da vila "pagam" a dívida aos poucos, com o sistema de pedidos que já existe.</li>
-<li><strong>Do lado da facção:</strong> voltar para a vila derruba a reputação com a facção, que passa a ver o jogador como traidor.</li>
+<li><code>expansion/minds/SkillType</code> (registro) e <code>Skills</code> (reescrito, com migração).</li>
+<li><code>expansion/minds/ItemQuality</code> e <code>registry/DataComponentsMCA</code>.</li>
+<li><code>ProductionRecipes</code> (<code>skill</code>, <code>min_level</code>, <code>quality</code>) e <code>WorkshopProductionTask.produce()</code>.</li>
+<li><code>MixinHarvestFarmland</code>: a colheita do fazendeiro passa por extra e qualidade.</li>
+<li>Gatherers: <code>GathererTask.harvested()</code>, <code>ForagerTask</code>, <code>FisherTask</code>, <code>HunterTask</code> e <code>DigSiteTask</code>.</li>
+<li>Construção e Mineração: <code>WorkOrderTask</code>.</li>
+<li>Chores (Harvesting, Chopping, Fishing, Hunting) e <code>NeedsBakeBreadTask</code>.</li>
+<li><code>AptitudeJobTask</code>: escolhe o emprego pela melhor habilidade.</li>
 </ul>
-<p>Perguntas que ainda ficam:</p>
+<h2>Interface</h2>
 <ul>
-<li>O jogador fora da lei vê o território de todas as facções, ou só das que conhece?</li>
-<li>Na pena de prisão, o jogador pode fugir (e o que acontece)?</li>
-</ul></div></details>
+<li><strong>Tela de interação:</strong><ul>
+<li>aba de habilidades com ícone, barra de XP, nível/teto, chamas de interesse e tooltip do que a habilidade afeta;</li>
+<li>a linha da profissão mostra o ícone da habilidade principal e o nível.</li>
+</ul>
+</li>
+<li><strong>Moradores:</strong> coluna com a melhor habilidade.</li>
+<li><strong>Empregos:</strong> os candidatos são ordenados pela habilidade principal.</li>
+<li><strong>Subida de nível:</strong> emote ✨ sobre a cabeça e toast para o dono ou para o líder.</li>
+</ul>
+<h2>Fases</h2>
+<ol>
+<li>Ícones (<a href="#doc-icones">icones.md</a>).</li>
+<li>Núcleo das habilidades: <code>SkillType</code>, <code>Skills</code>, migração, interesse e os pontos de XP e velocidade.</li>
+<li>Qualidade: componente, receitas com <code>min_level</code> e <code>quality</code>, colheita do fazendeiro, chores, pesca e caça.</li>
+<li>Interface das habilidades.</li>
+<li>Opcionais: casks com qualidade, humor por comida melhor.</li>
+</ol></div></details>
+<details class='doc' id='doc-lojas-e-receitas' style='--k:var(--gold)'><summary><span class='state'>referência</span>Lojas, expositores e receitas por nível <span class='muted'>· lojas-e-receitas.md</span></summary><div class='body'><h1>Lojas, expositores e receitas por nível (WIP)</h1>
+<blockquote>
+<p><strong>Status:</strong> feito em 2026-11-04, sem teste em jogo e sem compilar o MCA (o cliente estava aberto; o IDE não aponta erros). O Village Furnishings compila. Complementa <a href="#doc-habilidades-e-qualidade">habilidades-e-qualidade.md</a> e <a href="#doc-comercio-e-despensa">comercio-e-despensa.md</a>.</p>
+</blockquote>
+<h2>Lojas (estilo Shop Titans)</h2>
+<ul>
+<li><strong>Loja:</strong> toda oficina da vila (os tipos de <code>building_types</code> com trabalho, mais a <code>inn</code>). Prefeitura, cemitério, prisão, escola, biblioteca, casas e armazém não são lojas.</li>
+<li><strong>Expositores:</strong> blocos da tag <code>mca:shop_displays</code>, hoje os itens do <strong>Tabletop</strong> e os <strong>racks</strong> do Village Furnishings.<ul>
+<li>Tudo que está num expositor dentro de uma loja está à venda.</li>
+<li>Expositores não contam como baús: haulers e a produção não mexem neles.</li>
+</ul>
+</li>
+<li><strong>Baús:</strong> toda loja exige baús desde o nível 1, 1/2/3/4 por nível (<code>building_tiers</code>).<ul>
+<li>As esmeraldas das vendas vão para eles (o "caixa").</li>
+<li>O lojista repõe os expositores com o que há neles: tudo menos esmeraldas e os insumos das receitas da oficina.</li>
+</ul>
+</li>
+</ul>
+<h3>Jogador</h3>
+<ul>
+<li><strong>Comprar:</strong> clique direito num expositor de loja abre a tela <strong>À venda</strong>, com item, qualidade e preço, e um botão <strong>Comprar</strong> por item.<ul>
+<li>O botão fica apagado quando faltam esmeraldas.</li>
+<li>O servidor confere o preço antes de vender.</li>
+</ul>
+</li>
+<li><strong>Preço:</strong> <code>RequestPool.worth</code> × 1,25. O valor já conta a qualidade (de 1× a 2,5×), e o mínimo é 1 esmeralda.</li>
+<li><strong>Shift + clique:</strong> segue o caminho normal do bloco. As regras de propriedade decidem se é furto.</li>
+</ul>
+<h3>NPCs</h3>
+<ul>
+<li><strong>Lojista</strong> (quem trabalha na oficina): a cada 10 s de trabalho (ou ao voltar ao posto, nos coletores), enche os espaços vazios dos expositores.<ul>
+<li>Uma vez por dia, tira <strong>1 esmeralda de salário</strong> do caixa, quando ele tem 4 ou mais.</li>
+<li>É esse salário que dá dinheiro aos aldeões.</li>
+</ul>
+</li>
+<li><strong>Comprador</strong> (<code>ShopperTask</code>): um aldeão adulto com esmeraldas no inventário vai à loja da vila com o expositor mais perto (até 64 blocos) e compra o que precisa:<ul>
+<li><strong>comida</strong>, quando está com fome e sem comida;</li>
+<li><strong>a ferramenta do emprego</strong>, quando não tem: machado (lenhador), picareta (minerador), arco ou besta (caçador).</li>
+</ul>
+</li>
+</ul>
+<h2>Receitas básicas (nível 0, qualquer trabalhador)</h2>
+<ul>
+<li><strong>Arquivos:</strong> receitas com <code>"basic": true</code> (<code>data/mca/production/basic_*.json</code>). Não têm profissão e aceitam <code>"tag"</code> nos insumos.</li>
+<li><strong>Quando são usadas:</strong> quando falta um insumo, o trabalhador faz na hora a partir do que há nos baús da oficina e no próprio inventário, com até 2 passos (tora → tábua → graveto). Não precisa de um marceneiro fazendo gravetos para todo mundo.</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Receita</th>
+<th>Insumos</th>
+<th>Produz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>basic_bowl</code></td>
+<td>3× planks</td>
+<td>4× bowl</td>
+</tr>
+<tr>
+<td><code>basic_paper</code></td>
+<td>3× sugar_cane</td>
+<td>3× paper</td>
+</tr>
+<tr>
+<td><code>basic_planks_acacia</code></td>
+<td>1× acacia_logs</td>
+<td>4× acacia_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_bamboo</code></td>
+<td>1× bamboo_blocks</td>
+<td>2× bamboo_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_birch</code></td>
+<td>1× birch_logs</td>
+<td>4× birch_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_cherry</code></td>
+<td>1× cherry_logs</td>
+<td>4× cherry_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_crimson</code></td>
+<td>1× crimson_stems</td>
+<td>4× crimson_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_dark_oak</code></td>
+<td>1× dark_oak_logs</td>
+<td>4× dark_oak_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_jungle</code></td>
+<td>1× jungle_logs</td>
+<td>4× jungle_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_mangrove</code></td>
+<td>1× mangrove_logs</td>
+<td>4× mangrove_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_oak</code></td>
+<td>1× oak_logs</td>
+<td>4× oak_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_pale_oak</code></td>
+<td>1× pale_oak_logs</td>
+<td>4× pale_oak_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_spruce</code></td>
+<td>1× spruce_logs</td>
+<td>4× spruce_planks</td>
+</tr>
+<tr>
+<td><code>basic_planks_warped</code></td>
+<td>1× warped_stems</td>
+<td>4× warped_planks</td>
+</tr>
+<tr>
+<td><code>basic_sticks</code></td>
+<td>2× planks</td>
+<td>4× stick</td>
+</tr>
+<tr>
+<td><code>basic_torch</code></td>
+<td>1× coals, 1× stick</td>
+<td>4× torch</td>
+</tr>
+</tbody>
+</table>
+<h2>Receitas por nível mínimo</h2>
+<ul>
+<li><strong>Nível mínimo:</strong> <code>min_level</code> é o nível mínimo na habilidade da receita (<code>skill</code>, ou a principal da profissão).</li>
+<li><strong>Abaixo do nível:</strong> o trabalhador pula a receita e faz a próxima que consegue.</li>
+<li><strong>Com <code>villagerSkills</code> desligado:</strong> todas valem.</li>
+<li><strong>Regra usada:</strong><ul>
+<li>comida simples e materiais de base, 0;</li>
+<li>pratos com mais etapas, 2 a 6;</li>
+<li>pratos elaborados, 8 a 10;</li>
+<li>ferro, de 2 a 8 conforme a peça;</li>
+<li>diamante, 14 a 16.</li>
+</ul>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Nível</th>
+<th>Receita</th>
+<th>Profissão</th>
+<th>Habilidade</th>
+<th>Insumos</th>
+<th>Produz</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td><code>mason_stone_bricks</code></td>
+<td>mason</td>
+<td>Construção</td>
+<td>4× cobblestone</td>
+<td>4× stone_bricks</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>bakery_bread</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>3× wheat</td>
+<td>1× bread</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>butcher_beef</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× beef</td>
+<td>1× cooked_beef</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>butcher_chicken</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× chicken</td>
+<td>1× cooked_chicken</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>butcher_mutton</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× mutton</td>
+<td>1× cooked_mutton</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>butcher_porkchop</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× porkchop</td>
+<td>1× cooked_porkchop</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>restaurant_baked_potato</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>2× potato</td>
+<td>2× baked_potato</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>butcher_rabbit</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× rabbit</td>
+<td>1× cooked_rabbit</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>restaurant_beetroot_soup</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>6× beetroot, 1× bowl</td>
+<td>1× beetroot_soup</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>restaurant_mushroom_stew</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× red_mushroom, 1× brown_mushroom, 1× bowl</td>
+<td>1× mushroom_stew</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>bakery_cookie</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>2× wheat, 1× cocoa_beans</td>
+<td>8× cookie</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>compat_farmers_delight_vegetable_soup</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× carrot, 1× potato, 1× beetroot, 1× cabbage, 1× bowl</td>
+<td>1× vegetable_soup</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>compat_farmers_delight_chicken_soup</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× chicken, 1× carrot, 1× cabbage, 1× bowl</td>
+<td>1× chicken_soup</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>compat_farmers_delight_fish_stew</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× cod, 1× tomato, 1× onion, 1× bowl</td>
+<td>1× fish_stew</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>compat_farmers_delight_beef_stew</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× beef, 1× carrot, 1× potato, 1× bowl</td>
+<td>1× beef_stew</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>bakery_pumpkin_pie</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× pumpkin, 1× sugar, 1× egg</td>
+<td>1× pumpkin_pie</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>compat_farmers_delight_apple_pie</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>3× wheat, 2× sugar, 3× apple</td>
+<td>1× apple_pie</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>restaurant_rabbit_stew</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>1× cooked_rabbit, 1× carrot, 1× baked_potato, 1× brown_mushroom, 1× bowl</td>
+<td>1× rabbit_stew</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>compat_farmers_delight_roast_chicken</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>2× chicken, 1× bread, 2× carrot, 1× bowl</td>
+<td>1× roast_chicken_block</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>compat_farmers_delight_shepherds_pie</code></td>
+<td>butcher</td>
+<td>Culinária</td>
+<td>2× mutton, 2× baked_potato, 1× onion, 1× bowl</td>
+<td>1× shepherds_pie_block</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>fletcher_arrows</code></td>
+<td>fletcher</td>
+<td>Ofícios</td>
+<td>1× flint, 1× stick, 1× feather</td>
+<td>4× arrow</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>leatherworker_leather</code></td>
+<td>leatherworker</td>
+<td>Ofícios</td>
+<td>4× rabbit_hide</td>
+<td>1× leather</td>
+</tr>
+<tr>
+<td>0</td>
+<td><code>shepherd_wool</code></td>
+<td>shepherd</td>
+<td>Pecuária</td>
+<td>—</td>
+<td>1× white_wool</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>cleric_redstone</code></td>
+<td>cleric</td>
+<td>Medicina</td>
+<td>4× rotten_flesh</td>
+<td>1× redstone</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>librarian_book</code></td>
+<td>librarian</td>
+<td>Erudição</td>
+<td>3× paper, 1× leather</td>
+<td>1× book</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>librarian_bookshelf</code></td>
+<td>librarian</td>
+<td>Erudição</td>
+<td>3× book, 6× oak_planks</td>
+<td>1× bookshelf</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>toolsmith_shovel</code></td>
+<td>toolsmith</td>
+<td>Forja</td>
+<td>1× iron_ingot, 2× stick</td>
+<td>1× iron_shovel</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>armorer_helmet</code></td>
+<td>armorer</td>
+<td>Forja</td>
+<td>5× iron_ingot</td>
+<td>1× iron_helmet</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>toolsmith_axe</code></td>
+<td>toolsmith</td>
+<td>Forja</td>
+<td>3× iron_ingot, 2× stick</td>
+<td>1× iron_axe</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>weaponsmith_sword</code></td>
+<td>weaponsmith</td>
+<td>Forja</td>
+<td>2× iron_ingot, 1× stick</td>
+<td>1× iron_sword</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>toolsmith_pickaxe</code></td>
+<td>toolsmith</td>
+<td>Forja</td>
+<td>3× iron_ingot, 2× stick</td>
+<td>1× iron_pickaxe</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>toolsmith_crowbar</code></td>
+<td>toolsmith</td>
+<td>Forja</td>
+<td>4× iron_ingot</td>
+<td>1× crowbar</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>armorer_chestplate</code></td>
+<td>armorer</td>
+<td>Forja</td>
+<td>8× iron_ingot</td>
+<td>1× iron_chestplate</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>weaponsmith_diamond_sword</code></td>
+<td>weaponsmith</td>
+<td>Forja</td>
+<td>2× diamond, 1× stick</td>
+<td>1× diamond_sword</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>toolsmith_diamond_pickaxe</code></td>
+<td>toolsmith</td>
+<td>Forja</td>
+<td>3× diamond, 2× stick</td>
+<td>1× diamond_pickaxe</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>armorer_diamond_chestplate</code></td>
+<td>armorer</td>
+<td>Forja</td>
+<td>8× diamond</td>
+<td>1× diamond_chestplate</td>
+</tr>
+</tbody>
+</table></div></details>
 <details class='doc' id='doc-addons' style='--k:var(--gold)'><summary><span class='state'>catálogo</span>MCA Reborn: catálogo de addons <span class='muted'>· addons.md</span></summary><div class='body'><h1>MCA Reborn: catálogo de addons</h1>
 <p>Data: 2026-10-30. Este é o catálogo do que o fork tem hoje, agrupado nas expansões que vão virar addons instaláveis, no estilo The Sims: cada uma traz mecânicas, itens e conversas novas que conversam com o que já existe.</p>
 <p>Plano aprovado:</p>
@@ -3721,9 +4590,11 @@ barracas viram uma "vitrine" do armazém, com o dono por perto). <strong>C</stro
 <li>pena e serviço (2026-11-01): ir para a cela e cumprir; sair do prédio e ver a fuga; aceitar o serviço e fazer os pedidos até o perdão;</li>
 <li>morar no posto (renascer lá), saque com o bando (marcha, ataque na vila, esmeraldas por morte, volta ao posto);</li>
 <li>fundar bando com uma bandeira (nome, cores, acampamento), recrutar um bandido e um aldeão fora da lei;</li>
-<li>exílio: mandar executar um aldeão e ver se ele foge e monta o acampamento.</li>
+<li>exílio: mandar executar um aldeão e ver se ele foge e monta o acampamento;</li>
+<li>nome do bando pela bandeira renomeada, tomar um posto sem defensores, portas da prisão fechando e guardas atrás de quem foge.</li>
 </ul>
 </li>
+<li>[ ] <strong>Prédios e níveis</strong> (2026-11-02): ver a lista em <a href="#doc-predios-e-niveis">predios-e-niveis.md</a> (tela de prédios, níveis das oficinas, restaurante, hortaliças, água que acaba, cuidar da casa).</li>
 <li>[ ] <strong>Interface:</strong> botões escuros do MCA, editor com abas de ícones e grades de prévia, prévia 3D sincronizada, pupila do jogador centralizada.</li>
 </ul>
 <p>Bugs conhecidos e abertos: nenhum além dos itens acima.</p>
@@ -4892,6 +5763,15 @@ criativo, mineiros fazem o trabalho como em qualquer escavação. Continua respe
 <li><strong>Aldeões zumbis do MCA:</strong> eles herdam de <code>Zombie</code>, então também perdem partes. Só que as camadas do MCA (pele, roupa, cabelo) ligam de novo todas as partes do modelo, então o membro perdido ainda aparece nelas. Esconder o membro nessas camadas fica para a fase 6.</li>
 <li><strong>Config:</strong> <code>headMultiplier</code>, <code>legSlowChance</code>, <code>armWeaknessChance</code>, <code>dismemberChance</code>, <code>decapitateChance</code>, <code>lostArmDamage</code>, <code>crawlSpeedPenalty</code>, <code>spiderLegChance</code>, <code>maxSpiderLegs</code>, <code>spiderLegsToStopClimbing</code>, <code>lostLegSpeed</code>, <code>phantomWingChance</code>, <code>golemCrackChance</code>, <code>crackDamageBonus</code> e <code>limbLifetimeTicks</code>.</li>
 </ul>
+<h2>Roda de habilidades (2026-11-02)</h2>
+<p><strong>O problema:</strong> com uma arma que tem habilidades, o Spell Engine pegava os números 1 a 9 para elas. Os números deixavam de trocar o item da barra.</p>
+<p><strong>A solução:</strong> segurar <strong>Z</strong> abre um anel com as habilidades da arma.</p>
+<ul>
+<li>O mouse aponta uma habilidade em vez de girar a cabeça. Ao soltar, ela vai para o <strong>clique direito</strong>, que é o primeiro slot do Spell Engine.</li>
+<li>Os números nunca lançam habilidades por padrão. Quem quiser teclas próprias associa "Spell Hotbar Slot N" nos controles.</li>
+<li><strong>Com escudo ou arco na mão</strong>, o clique direito fica com o item. A habilidade escolhida vai para o "Spell Hotbar Slot 1", que precisa de uma tecla própria.</li>
+<li><strong>Ainda não testado no jogo.</strong></li>
+</ul>
 <h2>Fases</h2>
 <table>
 <thead>
@@ -5332,6 +6212,193 @@ fazenda*       cemitério           loja de música    templo*
 <li>Desenhar os nós e as conexões da árvore (prédios, níveis, pré-requisitos).</li>
 <li>Só então implementar, num worktree próprio, começando pela tela no estilo das conquistas sobre a detecção que já existe.</li>
 </ol></div></details>
+<details class='doc' id='doc-zeladoria-e-regrowth' style='--k:var(--gold)'><summary><span class='state'>referência</span>Zeladoria da vila e ideias do Regrowth <span class='muted'>· zeladoria-e-regrowth.md</span></summary><div class='body'><h1>Zeladoria da vila e ideias do Regrowth</h1>
+<blockquote>
+<p><strong>Status:</strong> feito em 2026-11-05. Compila nos três loaders e os testes do common passam; sem teste em jogo. As ideias vêm do mod Regrowth (MacTso, licença MIT); o código é próprio.</p>
+</blockquote>
+<h2>O que já existia</h2>
+<ul>
+<li>Muro em anel, níveis de muro e lanternas em pontos escuros (<code>addon/defense/DefensePlanner</code>).</li>
+<li>O lenhador replantando mudas.</li>
+</ul>
+<h2>Novo no MCA (flag <code>villagerUpkeep</code>, ligada por padrão)</h2>
+<table>
+<thead>
+<tr>
+<th>O quê</th>
+<th>Quem</th>
+<th>Arquivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Corta grama alta, samambaia, folhiço, folhas naturais baixas sobre caminhos e cacto ao lado de caminho; <strong>flores ficam</strong></td>
+<td>qualquer adulto ocioso</td>
+<td><code>entity/ai/brain/tasks/upkeep/TidyVillageTask</code></td>
+</tr>
+<tr>
+<td>Tapa buraco de 1 bloco em caminho (gasta 1 terra do bolso ou do armazém) e transforma em caminho a grama entre dois trechos</td>
+<td>construtor, ou Construção ≥ 3</td>
+<td><code>RepairPathTask</code></td>
+</tr>
+<tr>
+<td>Cura aldeões e jogadores feridos (vida &lt; 70%) que não odeia: <code>1 + nível/4</code> corações, o dobro com enfermaria</td>
+<td>clérigo, ou Medicina ≥ 6</td>
+<td><code>HealTask</code></td>
+</tr>
+<tr>
+<td>Conserta golem de ferro com 1 barra (25 de vida, como o jogador)</td>
+<td>armeiro e ferreiros</td>
+<td><code>RepairGolemTask</code></td>
+</tr>
+<tr>
+<td>Ajuda a erguer o muro e os postes do planejador de defesa; o trabalho no posto espera</td>
+<td>pedreiro</td>
+<td><code>VillageWorkOrders.registerMasonWork</code> + <code>getWorkPackage</code></td>
+</tr>
+<tr>
+<td>Lanternas nos cantos e pilares de portão do muro</td>
+<td>se houver pedreiro com Construção ≥ 8</td>
+<td><code>DefensePlanner.ring</code></td>
+</tr>
+<tr>
+<td>Não pisoteia terra arada (a queda ainda machuca)</td>
+<td>fazendeiros e Cultivo ≥ 4</td>
+<td><code>mixin/MixinFarmlandBlock</code></td>
+</tr>
+</tbody>
+</table>
+<p>Todas as tarefas compartilham a base <code>VillageUpkeepTask</code>: andam até o alvo, agem e dão XP na habilidade.</p>
+<h2>Localizar moradores</h2>
+<ul>
+<li><strong>Ativação:</strong> com o <strong>F3</strong> aberto, ou por 1 minuto depois do botão <strong>Localizar moradores</strong> da prefeitura.</li>
+<li><strong>Efeito:</strong> os aldeões a até 48 blocos ficam com contorno brilhante e o nome visível.</li>
+<li><strong>Arquivos:</strong> <code>client/VillagerLocator</code>, mais os ganchos em <code>MixinMinecraft.shouldEntityAppearGlowing</code> e <code>MixinLivingEntityRenderer.shouldShowName</code>.</li>
+</ul>
+<h2>Mod à parte: Wild Regrowth (<code>../wild-regrowth</code>, <code>wild_regrowth</code>)</h2>
+<p>Não depende do MCA. Uma vez por segundo, cada animal configurado tem a chance de agir: em média uma vez a cada N segundos.</p>
+<table>
+<thead>
+<tr>
+<th>Animal</th>
+<th>Ação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>vaca</td>
+<td>come ou espalha grama</td>
+</tr>
+<tr>
+<td>ovelha, cavalo, burro, mula, cabra, coelho</td>
+<td>come: grama/flor sob os pés, cura ½ coração, filhote cresce, a grama às vezes vira terra</td>
+</tr>
+<tr>
+<td>galinha, abelha</td>
+<td>espalha grama e flores (farinha de osso) e reverdece terra</td>
+</tr>
+<tr>
+<td>porco</td>
+<td>planta muda da madeira mais comum por perto, com espaço livre</td>
+</tr>
+<tr>
+<td>peixes, lulas</td>
+<td>regeneram coral perto de um recife vivo</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>Config:</strong> <code>config/wild_regrowth.json</code>, criado na primeira execução. Aceita animais de outros mods pelo id.</li>
+<li><strong>Pendente:</strong> cogumelo gigante em caverna e build para NeoForge.</li>
+</ul></div></details>
+<details class='doc' id='doc-icones' style='--k:var(--gold)'><summary><span class='state'>referência</span>Ícones da interface (pacotes CC0) <span class='muted'>· icones.md</span></summary><div class='body'><h1>Ícones da interface (pacotes CC0)</h1>
+<blockquote>
+<p><strong>Status:</strong> feito em 2026-11-02, compilado, ainda não testado em jogo. As origens estão em <code>docs/resourcers/</code>: <code>Sprites/</code> (16×16) e <code>pixymoji-png/</code> (11×11, centralizado em 16×16), ambos CC0.</p>
+</blockquote>
+<h2>Como funciona</h2>
+<ul>
+<li>O script <code>scripts/claude-tools/import_icons.py &lt;repo&gt;</code> copia os ícones escolhidos para <code>assets/mca/textures/gui/sprites/icon/&lt;categoria&gt;/&lt;chave&gt;.png</code> e gera <code>CREDITS.txt</code>.<ul>
+<li>A <strong>tabela de alocação</strong> fica no próprio script. Para trocar um ícone, edite a tabela e rode o script de novo.</li>
+<li>Com <code>--check</code>, só confere se todas as origens existem.</li>
+</ul>
+</li>
+<li><strong>Busca por nome:</strong> <code>client/gui/McaIcons</code> procura <code>icon/&lt;categoria&gt;/&lt;chave&gt;</code>. Sem PNG, a tela desenha o item vanilla de antes. Um resource pack dá ícone a qualquer traço, construção ou botão só adicionando o arquivo.</li>
+</ul>
+<h2>Categorias e onde aparecem</h2>
+<table>
+<thead>
+<tr>
+<th>Categoria</th>
+<th>Onde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stat</code></td>
+<td>atributos na ficha e na lista de moradores</td>
+</tr>
+<tr>
+<td><code>skill</code></td>
+<td>painel de habilidades na ficha</td>
+</tr>
+<tr>
+<td><code>need</code></td>
+<td>necessidades na ficha</td>
+</tr>
+<tr>
+<td><code>mood</code></td>
+<td>rosto ao lado do humor no cartão</td>
+</tr>
+<tr>
+<td><code>relation</code></td>
+<td>corações, estado civil, genes, pais, presente (chaves do <code>icons.json</code>)</td>
+</tr>
+<tr>
+<td><code>radial</code></td>
+<td>botões do menu radial (aldeão, comandos, prefeitura)</td>
+</tr>
+<tr>
+<td><code>dialogue</code></td>
+<td>respostas das conversas; um addon com item próprio prevalece</td>
+</tr>
+<tr>
+<td><code>action</code></td>
+<td>fila de ações e ordens</td>
+</tr>
+<tr>
+<td><code>trait</code></td>
+<td>traços na ficha e na lista de moradores</td>
+</tr>
+<tr>
+<td><code>building</code></td>
+<td>planta (mapa), tela de construções, polimorfo</td>
+</tr>
+<tr>
+<td><code>quality</code></td>
+<td>estrelas de qualidade (prata, ouro, roxo)</td>
+</tr>
+<tr>
+<td><code>emote</code>, <code>misc</code></td>
+<td>balões sobre a cabeça, chamas de interesse, sim/não (os emotes ainda não estão ligados)</td>
+</tr>
+</tbody>
+</table>
+<p>| <code>faction</code> | relação no canto do estandarte, no mapa de facções |
+| <code>weather</code> | clima ao lado da linha do relógio do prefeito |</p>
+<h2>Emotes sobre a cabeça</h2>
+<ul>
+<li>Usam a fonte bitmap <code>assets/mca/font/emote.json</code>, que o script gera junto com os ícones. Cada emote é um caractere de uso privado (U+E000…), na ordem de <code>ICONS["emote"]</code>.</li>
+<li>Assim saem pelo mesmo caminho dos balões de fala. A lista <code>SpeechBubbleRenderer.EMOTES</code> precisa seguir essa ordem.</li>
+<li><strong>Gatilhos (no cliente):</strong> dormindo → zzz; humor ≤ -10 → raiva; energia &lt; 15 → suor. Só aparecem quando o aldeão não está falando, até 16 blocos.</li>
+</ul>
+<h2>Placas</h2>
+<ul>
+<li><code>request_board</code>: a lateral tem textura própria (<code>scripts/claude-tools/request_board_texture.py</code>), com moldura, cortiça e dois bilhetes.</li>
+</ul>
+<h2>Pendente</h2>
+<ul>
+<li>Feito em 2026-11-04: emotes do servidor por entity event (<code>Emotes</code>, bytes 100+), alerta pelo pânico já sincronizado, emblemas de loja como itens <code>village_furnishings:emblem_*</code> (<code>scripts/emblem_assets.py</code> no VF).</li>
+</ul></div></details>
 </section>
 <section class='sec' id='mca' style='--c:var(--grass)'><h2><span class='ic'>🏡</span>MCA original</h2>
 
@@ -5394,8 +6461,9 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <div class='chapter' style='--k:var(--rose)'><b>Capítulo 3</b><span class=st>Necessidades</span>
 <p>Seis medidores de 0 a 100 caem com o tempo: Fome, Sede, Energia, Social, Lazer e Segurança. Medidores baixos viram pensamentos que pesam no humor.</p>
 <p><b>Fome</b><br>O aldeão come do inventário ou de um baú em casa: dê pão, carne ou outra comida. Trabalhar dá mais fome. Faminto, perde vida até meio coração, mas não morre.</p>
-<p><b>Sede</b><br>Bebe parado ao lado de um caldeirão com água ou na boca de um poço.<br><b>Energia</b><br>Recupera dormindo na cama à noite. Sem cama, cochila onde estiver.</p>
+<p><b>Sede</b><br>Bebe ao lado de um caldeirão, pia ou barril com água, ou na boca de um poço. Cada copo gasta água; o poço nunca seca.<br><b>Energia</b><br>Recupera dormindo na cama à noite. Sem cama, cochila onde estiver.</p>
 <p><b>Poços e pão</b><br>Poço: um buraco com cerca ou muro em 3 dos 8 lados e água até 12 blocos abaixo. Com fome e sem comida, o aldeão busca trigo em casa e faz pão numa mesa de trabalho: 3 trigos por pão.</p>
+<p><b>Cuidar da casa</b><br>De vez em quando um adulto olha a casa: enche o caldeirão, a pia ou o barril com um balde do rio ou do poço, e traz comida do armazém quando a despensa tem menos de 4 por morador. O barril guarda 24 doses.</p>
 <p><b>Social</b><br>Sobe conversando com você, com outros aldeões e no ponto de encontro do sino.<br><b>Lazer</b><br>Tempo livre e prédios favoritos. O trabalho cansa.</p>
 <p><b>Segurança</b><br>Cai quando monstros chegam perto. Recupera em casa, perto de guardas ou golens. Um medidor crítico faz o aldeão largar a rotina para resolver.</p>
 <p>Os medidores aparecem na tela de interação: passe o mouse para ver como atender cada um. Casais que dormem juntos ficam mais felizes.</p>
@@ -5469,13 +6537,16 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <div class='chapter' style='--k:var(--grass)'><b>Capítulo 14</b><span class=st>A vila cresce</span>
 <p>Com villageProgression ligado, a vila segue um caminho: Acampamento, Aldeia, Vila, Vila Próspera, Cidade e Capital. A aba Evolução do Blueprint mostra a etapa e o que falta.</p>
 <p><b>O caminho</b><br>Cada etapa pede prédios, casas melhores, oficinas e moradores. Nada fica travado: qualquer prédio funciona antes da hora. O caminho só sugere a ordem e avisa quando a vila sobe.</p>
-<p><b>Casas</b><br>Casa Pequena: uma cama. Comum: 2 camas, um baú e chão de 30. Grande: 4 camas, 2 baús, fornalha e chão de 80. Enorme: 6 camas, 3 baús, 6 decorações e chão de 140.</p>
-<p><b>Oficinas</b><br>Cada mesa de trabalho é um lugar para um profissional. Uma padaria com 3 defumadores e espaço (15 de chão por mesa) é nível III e trabalha com 3 açougueiros.</p>
+<p><b>Casas</b><br>Casa Pequena: uma cama. Comum: 2 camas, um baú e chão de 30. Grande: 4 camas, 2 baús, fornalha, água e chão de 80. Enorme: 6 camas, 3 baús, 6 decorações e chão de 140.</p>
+<p><b>Oficinas</b><br>Cada oficina tem níveis 1 a 4: mais mesas, baús e espaço. Cada nível deixa mais gente trabalhar junto, mais rápido, e a vila guardar mais. Veja o que falta em Prédios, nos Registros.</p>
+<p><b>Prédios</b><br>Nos Registros ou no Blueprint, Prédios tem uma aba por tipo. Clique num prédio: a planta, quem mora ou trabalha, o que produz e as abas Nv 1 a 4, com o que tem em verde e o que falta em vermelho.</p>
+<p><b>Comida</b><br>Padaria: pão, biscoitos e tortas. Restaurante (defumador e fogueira, ou fogão do FD): sopas e assados. Hortaliças (composteiro e caixas de produtos): a colheita da vila. Bancadas fazem as cozinhas crescer.</p>
 </div>
 <div class='chapter' style='--k:var(--sky)'><b>Capítulo 15</b><span class=st>Outros mods e janelas</span>
 <p><b>Integrações</b><br>Com villagerRoutines, os aldeões usam coisas de outros mods. Cada integração é um arquivo em data/mca/opportunities: sem o mod, o arquivo é ignorado e nada quebra.</p>
 <p><b>Música</b><br>Com Immersive Melodies, dê um instrumento de presente: o aldeão toca na folga, mais na taverna e na loja de música. Os vizinhos param para ouvir, e quem chega toca junto, no mesmo compasso.</p>
-<p><b>Cozinha</b><br>Com Farmer&#x27;s Delight, um açougueiro na taverna cozinha ensopados, sopas e banquetes. Um banquete posto na mesa reúne os aldeões: cada um pega uma porção. Armários contam como baús.</p>
+<p><b>Cozinha</b><br>Com Farmer&#x27;s Delight, o açougueiro do restaurante cozinha ensopados, sopas e banquetes. Um banquete posto na mesa reúne os aldeões: cada um pega uma porção. Armários contam como baús.</p>
+<p><b>Plantio e bebida</b><br>As plantações do Farmer&#x27;s Delight entram na colheita, as massas e doces na dieta, e os sucos na sede. A água purificada do Tough As Nails vai no barril do Village Furnishings e conta como limpa.</p>
 <p><b>Janelas</b><br>Venezianas: um alçapão e um graveto dão duas. Ponha na parede ao lado da janela; fechada, ela cobre a janela. Os aldeões abrem de manhã, fecham à noite e acendem as luminárias do Beautify.</p>
 <p><b>Itens postos</b><br>Com Tabletop, V põe o item da mão sobre um bloco. Os aldeões pegam o instrumento, tocam e devolvem, comem a comida e olham o resto. Oficinas expõem o que fazem nas mesas.</p>
 </div>
@@ -5484,9 +6555,10 @@ olhos), personalidade, humor e memória de cada jogador (corações). Este fork 
 <p><b>Reputação</b><br>Matar gente do bando derruba; atacar vilas, aldeões e golens sobe. Hostil: atacam. Neutro: deixam passar e conversam. Amigo: aceitam ser contratados. Aliado: aceitam você no bando.</p>
 <p><b>Conversa</b><br>Pergunte a um bandido quem são eles, negocie, pague uma trégua para uma vila ou contrate um para lutar por você. Os bandos guerreiam entre si, tomam postos uns dos outros, racham e podem acabar.</p>
 <p><b>Fora da lei</b><br>No bando, você ganha a bandeira, os bandidos lutam do seu lado e vêm com você de graça. Em troca, toda vila te vê como fora da lei, e os inimigos do bando passam a ser seus.</p>
-<p><b>Redenção</b><br>Para voltar, pague a multa a qualquer morador, cumpra pena na prisão da vila ou faça pedidos dos moradores; quanto mais mal, mais caro. Fugir da prisão piora tudo. A vila perdoa e você sai do bando, que te vê como traidor.</p>
+<p><b>Redenção</b><br>Para voltar, pague a multa a qualquer morador, cumpra pena na prisão da vila ou faça pedidos dos moradores; quanto mais mal, mais caro. Fugir põe os guardas atrás de você. A vila perdoa e você sai do bando, que te vê como traidor.</p>
 <p><b>No posto</b><br>Peça a um bandido para morar no posto: você passa a acordar lá. Chame o bando para atacar a vila mais próxima: cada aldeão ou golem que ele derrubar rende esmeraldas para você. Um ataque por dia.</p>
 <p><b>Seu bando</b><br>Aliado do bando, segure uma bandeira e funde o seu: custa 32 esmeraldas, e o acampamento fica onde você está. Recrute bandidos de bandos que confiam em você (8 esmeraldas) e aldeões fora da lei (de graça).</p>
+<p><b>Tomar postos</b><br>Renomeie a bandeira na bigorna antes de fundar e o bando leva o nome dela. Num posto de outro bando sem ninguém para defender, diga a um dos seus: &quot;Este posto agora é nosso&quot;. Os antigos donos entram em guerra com você.</p>
 <p><b>Exilados</b><br>Um aldeão posto fora da lei que sobrevive foge para um acampamento de exilados por perto, ou monta um com fogueira e bandeira. Os exilados formam um bando como os outros, e crescem a cada expulso.</p>
 <p><b>Caravanas</b><br>Com villagerCaravans, mercadores, guardas e animais com baú viajam entre as vilas que você conhece. Negociam com o armazém, trazem notícias e podem ser escoltados ou atacados.</p>
 <p><b>Encomendas</b><br>Segure um item e pergunte a alguém da caravana se ela traz mais. A encomenda fica pronta na próxima vila em que a caravana parar: pague lá e leve. Itens raros custam mais.</p>
@@ -5606,7 +6678,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <th>Taiga</th>
 <th>Neve</th>
 </tr>
-<tr><td><b>Fazendeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:composter</td><td>—</td><td>—</td><td>Planta e colhe; a vila recebe parte da colheita real.</td>
+<tr><td><b>Fazendeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:composter</td><td>Hortaliças</td><td>—</td><td>Planta e colhe; a vila recebe parte da colheita real.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
@@ -5627,7 +6699,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Açougueiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smoker</td><td>Padaria, Açougueiro, Taverna</td><td>apple_pie, beef_stew, bread, chicken_soup, cooked_beef, cooked_chicken, cooked_mutton, cooked_porkchop, cooked_rabbit, fish_stew, roast_chicken_block, shepherds_pie_block, vegetable_soup</td><td>Cozinha carne; na padaria faz pão.</td>
+<tr><td><b>Açougueiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smoker</td><td>Padaria, Açougueiro, Taverna, Restaurante</td><td>apple_pie, baked_potato, beef_stew, beetroot_soup, bread, chicken_soup, cooked_beef, cooked_chicken, cooked_mutton, cooked_porkchop, cooked_rabbit, cookie, fish_stew, mushroom_stew, pumpkin_pie, rabbit_stew, roast_chicken_block, shepherds_pie_block, vegetable_soup</td><td>Cozinha carne; na padaria faz pão.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
@@ -5641,21 +6713,21 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Ferramenteiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smithing_table</td><td>Armório, Ferramenteiro</td><td>crowbar, iron_axe, iron_shovel</td><td>Pé de cabra, machado, pá.</td>
+<tr><td><b>Ferramenteiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:smithing_table</td><td>Armório, Ferramenteiro</td><td>crowbar, diamond_pickaxe, iron_axe, iron_pickaxe, iron_shovel</td><td>Pé de cabra, machado, pá.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Ferreiro de armas</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:grindstone</td><td>Armório, Ferreiro, Ferreiro de armas</td><td>iron_sword</td><td>Espada de ferro.</td>
+<tr><td><b>Ferreiro de armas</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:grindstone</td><td>Armório, Ferreiro, Ferreiro de armas</td><td>diamond_sword, iron_sword</td><td>Espada de ferro.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Armeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:blast_furnace</td><td>Armoreiro, Ferreiro</td><td>iron_helmet</td><td>Capacete; às vezes diamante.</td>
+<tr><td><b>Armeiro</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:blast_furnace</td><td>Armoreiro, Ferreiro</td><td>diamond_chestplate, iron_chestplate, iron_helmet</td><td>Capacete; às vezes diamante.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
@@ -5676,7 +6748,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 </tr>
-<tr><td><b>Bibliotecário</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:lectern</td><td>Escriturador, Biblioteca, Escola, Armazém</td><td>book</td><td>Livros; ensina na escola.</td>
+<tr><td><b>Bibliotecário</b></td><td><span class='tag' data-g='vanilla'>vanilla</span></td><td>minecraft:lectern</td><td>Escriturador, Biblioteca, Escola, Armazém</td><td>book, bookshelf</td><td>Livros; ensina na escola.</td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
 <td class='y'><span>✔</span></td>
@@ -5800,6 +6872,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <tr><td><code>fletcher</code></td><td>Flecheiro</td><td>não</td><td>1</td><td>1× minecraft:fletching_table</td></tr>
 <tr><td><code>forager_hut</code></td><td>Cabana de Forrageiro</td><td>não</td><td>1</td><td>1× mca:forage_basket</td></tr>
 <tr><td><code>graveyard</code></td><td>Cemitério</td><td>sim</td><td>0</td><td>3× #mca:tombstones</td></tr>
+<tr><td><code>greengrocer</code></td><td>Hortaliças</td><td>sim</td><td>2</td><td>1× minecraft:composter, 2× #mca:food_crates</td></tr>
 <tr><td><code>house</code></td><td>Casa</td><td>não</td><td>1</td><td>1× #minecraft:beds</td></tr>
 <tr><td><code>hunter_lodge</code></td><td>Cabana de Caçador</td><td>não</td><td>1</td><td>1× mca:hunting_rack</td></tr>
 <tr><td><code>infirmary</code></td><td>Enfermaria</td><td>sim</td><td>4</td><td>1× minecraft:brewing_stand, 1× #minecraft:cauldrons, 1× #minecraft:beds, 1× #minecraft:flower_pots</td></tr>
@@ -5810,6 +6883,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <tr><td><code>mason</code></td><td>Pedreiro</td><td>não</td><td>1</td><td>1× minecraft:stonecutter</td></tr>
 <tr><td><code>music_store</code></td><td>Loja de música</td><td>sim</td><td>5</td><td>1× minecraft:jukebox, 2× minecraft:note_block, 1× #mca:chests</td></tr>
 <tr><td><code>prison</code></td><td>Prisão</td><td>sim</td><td>4</td><td>8× #mca:iron_bars, 1× #mca:iron_doors, 1× #minecraft:beds</td></tr>
+<tr><td><code>restaurant</code></td><td>Restaurante</td><td>sim</td><td>2</td><td>1× minecraft:smoker, 1× #mca:cooking_stations</td></tr>
 <tr><td><code>school</code></td><td>Escola</td><td>sim</td><td>3</td><td>1× minecraft:lectern, 4× #minecraft:wooden_stairs, 4× minecraft:bookshelf</td></tr>
 <tr><td><code>storage</code></td><td>Armazém</td><td>sim</td><td>4</td><td>1× minecraft:lectern, 4× #mca:chests</td></tr>
 <tr><td><code>toolsmith</code></td><td>Ferramenteiro</td><td>não</td><td>1</td><td>1× minecraft:smithing_table</td></tr>
@@ -5821,7 +6895,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 </section>
 <section class='sec' id='icons' style='--c:var(--rose)'><h2><span class='ic'>💬</span>Ícones e balões</h2>
 <p>Dois jeitos de mostrar algo sobre a cabeça de um aldeão:</p><ul><li><b>Ícone de item</b>: qualquer item do jogo vira um balão (é um <code>ItemDisplay</code> montado no aldeão, como em <code>NeedIndicators</code> e <code>ActionBubble</code>). Use o nome do arquivo como id, ex. <code>minecraft:bread</code>.</li><li><b>Partícula</b>: as partículas vanilla e as do MCA (<code>mca:pos_interaction</code>, <code>mca:neg_interaction</code>) aparecem pelo nome.</li></ul>
-<input id='filter' placeholder='Filtrar por nome (1368 imagens)'><div class='tabs'><button class='on' data-group='all'>Tudo</button>
+<input id='filter' placeholder='Filtrar por nome (1646 imagens)'><div class='tabs'><button class='on' data-group='all'>Tudo</button>
 <button data-group='Itens (vanilla)'>Itens (vanilla) (796)</button>
 <button data-group='Partículas (vanilla)'>Partículas (vanilla) (288)</button>
 <button data-group='Efeitos (vanilla)'>Efeitos (vanilla) (40)</button>
@@ -5829,8 +6903,8 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <button data-group='Ícones de interface (vanilla)'>Ícones de interface (vanilla) (23)</button>
 <button data-group='Itens (MCA)'>Itens (MCA) (101)</button>
 <button data-group='Partículas (MCA)'>Partículas (MCA) (2)</button>
-<button data-group='Interface (MCA)'>Interface (MCA) (19)</button>
-<button data-group='Blocos (MCA)'>Blocos (MCA) (15)</button>
+<button data-group='Interface (MCA)'>Interface (MCA) (296)</button>
+<button data-group='Blocos (MCA)'>Blocos (MCA) (16)</button>
 </div><div class='grid'>
 <div class='cell' data-group='Itens (vanilla)' data-name='acacia_boat'><img loading='lazy' src='_assets/vanilla/item/acacia_boat.png' alt=''>acacia_boat</div>
 <div class='cell' data-group='Itens (vanilla)' data-name='acacia_chest_boat'><img loading='lazy' src='_assets/vanilla/item/acacia_chest_boat.png' alt=''>acacia_chest_boat</div>
@@ -7178,6 +8252,283 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <div class='cell' data-group='Interface (MCA)' data-name='preview_mouse_follow'><img loading='lazy' src='_assets/mca/gui/preview_mouse_follow.png' alt=''>preview_mouse_follow</div>
 <div class='cell' data-group='Interface (MCA)' data-name='goat'><img loading='lazy' src='_assets/mca/gui/scribbles/goat.png' alt=''>goat</div>
 <div class='cell' data-group='Interface (MCA)' data-name='test'><img loading='lazy' src='_assets/mca/gui/scribbles/test.png' alt=''>test</div>
+<div class='cell' data-group='Interface (MCA)' data-name='drink'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/drink.png' alt=''>drink</div>
+<div class='cell' data-group='Interface (MCA)' data-name='eat'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/eat.png' alt=''>eat</div>
+<div class='cell' data-group='Interface (MCA)' data-name='go_home'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/go_home.png' alt=''>go_home</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hide'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/hide.png' alt=''>hide</div>
+<div class='cell' data-group='Interface (MCA)' data-name='leisure'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/leisure.png' alt=''>leisure</div>
+<div class='cell' data-group='Interface (MCA)' data-name='meet'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/meet.png' alt=''>meet</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sleep'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/sleep.png' alt=''>sleep</div>
+<div class='cell' data-group='Interface (MCA)' data-name='socialize'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/socialize.png' alt=''>socialize</div>
+<div class='cell' data-group='Interface (MCA)' data-name='work'><img loading='lazy' src='_assets/mca/gui/sprites/icon/action/work.png' alt=''>work</div>
+<div class='cell' data-group='Interface (MCA)' data-name='armorer'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/armorer.png' alt=''>armorer</div>
+<div class='cell' data-group='Interface (MCA)' data-name='armory'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/armory.png' alt=''>armory</div>
+<div class='cell' data-group='Interface (MCA)' data-name='bakery'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/bakery.png' alt=''>bakery</div>
+<div class='cell' data-group='Interface (MCA)' data-name='big_house'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/big_house.png' alt=''>big_house</div>
+<div class='cell' data-group='Interface (MCA)' data-name='blacksmith'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/blacksmith.png' alt=''>blacksmith</div>
+<div class='cell' data-group='Interface (MCA)' data-name='blocked'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/blocked.png' alt=''>blocked</div>
+<div class='cell' data-group='Interface (MCA)' data-name='bookkeeper'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/bookkeeper.png' alt=''>bookkeeper</div>
+<div class='cell' data-group='Interface (MCA)' data-name='building'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/building.png' alt=''>building</div>
+<div class='cell' data-group='Interface (MCA)' data-name='butcher'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/butcher.png' alt=''>butcher</div>
+<div class='cell' data-group='Interface (MCA)' data-name='cartographer'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/cartographer.png' alt=''>cartographer</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fishermans_hut'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/fishermans_hut.png' alt=''>fishermans_hut</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fletcher'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/fletcher.png' alt=''>fletcher</div>
+<div class='cell' data-group='Interface (MCA)' data-name='forager_hut'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/forager_hut.png' alt=''>forager_hut</div>
+<div class='cell' data-group='Interface (MCA)' data-name='graveyard'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/graveyard.png' alt=''>graveyard</div>
+<div class='cell' data-group='Interface (MCA)' data-name='greengrocer'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/greengrocer.png' alt=''>greengrocer</div>
+<div class='cell' data-group='Interface (MCA)' data-name='house'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/house.png' alt=''>house</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hunter_lodge'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/hunter_lodge.png' alt=''>hunter_lodge</div>
+<div class='cell' data-group='Interface (MCA)' data-name='infirmary'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/infirmary.png' alt=''>infirmary</div>
+<div class='cell' data-group='Interface (MCA)' data-name='inn'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/inn.png' alt=''>inn</div>
+<div class='cell' data-group='Interface (MCA)' data-name='leatherworker'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/leatherworker.png' alt=''>leatherworker</div>
+<div class='cell' data-group='Interface (MCA)' data-name='library'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/library.png' alt=''>library</div>
+<div class='cell' data-group='Interface (MCA)' data-name='lumber_camp'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/lumber_camp.png' alt=''>lumber_camp</div>
+<div class='cell' data-group='Interface (MCA)' data-name='mason'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/mason.png' alt=''>mason</div>
+<div class='cell' data-group='Interface (MCA)' data-name='music_store'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/music_store.png' alt=''>music_store</div>
+<div class='cell' data-group='Interface (MCA)' data-name='prison'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/prison.png' alt=''>prison</div>
+<div class='cell' data-group='Interface (MCA)' data-name='restaurant'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/restaurant.png' alt=''>restaurant</div>
+<div class='cell' data-group='Interface (MCA)' data-name='school'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/school.png' alt=''>school</div>
+<div class='cell' data-group='Interface (MCA)' data-name='storage'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/storage.png' alt=''>storage</div>
+<div class='cell' data-group='Interface (MCA)' data-name='toolsmith'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/toolsmith.png' alt=''>toolsmith</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_center'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/town_center.png' alt=''>town_center</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/town_hall.png' alt=''>town_hall</div>
+<div class='cell' data-group='Interface (MCA)' data-name='weaponsmith'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/weaponsmith.png' alt=''>weaponsmith</div>
+<div class='cell' data-group='Interface (MCA)' data-name='weaving_mill'><img loading='lazy' src='_assets/mca/gui/sprites/icon/building/weaving_mill.png' alt=''>weaving_mill</div>
+<div class='cell' data-group='Interface (MCA)' data-name='about_you'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/about_you.png' alt=''>about_you</div>
+<div class='cell' data-group='Interface (MCA)' data-name='adopt'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/adopt.png' alt=''>adopt</div>
+<div class='cell' data-group='Interface (MCA)' data-name='apologize'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/apologize.png' alt=''>apologize</div>
+<div class='cell' data-group='Interface (MCA)' data-name='cancel'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/cancel.png' alt=''>cancel</div>
+<div class='cell' data-group='Interface (MCA)' data-name='caravan_from'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/caravan_from.png' alt=''>caravan_from</div>
+<div class='cell' data-group='Interface (MCA)' data-name='caravan_news'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/caravan_news.png' alt=''>caravan_news</div>
+<div class='cell' data-group='Interface (MCA)' data-name='chat'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/chat.png' alt=''>chat</div>
+<div class='cell' data-group='Interface (MCA)' data-name='confirm'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/confirm.png' alt=''>confirm</div>
+<div class='cell' data-group='Interface (MCA)' data-name='creative'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/creative.png' alt=''>creative</div>
+<div class='cell' data-group='Interface (MCA)' data-name='divorceinitiate'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/divorceinitiate.png' alt=''>divorceinitiate</div>
+<div class='cell' data-group='Interface (MCA)' data-name='divorcepapers'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/divorcepapers.png' alt=''>divorcepapers</div>
+<div class='cell' data-group='Interface (MCA)' data-name='exploring'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/exploring.png' alt=''>exploring</div>
+<div class='cell' data-group='Interface (MCA)' data-name='flirt'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/flirt.png' alt=''>flirt</div>
+<div class='cell' data-group='Interface (MCA)' data-name='friends'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/friends.png' alt=''>friends</div>
+<div class='cell' data-group='Interface (MCA)' data-name='generic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/generic.png' alt=''>generic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='good_at'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/good_at.png' alt=''>good_at</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hire'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/hire.png' alt=''>hire</div>
+<div class='cell' data-group='Interface (MCA)' data-name='how_are_you'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/how_are_you.png' alt=''>how_are_you</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hug'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/hug.png' alt=''>hug</div>
+<div class='cell' data-group='Interface (MCA)' data-name='joke'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/joke.png' alt=''>joke</div>
+<div class='cell' data-group='Interface (MCA)' data-name='kind'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/kind.png' alt=''>kind</div>
+<div class='cell' data-group='Interface (MCA)' data-name='kiss'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/kiss.png' alt=''>kiss</div>
+<div class='cell' data-group='Interface (MCA)' data-name='long'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/long.png' alt=''>long</div>
+<div class='cell' data-group='Interface (MCA)' data-name='procreate'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/procreate.png' alt=''>procreate</div>
+<div class='cell' data-group='Interface (MCA)' data-name='procreate_engaged'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/procreate_engaged.png' alt=''>procreate_engaged</div>
+<div class='cell' data-group='Interface (MCA)' data-name='rock_paper_scissor'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/rock_paper_scissor.png' alt=''>rock_paper_scissor</div>
+<div class='cell' data-group='Interface (MCA)' data-name='rumors'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/rumors.png' alt=''>rumors</div>
+<div class='cell' data-group='Interface (MCA)' data-name='settling'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/settling.png' alt=''>settling</div>
+<div class='cell' data-group='Interface (MCA)' data-name='shake_hand'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/shake_hand.png' alt=''>shake_hand</div>
+<div class='cell' data-group='Interface (MCA)' data-name='short'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/short.png' alt=''>short</div>
+<div class='cell' data-group='Interface (MCA)' data-name='stay'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/stay.png' alt=''>stay</div>
+<div class='cell' data-group='Interface (MCA)' data-name='story'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/story.png' alt=''>story</div>
+<div class='cell' data-group='Interface (MCA)' data-name='where_work'><img loading='lazy' src='_assets/mca/gui/sprites/icon/dialogue/where_work.png' alt=''>where_work</div>
+<div class='cell' data-group='Interface (MCA)' data-name='alert'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/alert.png' alt=''>alert</div>
+<div class='cell' data-group='Interface (MCA)' data-name='angry'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/angry.png' alt=''>angry</div>
+<div class='cell' data-group='Interface (MCA)' data-name='confused'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/confused.png' alt=''>confused</div>
+<div class='cell' data-group='Interface (MCA)' data-name='level_up'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/level_up.png' alt=''>level_up</div>
+<div class='cell' data-group='Interface (MCA)' data-name='love'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/love.png' alt=''>love</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sick'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/sick.png' alt=''>sick</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sleep'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/sleep.png' alt=''>sleep</div>
+<div class='cell' data-group='Interface (MCA)' data-name='thinking'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/thinking.png' alt=''>thinking</div>
+<div class='cell' data-group='Interface (MCA)' data-name='tired'><img loading='lazy' src='_assets/mca/gui/sprites/icon/emote/tired.png' alt=''>tired</div>
+<div class='cell' data-group='Interface (MCA)' data-name='ally'><img loading='lazy' src='_assets/mca/gui/sprites/icon/faction/ally.png' alt=''>ally</div>
+<div class='cell' data-group='Interface (MCA)' data-name='friendly'><img loading='lazy' src='_assets/mca/gui/sprites/icon/faction/friendly.png' alt=''>friendly</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hostile'><img loading='lazy' src='_assets/mca/gui/sprites/icon/faction/hostile.png' alt=''>hostile</div>
+<div class='cell' data-group='Interface (MCA)' data-name='neutral'><img loading='lazy' src='_assets/mca/gui/sprites/icon/faction/neutral.png' alt=''>neutral</div>
+<div class='cell' data-group='Interface (MCA)' data-name='locked'><img loading='lazy' src='_assets/mca/gui/sprites/icon/misc/locked.png' alt=''>locked</div>
+<div class='cell' data-group='Interface (MCA)' data-name='no'><img loading='lazy' src='_assets/mca/gui/sprites/icon/misc/no.png' alt=''>no</div>
+<div class='cell' data-group='Interface (MCA)' data-name='passion'><img loading='lazy' src='_assets/mca/gui/sprites/icon/misc/passion.png' alt=''>passion</div>
+<div class='cell' data-group='Interface (MCA)' data-name='yes'><img loading='lazy' src='_assets/mca/gui/sprites/icon/misc/yes.png' alt=''>yes</div>
+<div class='cell' data-group='Interface (MCA)' data-name='depressed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/depressed.png' alt=''>depressed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fine'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/fine.png' alt=''>fine</div>
+<div class='cell' data-group='Interface (MCA)' data-name='happy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/happy.png' alt=''>happy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='overjoyed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/overjoyed.png' alt=''>overjoyed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='passive'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/passive.png' alt=''>passive</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sad'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/sad.png' alt=''>sad</div>
+<div class='cell' data-group='Interface (MCA)' data-name='unhappy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/mood/unhappy.png' alt=''>unhappy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='energy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/energy.png' alt=''>energy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fun'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/fun.png' alt=''>fun</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hunger'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/hunger.png' alt=''>hunger</div>
+<div class='cell' data-group='Interface (MCA)' data-name='safety'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/safety.png' alt=''>safety</div>
+<div class='cell' data-group='Interface (MCA)' data-name='social'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/social.png' alt=''>social</div>
+<div class='cell' data-group='Interface (MCA)' data-name='thirst'><img loading='lazy' src='_assets/mca/gui/sprites/icon/need/thirst.png' alt=''>thirst</div>
+<div class='cell' data-group='Interface (MCA)' data-name='excellent'><img loading='lazy' src='_assets/mca/gui/sprites/icon/quality/excellent.png' alt=''>excellent</div>
+<div class='cell' data-group='Interface (MCA)' data-name='good'><img loading='lazy' src='_assets/mca/gui/sprites/icon/quality/good.png' alt=''>good</div>
+<div class='cell' data-group='Interface (MCA)' data-name='masterwork'><img loading='lazy' src='_assets/mca/gui/sprites/icon/quality/masterwork.png' alt=''>masterwork</div>
+<div class='cell' data-group='Interface (MCA)' data-name='armor'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/armor.png' alt=''>armor</div>
+<div class='cell' data-group='Interface (MCA)' data-name='backarrow'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/backarrow.png' alt=''>backarrow</div>
+<div class='cell' data-group='Interface (MCA)' data-name='chopping'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/chopping.png' alt=''>chopping</div>
+<div class='cell' data-group='Interface (MCA)' data-name='commands'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/commands.png' alt=''>commands</div>
+<div class='cell' data-group='Interface (MCA)' data-name='execute'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/execute.png' alt=''>execute</div>
+<div class='cell' data-group='Interface (MCA)' data-name='familytree'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/familytree.png' alt=''>familytree</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fishing'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/fishing.png' alt=''>fishing</div>
+<div class='cell' data-group='Interface (MCA)' data-name='follow'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/follow.png' alt=''>follow</div>
+<div class='cell' data-group='Interface (MCA)' data-name='gift'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/gift.png' alt=''>gift</div>
+<div class='cell' data-group='Interface (MCA)' data-name='gohome'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/gohome.png' alt=''>gohome</div>
+<div class='cell' data-group='Interface (MCA)' data-name='harvesting'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/harvesting.png' alt=''>harvesting</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hunting'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/hunting.png' alt=''>hunting</div>
+<div class='cell' data-group='Interface (MCA)' data-name='interact'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/interact.png' alt=''>interact</div>
+<div class='cell' data-group='Interface (MCA)' data-name='inventory'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/inventory.png' alt=''>inventory</div>
+<div class='cell' data-group='Interface (MCA)' data-name='locations'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/locations.png' alt=''>locations</div>
+<div class='cell' data-group='Interface (MCA)' data-name='move'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/move.png' alt=''>move</div>
+<div class='cell' data-group='Interface (MCA)' data-name='negotiate'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/negotiate.png' alt=''>negotiate</div>
+<div class='cell' data-group='Interface (MCA)' data-name='orders'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/orders.png' alt=''>orders</div>
+<div class='cell' data-group='Interface (MCA)' data-name='pardon'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/pardon.png' alt=''>pardon</div>
+<div class='cell' data-group='Interface (MCA)' data-name='peek_inventory'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/peek_inventory.png' alt=''>peek_inventory</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.archer'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.archer.png' alt=''>profession.archer</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.builder'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.builder.png' alt=''>profession.builder</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.guard'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.guard.png' alt=''>profession.guard</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.hauler'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.hauler.png' alt=''>profession.hauler</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.miner'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.miner.png' alt=''>profession.miner</div>
+<div class='cell' data-group='Interface (MCA)' data-name='profession.none'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/profession.none.png' alt=''>profession.none</div>
+<div class='cell' data-group='Interface (MCA)' data-name='professions'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/professions.png' alt=''>professions</div>
+<div class='cell' data-group='Interface (MCA)' data-name='request'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/request.png' alt=''>request</div>
+<div class='cell' data-group='Interface (MCA)' data-name='ridehorse'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/ridehorse.png' alt=''>ridehorse</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sethome'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/sethome.png' alt=''>sethome</div>
+<div class='cell' data-group='Interface (MCA)' data-name='setworkplace'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/setworkplace.png' alt=''>setworkplace</div>
+<div class='cell' data-group='Interface (MCA)' data-name='stay'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/stay.png' alt=''>stay</div>
+<div class='cell' data-group='Interface (MCA)' data-name='stopworking'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/stopworking.png' alt=''>stopworking</div>
+<div class='cell' data-group='Interface (MCA)' data-name='talk'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/talk.png' alt=''>talk</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.catalog'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.catalog.png' alt=''>town_hall.catalog</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.jobs'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.jobs.png' alt=''>town_hall.jobs</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.locate'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.locate.png' alt=''>town_hall.locate</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.map'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.map.png' alt=''>town_hall.map</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.overview'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.overview.png' alt=''>town_hall.overview</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.progress'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.progress.png' alt=''>town_hall.progress</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.rank'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.rank.png' alt=''>town_hall.rank</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.residents'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.residents.png' alt=''>town_hall.residents</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.rules'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.rules.png' alt=''>town_hall.rules</div>
+<div class='cell' data-group='Interface (MCA)' data-name='town_hall.works'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/town_hall.works.png' alt=''>town_hall.works</div>
+<div class='cell' data-group='Interface (MCA)' data-name='trade'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/trade.png' alt=''>trade</div>
+<div class='cell' data-group='Interface (MCA)' data-name='work'><img loading='lazy' src='_assets/mca/gui/sprites/icon/radial/work.png' alt=''>work</div>
+<div class='cell' data-group='Interface (MCA)' data-name='analysis'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/analysis.png' alt=''>analysis</div>
+<div class='cell' data-group='Interface (MCA)' data-name='blackheart'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/blackheart.png' alt=''>blackheart</div>
+<div class='cell' data-group='Interface (MCA)' data-name='deceased'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/deceased.png' alt=''>deceased</div>
+<div class='cell' data-group='Interface (MCA)' data-name='engaged'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/engaged.png' alt=''>engaged</div>
+<div class='cell' data-group='Interface (MCA)' data-name='genes'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/genes.png' alt=''>genes</div>
+<div class='cell' data-group='Interface (MCA)' data-name='gift'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/gift.png' alt=''>gift</div>
+<div class='cell' data-group='Interface (MCA)' data-name='goldheart'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/goldheart.png' alt=''>goldheart</div>
+<div class='cell' data-group='Interface (MCA)' data-name='grave'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/grave.png' alt=''>grave</div>
+<div class='cell' data-group='Interface (MCA)' data-name='married'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/married.png' alt=''>married</div>
+<div class='cell' data-group='Interface (MCA)' data-name='marriedtoplayer'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/marriedtoplayer.png' alt=''>marriedtoplayer</div>
+<div class='cell' data-group='Interface (MCA)' data-name='notmarried'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/notmarried.png' alt=''>notmarried</div>
+<div class='cell' data-group='Interface (MCA)' data-name='parents'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/parents.png' alt=''>parents</div>
+<div class='cell' data-group='Interface (MCA)' data-name='promised'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/promised.png' alt=''>promised</div>
+<div class='cell' data-group='Interface (MCA)' data-name='redheart'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/redheart.png' alt=''>redheart</div>
+<div class='cell' data-group='Interface (MCA)' data-name='widow'><img loading='lazy' src='_assets/mca/gui/sprites/icon/relation/widow.png' alt=''>widow</div>
+<div class='cell' data-group='Interface (MCA)' data-name='archery'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/archery.png' alt=''>archery</div>
+<div class='cell' data-group='Interface (MCA)' data-name='construction'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/construction.png' alt=''>construction</div>
+<div class='cell' data-group='Interface (MCA)' data-name='cooking'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/cooking.png' alt=''>cooking</div>
+<div class='cell' data-group='Interface (MCA)' data-name='crafting'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/crafting.png' alt=''>crafting</div>
+<div class='cell' data-group='Interface (MCA)' data-name='farming'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/farming.png' alt=''>farming</div>
+<div class='cell' data-group='Interface (MCA)' data-name='fishing'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/fishing.png' alt=''>fishing</div>
+<div class='cell' data-group='Interface (MCA)' data-name='foraging'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/foraging.png' alt=''>foraging</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hauling'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/hauling.png' alt=''>hauling</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hunting'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/hunting.png' alt=''>hunting</div>
+<div class='cell' data-group='Interface (MCA)' data-name='husbandry'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/husbandry.png' alt=''>husbandry</div>
+<div class='cell' data-group='Interface (MCA)' data-name='medicine'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/medicine.png' alt=''>medicine</div>
+<div class='cell' data-group='Interface (MCA)' data-name='melee'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/melee.png' alt=''>melee</div>
+<div class='cell' data-group='Interface (MCA)' data-name='mining'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/mining.png' alt=''>mining</div>
+<div class='cell' data-group='Interface (MCA)' data-name='scholarship'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/scholarship.png' alt=''>scholarship</div>
+<div class='cell' data-group='Interface (MCA)' data-name='smithing'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/smithing.png' alt=''>smithing</div>
+<div class='cell' data-group='Interface (MCA)' data-name='trade'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/trade.png' alt=''>trade</div>
+<div class='cell' data-group='Interface (MCA)' data-name='woodcutting'><img loading='lazy' src='_assets/mca/gui/sprites/icon/skill/woodcutting.png' alt=''>woodcutting</div>
+<div class='cell' data-group='Interface (MCA)' data-name='dexterity'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/dexterity.png' alt=''>dexterity</div>
+<div class='cell' data-group='Interface (MCA)' data-name='perception'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/perception.png' alt=''>perception</div>
+<div class='cell' data-group='Interface (MCA)' data-name='social'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/social.png' alt=''>social</div>
+<div class='cell' data-group='Interface (MCA)' data-name='strength'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/strength.png' alt=''>strength</div>
+<div class='cell' data-group='Interface (MCA)' data-name='vigor'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/vigor.png' alt=''>vigor</div>
+<div class='cell' data-group='Interface (MCA)' data-name='wisdom'><img loading='lazy' src='_assets/mca/gui/sprites/icon/stat/wisdom.png' alt=''>wisdom</div>
+<div class='cell' data-group='Interface (MCA)' data-name='active'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/active.png' alt=''>active</div>
+<div class='cell' data-group='Interface (MCA)' data-name='adventurous'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/adventurous.png' alt=''>adventurous</div>
+<div class='cell' data-group='Interface (MCA)' data-name='angelic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/angelic.png' alt=''>angelic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='animal_lover'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/animal_lover.png' alt=''>animal_lover</div>
+<div class='cell' data-group='Interface (MCA)' data-name='annoying_voice'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/annoying_voice.png' alt=''>annoying_voice</div>
+<div class='cell' data-group='Interface (MCA)' data-name='anxious'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/anxious.png' alt=''>anxious</div>
+<div class='cell' data-group='Interface (MCA)' data-name='art_lover'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/art_lover.png' alt=''>art_lover</div>
+<div class='cell' data-group='Interface (MCA)' data-name='athletic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/athletic.png' alt=''>athletic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='beautiful'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/beautiful.png' alt=''>beautiful</div>
+<div class='cell' data-group='Interface (MCA)' data-name='bloodlust'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/bloodlust.png' alt=''>bloodlust</div>
+<div class='cell' data-group='Interface (MCA)' data-name='bookworm'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/bookworm.png' alt=''>bookworm</div>
+<div class='cell' data-group='Interface (MCA)' data-name='brawler'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/brawler.png' alt=''>brawler</div>
+<div class='cell' data-group='Interface (MCA)' data-name='careful_shooter'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/careful_shooter.png' alt=''>careful_shooter</div>
+<div class='cell' data-group='Interface (MCA)' data-name='cheerful'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/cheerful.png' alt=''>cheerful</div>
+<div class='cell' data-group='Interface (MCA)' data-name='clingy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/clingy.png' alt=''>clingy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='clumsy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/clumsy.png' alt=''>clumsy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='coeliac_disease'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/coeliac_disease.png' alt=''>coeliac_disease</div>
+<div class='cell' data-group='Interface (MCA)' data-name='creative'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/creative.png' alt=''>creative</div>
+<div class='cell' data-group='Interface (MCA)' data-name='diabetes'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/diabetes.png' alt=''>diabetes</div>
+<div class='cell' data-group='Interface (MCA)' data-name='electrified'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/electrified.png' alt=''>electrified</div>
+<div class='cell' data-group='Interface (MCA)' data-name='erratic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/erratic.png' alt=''>erratic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='family_oriented'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/family_oriented.png' alt=''>family_oriented</div>
+<div class='cell' data-group='Interface (MCA)' data-name='foodie'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/foodie.png' alt=''>foodie</div>
+<div class='cell' data-group='Interface (MCA)' data-name='frail'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/frail.png' alt=''>frail</div>
+<div class='cell' data-group='Interface (MCA)' data-name='friendly'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/friendly.png' alt=''>friendly</div>
+<div class='cell' data-group='Interface (MCA)' data-name='generous'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/generous.png' alt=''>generous</div>
+<div class='cell' data-group='Interface (MCA)' data-name='genius'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/genius.png' alt=''>genius</div>
+<div class='cell' data-group='Interface (MCA)' data-name='gloomy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/gloomy.png' alt=''>gloomy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='glutton'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/glutton.png' alt=''>glutton</div>
+<div class='cell' data-group='Interface (MCA)' data-name='good'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/good.png' alt=''>good</div>
+<div class='cell' data-group='Interface (MCA)' data-name='goofball'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/goofball.png' alt=''>goofball</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hard_worker'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/hard_worker.png' alt=''>hard_worker</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hates_children'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/hates_children.png' alt=''>hates_children</div>
+<div class='cell' data-group='Interface (MCA)' data-name='hot_headed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/hot_headed.png' alt=''>hot_headed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='immune'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/immune.png' alt=''>immune</div>
+<div class='cell' data-group='Interface (MCA)' data-name='independent'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/independent.png' alt=''>independent</div>
+<div class='cell' data-group='Interface (MCA)' data-name='industrious'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/industrious.png' alt=''>industrious</div>
+<div class='cell' data-group='Interface (MCA)' data-name='inquisitive'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/inquisitive.png' alt=''>inquisitive</div>
+<div class='cell' data-group='Interface (MCA)' data-name='iron_willed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/iron_willed.png' alt=''>iron_willed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='jealous'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/jealous.png' alt=''>jealous</div>
+<div class='cell' data-group='Interface (MCA)' data-name='kleptomaniac'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/kleptomaniac.png' alt=''>kleptomaniac</div>
+<div class='cell' data-group='Interface (MCA)' data-name='lactose_intolerance'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/lactose_intolerance.png' alt=''>lactose_intolerance</div>
+<div class='cell' data-group='Interface (MCA)' data-name='lazy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/lazy.png' alt=''>lazy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='left_handed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/left_handed.png' alt=''>left_handed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='loner'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/loner.png' alt=''>loner</div>
+<div class='cell' data-group='Interface (MCA)' data-name='loves_outdoors'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/loves_outdoors.png' alt=''>loves_outdoors</div>
+<div class='cell' data-group='Interface (MCA)' data-name='loyal'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/loyal.png' alt=''>loyal</div>
+<div class='cell' data-group='Interface (MCA)' data-name='macabre'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/macabre.png' alt=''>macabre</div>
+<div class='cell' data-group='Interface (MCA)' data-name='materialistic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/materialistic.png' alt=''>materialistic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='mean'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/mean.png' alt=''>mean</div>
+<div class='cell' data-group='Interface (MCA)' data-name='music_lover'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/music_lover.png' alt=''>music_lover</div>
+<div class='cell' data-group='Interface (MCA)' data-name='neat'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/neat.png' alt=''>neat</div>
+<div class='cell' data-group='Interface (MCA)' data-name='night_owl'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/night_owl.png' alt=''>night_owl</div>
+<div class='cell' data-group='Interface (MCA)' data-name='no_aging'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/no_aging.png' alt=''>no_aging</div>
+<div class='cell' data-group='Interface (MCA)' data-name='nosy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/nosy.png' alt=''>nosy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='outgoing'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/outgoing.png' alt=''>outgoing</div>
+<div class='cell' data-group='Interface (MCA)' data-name='party_animal'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/party_animal.png' alt=''>party_animal</div>
+<div class='cell' data-group='Interface (MCA)' data-name='peaceful'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/peaceful.png' alt=''>peaceful</div>
+<div class='cell' data-group='Interface (MCA)' data-name='perfectionist'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/perfectionist.png' alt=''>perfectionist</div>
+<div class='cell' data-group='Interface (MCA)' data-name='plant_lover'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/plant_lover.png' alt=''>plant_lover</div>
+<div class='cell' data-group='Interface (MCA)' data-name='psychopath'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/psychopath.png' alt=''>psychopath</div>
+<div class='cell' data-group='Interface (MCA)' data-name='pyromaniac'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/pyromaniac.png' alt=''>pyromaniac</div>
+<div class='cell' data-group='Interface (MCA)' data-name='rainbow'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/rainbow.png' alt=''>rainbow</div>
+<div class='cell' data-group='Interface (MCA)' data-name='relaxed'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/relaxed.png' alt=''>relaxed</div>
+<div class='cell' data-group='Interface (MCA)' data-name='romantic'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/romantic.png' alt=''>romantic</div>
+<div class='cell' data-group='Interface (MCA)' data-name='self_assured'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/self_assured.png' alt=''>self_assured</div>
+<div class='cell' data-group='Interface (MCA)' data-name='sensitive'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/sensitive.png' alt=''>sensitive</div>
+<div class='cell' data-group='Interface (MCA)' data-name='silly'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/silly.png' alt=''>silly</div>
+<div class='cell' data-group='Interface (MCA)' data-name='slob'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/slob.png' alt=''>slob</div>
+<div class='cell' data-group='Interface (MCA)' data-name='socially_awkward'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/socially_awkward.png' alt=''>socially_awkward</div>
+<div class='cell' data-group='Interface (MCA)' data-name='storyteller'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/storyteller.png' alt=''>storyteller</div>
+<div class='cell' data-group='Interface (MCA)' data-name='tough'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/tough.png' alt=''>tough</div>
+<div class='cell' data-group='Interface (MCA)' data-name='trigger_happy'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/trigger_happy.png' alt=''>trigger_happy</div>
+<div class='cell' data-group='Interface (MCA)' data-name='ugly'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/ugly.png' alt=''>ugly</div>
+<div class='cell' data-group='Interface (MCA)' data-name='undergrounder'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/undergrounder.png' alt=''>undergrounder</div>
+<div class='cell' data-group='Interface (MCA)' data-name='vegetarian'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/vegetarian.png' alt=''>vegetarian</div>
+<div class='cell' data-group='Interface (MCA)' data-name='volatile'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/volatile.png' alt=''>volatile</div>
+<div class='cell' data-group='Interface (MCA)' data-name='weak'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/weak.png' alt=''>weak</div>
+<div class='cell' data-group='Interface (MCA)' data-name='wild'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/wild.png' alt=''>wild</div>
+<div class='cell' data-group='Interface (MCA)' data-name='wise'><img loading='lazy' src='_assets/mca/gui/sprites/icon/trait/wise.png' alt=''>wise</div>
+<div class='cell' data-group='Interface (MCA)' data-name='clear'><img loading='lazy' src='_assets/mca/gui/sprites/icon/weather/clear.png' alt=''>clear</div>
+<div class='cell' data-group='Interface (MCA)' data-name='night'><img loading='lazy' src='_assets/mca/gui/sprites/icon/weather/night.png' alt=''>night</div>
+<div class='cell' data-group='Interface (MCA)' data-name='rain'><img loading='lazy' src='_assets/mca/gui/sprites/icon/weather/rain.png' alt=''>rain</div>
+<div class='cell' data-group='Interface (MCA)' data-name='snow'><img loading='lazy' src='_assets/mca/gui/sprites/icon/weather/snow.png' alt=''>snow</div>
+<div class='cell' data-group='Interface (MCA)' data-name='thunder'><img loading='lazy' src='_assets/mca/gui/sprites/icon/weather/thunder.png' alt=''>thunder</div>
 <div class='cell' data-group='Interface (MCA)' data-name='cell'><img loading='lazy' src='_assets/mca/gui/sprites/interact/cell.png' alt=''>cell</div>
 <div class='cell' data-group='Interface (MCA)' data-name='cell_empty'><img loading='lazy' src='_assets/mca/gui/sprites/interact/cell_empty.png' alt=''>cell_empty</div>
 <div class='cell' data-group='Interface (MCA)' data-name='cell_locked'><img loading='lazy' src='_assets/mca/gui/sprites/interact/cell_locked.png' alt=''>cell_locked</div>
@@ -7195,6 +8546,7 @@ livros, quadros) e Tabletop (itens largados em mesas: aldeões olham e mexem no 
 <div class='cell' data-group='Blocos (MCA)' data-name='jeweler_workbench_side'><img loading='lazy' src='_assets/mca/block/jeweler_workbench_side.png' alt=''>jeweler_workbench_side</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='jeweler_workbench_top'><img loading='lazy' src='_assets/mca/block/jeweler_workbench_top.png' alt=''>jeweler_workbench_top</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='mirror_glass'><img loading='lazy' src='_assets/mca/block/mirror_glass.png' alt=''>mirror_glass</div>
+<div class='cell' data-group='Blocos (MCA)' data-name='request_board_side'><img loading='lazy' src='_assets/mca/block/request_board_side.png' alt=''>request_board_side</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='rose_gold_block'><img loading='lazy' src='_assets/mca/block/rose_gold_block.png' alt=''>rose_gold_block</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='slanted_headstone'><img loading='lazy' src='_assets/mca/block/slanted_headstone.png' alt=''>slanted_headstone</div>
 <div class='cell' data-group='Blocos (MCA)' data-name='upright_headstone'><img loading='lazy' src='_assets/mca/block/upright_headstone.png' alt=''>upright_headstone</div>
