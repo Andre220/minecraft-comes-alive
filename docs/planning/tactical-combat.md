@@ -200,6 +200,20 @@ Config: `puddleChance`, `boneBurstChance`, `blazeRodChance` e `maxBrokenRods`.
 - **Com escudo ou arco na mão**, o clique direito fica com o item. A habilidade escolhida vai para o "Spell Hotbar Slot 1", que precisa de uma tecla própria.
 - **Ainda não testado no jogo.**
 
+**Mudança em 2026-11-05 (roda de combate):**
+- Z **sempre** abre a roda, mesmo sem habilidades. No teste, o usuário não achou nenhuma arma com duas habilidades.
+- O anel mostra as habilidades da arma na mão e também as **outras armas da hotbar**.
+- Apontar uma arma e soltar troca para ela.
+- Conta como arma:
+  - o que tem o componente `weapon`;
+  - arcos e bestas;
+  - o que tem perfil de arma do Tactical Combat.
+- Se não houver nada para escolher, a roda mostra só um aviso.
+
+**Braços (2026-11-05):** no teste, as pernas do zumbi caíram, mas os braços nunca.
+- **Causa:** só contava como braço o golpe que pegava a borda da caixa do corpo. Quem mira no meio quase nunca chega lá.
+- **Correção:** `armCoverChance` (0,35) desvia um golpe corpo a corpo no tronco para o braço daquele lado. Num combate os braços ficam na frente do corpo.
+
 ## Fases
 
 | Fase | Conteúdo | Estado |
@@ -210,15 +224,56 @@ Config: `puddleChance`, `boneBurstChance`, `blazeRodChance` e `maxBrokenRods`.
 | 2b | Câmera segue a animação em primeira pessoa | feito, sem teste em jogo |
 | 3 | Efeitos: sangramento e atordoamento do Spell Engine; Fratura e Tala (nossos); crítico de perfuração com Critical Strike opcional | feito, sem teste em jogo |
 | 4 | Reações: creeper, poças de slime e magma, explosão de ossos, ghast, blaze | feito, sem teste em jogo |
-| 5 | Local do golpe, desmembramento, zumbi rastejando, pata de aranha, asa de phantom, golem rachado, variáveis EMF para o Fresh Animations | feito, sem teste em jogo |
-| 6 | Integração com o MCA e com o Forsaken Adventurers | outra conversa |
+| 5 | Local do golpe, desmembramento, zumbi rastejando, pata de aranha, asa de phantom, golem rachado, variáveis EMF para o Fresh Animations | feito; pernas testadas no jogo, braços ajustados em 2026-11-05 |
+| 5b | Roda de combate (Z): habilidades e armas da hotbar | feito, sem teste em jogo |
+| 6 | Integração com o MCA e com o Forsaken Adventurers | planejada abaixo, a fazer em outra conversa |
 
-## Integração com o MCA (outra conversa)
-Sem dependência de código, como no Tabletop e no Village Furnishings. O MCA só cita ids e efeitos.
-- Guardas e aldeões já atacam pelo mesmo caminho, então o sistema vale para eles sem nada novo.
-- **Ideias:**
-  - guardas escolhem a arma pelo inimigo (maça contra ataque de esqueletos);
-  - o clérigo trata sangramento e põe tala na fratura;
-  - traços com bônus por tipo (um "Brutamontes" com concussão);
-  - bandidos e facções usam o mesmo sistema.
-- **Forsaken Adventurers / ANARCHY RPG** só existe até a 1.21.1, então essa integração depende de um port.
+## Fase 6: integração com o MCA (planejada, a fazer em outra conversa)
+**Regra:** sem dependência de código, como no Tabletop e no Village Furnishings.
+- O MCA só cita ids: efeitos, tags e config.
+- O Tactical Combat nunca conhece classes do MCA. A tag `#tactical_combat:humanoid` já lista as entidades do MCA como opcionais.
+- Guardas e aldeões atacam pelo mesmo caminho de dano, então o tipo de golpe, o peso e os efeitos já valem para eles.
+
+### 6.1 Membro perdido nos aldeões zumbis
+- **Hoje:** o Tactical Combat esconde o braço, as pernas ou a cabeça do modelo (`WoundedModel`). Só que as camadas do MCA (pele, roupa, cabelo, rosto) ligam de novo todas as partes, então o membro cortado continua aparecendo.
+- **Plano:** generalizar o `VillagerLayer.keepHeadHidden()`, que já copia a visibilidade da cabeça do modelo pai para a camada (correção do First Person Model). A nova versão copia a visibilidade de **todas** as partes: cabeça, braços, pernas e as camadas externas de cada uma.
+- **Vantagens:**
+  - funciona sem o MCA ler o estado do Tactical Combat, porque o modelo pai já vem com a parte escondida;
+  - também cobre outros mods que escondem partes.
+- **Cuidado:** o MCA esconde de propósito as camadas externas planas onde há cubos (cabelo e roupa em voxel), e isso não pode quebrar. Copiar só o "escondido" do pai, nunca o "visível".
+- **O zumbi rastejando** já deita pelo `LivingEntityRenderer`. Conferir se as camadas do MCA acompanham a rotação.
+
+### 6.2 Guardas escolhem a arma pelo inimigo
+- O guarda leva duas armas: uma na mão e outra no inventário.
+- Antes de atacar, ele compara o `mob_profiles` do alvo (multiplicadores de corte, concussão e perfuração) com a parcela de cada arma (`weapon_profiles`). Fica com a que causa mais dano.
+- **Exemplos:** maça contra esqueletos, espada contra zumbis e aranhas, lança contra slimes.
+- **Leitura dos perfis:** pelo registro de dados do Tactical Combat, por um arquivo de dados que o MCA lê, sem import de classe.
+- **Plano B:** se a leitura for difícil, uma tabela do MCA em JSON (`data/mca/.../guard_weapons`) com o tipo preferido por entidade.
+
+### 6.3 Clérigo trata ferimentos
+- **Sangramento** (`spell_engine:bleed`): o clérigo remove o efeito, como já faz com veneno.
+- **Fratura** (`tactical_combat:fracture`): ele aplica a Tala (`tactical_combat:splint`) no aldeão ou no jogador que pedir no diálogo.
+- **Custo:** uma tala ou papel, igual ao das outras curas do clérigo.
+- **Aldeões feridos** procuram o clérigo sozinhos, pelo mesmo caminho da cura de doenças.
+
+### 6.4 Traços ligados ao tipo de dano
+- **Brutamontes:** +concussão.
+- **Esgrimista:** +corte, arma leve mais rápida.
+- **Arqueiro nato:** +perfuração com projétil.
+- **Ossos frágeis:** fratura com mais facilidade.
+- **Implementação:** modificadores de atributo com ids do Tactical Combat (`tactical_combat:weight` e as parcelas). O traço do MCA só cita o id do atributo, então funciona se o mod estiver instalado e é ignorado se não estiver.
+
+### 6.5 Bandidos e facções
+- Bandidos e soldados de facção saem com armas e armaduras escolhidas pelos perfis. Por exemplo, uma facção "pesada" usa maças e placas.
+- O peso da armadura conta no saque e na fuga.
+
+### 6.6 Forsaken Adventurers / ANARCHY RPG
+- Esses mods só existem até a 1.21.1, então essa parte espera um port.
+
+### Ordem sugerida
+1. 6.1, porque hoje dá para ver o problema.
+2. 6.3.
+3. 6.2.
+4. 6.4.
+5. 6.5.
+6. 6.6.
